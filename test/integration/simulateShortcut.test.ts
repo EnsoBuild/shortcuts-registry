@@ -579,7 +579,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   describe('origami', () => {
     it('oboy-honey', async () => {
       // Arrange
-      const args = ['origami', 'oboy-honey', '10000000', '--mode=forge', '--block=3492994'];
+      const args = ['origami', 'oboy-honey', '1000000', '--mode=forge', '--block=4694128'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -590,10 +590,10 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOut: undefined,
         minAmountOutHex: undefined,
         quote: {
-          '0x9d98B51B3F0E085c7BDf33f26D273B6e277a27B8': '10000000000000000000',
+          '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714': '1000000000000000000',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '252645',
+        gas: '250848',
       });
     });
   });
