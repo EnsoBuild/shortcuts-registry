@@ -2,20 +2,21 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { Standards, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
-import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
+import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { balanceOf } from '../../utils';
 
-export class OrigamiBoycoHoneyShortcut implements Shortcut {
-  name = 'origami-oboy-honey';
+export class SatlayerSolvBtcShortcut implements Shortcut {
+  name = 'satlayer-solvbtc';
   description = '';
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
-      vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
+      depositToken: '0xB4618618b6Fcb61b72feD991AdcC344f43EE57Ad', // SolvBtc
+      receiptToken: '0xC034312c39DEdEE529fa6de123d0b24DBb43a053',
+      vault: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.vault,
     },
   };
 
@@ -23,21 +24,22 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, vault } = inputs;
+    const { depositToken, vault, receiptToken } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [usdc],
-      tokensOut: [vault],
+      tokensIn: [depositToken],
+      tokensOut: [receiptToken],
     });
 
     // Get the amount of token in wallet
-    const amountIn = builder.add(balanceOf(usdc, walletAddress()));
+    const amountIn = builder.add(balanceOf(depositToken, walletAddress()));
 
-    //Mint
-    const origami = getStandardByProtocol('erc4626', chainId);
-    await origami.deposit.addToBuilder(builder, {
-      tokenIn: usdc,
-      tokenOut: vault,
+    // Mint
+    const satlayer = getStandardByProtocol('satlayer-vaults', chainId);
+
+    await satlayer.deposit.addToBuilder(builder, {
+      tokenIn: depositToken,
+      tokenOut: receiptToken,
       amountIn,
       primaryAddress: vault,
     });
@@ -57,13 +59,15 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].vault, { label: 'Origami oboy-HONEY-a' }],
+          [this.inputs[ChainIds.Cartio].vault, { label: 'SatlayerPool' }],
+          [this.inputs[ChainIds.Cartio].depositToken, { label: 'ERC20:SolvBtc' }],
+          [this.inputs[ChainIds.Cartio].receiptToken, { label: 'ERC20:satSolvBtc' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
     }
   }
+
   getTokenHolder(chainId: number): Map<AddressArg, AddressArg> {
     const tokenToHolder = chainIdToTokenHolder.get(chainId);
     if (!tokenToHolder) throw new Error(`Unsupported 'chainId': ${chainId}`);

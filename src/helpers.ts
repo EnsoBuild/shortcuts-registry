@@ -53,6 +53,7 @@ import { OrigamiBoycoHoneyShortcut } from './shortcuts/origami/oboy-HONEY-a';
 import { SatlayerLbtcShortcut } from './shortcuts/satlayer/lbtc';
 import { SatlayerPumpBtcShortcut } from './shortcuts/satlayer/pumpbtc';
 import { SatlayerSbtcShortcut } from './shortcuts/satlayer/sbtc';
+import { SatlayerSolvBtcShortcut } from './shortcuts/satlayer/solvBtc';
 import { SatlayerWabtcShortcut } from './shortcuts/satlayer/wabtc';
 import { ThjUsdcShortcut } from './shortcuts/thj/usdc';
 import type { Campaign, SimulationRoles } from './types';
@@ -116,6 +117,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     sbtc: new SatlayerSbtcShortcut(),
     lbtc: new SatlayerLbtcShortcut(),
     wabtc: new SatlayerWabtcShortcut(),
+    solvbtc: new SatlayerSolvBtcShortcut(),
   },
   infrared: {
     'weth-wbtc': new InfraredWethWbtcShortcut(),
@@ -324,14 +326,9 @@ export function getEncodedData(commands: string[], state: string[]): string {
   return weirollWalletInterface.encodeFunctionData('executeWeiroll', [commands, state]);
 }
 
-export function buildVerificationHash(script: WeirollScript, receiptToken: AddressArg, inputTokens: AddressArg[]) {
-  const sortedInputTokens: AddressArg[] = inputTokens.sort((a, b) => (BigNumber.from(a).gt(b) ? 1 : -1));
-  // TODO: confirm token order for encoding hash
+export function buildVerificationHash(receiptToken: AddressArg, script: WeirollScript) {
   return keccak256(
-    defaultAbiCoder.encode(
-      ['address[]', 'address', 'tuple(bytes32[], bytes[])'],
-      [sortedInputTokens, receiptToken, [script.commands, script.state]],
-    ),
+    defaultAbiCoder.encode(['address', 'tuple(bytes32[], bytes[])'], [receiptToken, [script.commands, script.state]]),
   );
 }
 
@@ -500,7 +497,7 @@ export async function buildShortcutsHashMap(chainId: number): Promise<Record<str
   const hashArray = await Promise.all(
     shortcutsArray.map(async (shortcut) => {
       const { script, metadata } = await shortcut.build(chainId);
-      return buildVerificationHash(script, metadata.tokensOut![0], []);
+      return buildVerificationHash(metadata.tokensOut![0], script);
     }),
   );
   const shortcutsHashMap: Record<string, Shortcut> = {};
