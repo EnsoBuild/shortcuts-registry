@@ -19,6 +19,7 @@ import {
   getSimulationRolesByChainId,
   getTotalTokenAmountDeposited,
   getWeirollWallets,
+  getWeirollWalletsExecuted,
 } from '../src/helpers';
 import { createBatchFile } from '../src/helpers';
 import { encodeMulticall, generateSetterCallData, getSetters, simulateShortcutOnQuoter } from '../src/helpers/simulate';
@@ -76,43 +77,31 @@ async function main() {
 
     const wallets = await getWeirollWallets(provider, chainId, marketHash);
     if (wallets.length == 0) throw 'Error: No assets have been bridged';
+    const walletsExecuted = await getWeirollWalletsExecuted(provider, chainId, marketHash);
+    const useMockWalletAmounts = wallets.length === walletsExecuted.length;
 
-    const [depositedAmounts, actualAmounts] = await Promise.all([
-      Promise.all(
-        wallets.map((wallet) => getTotalTokenAmountDeposited(provider, chainId, marketHash, wallet, tokensIn)),
-      ),
-      Promise.all(wallets.map((wallet) => getBalances(provider, chainId, wallet, tokensIn))),
-    ]);
-
-    let walletsWithAmounts = wallets.map((wallet, index) => ({
-      wallet,
-      balances: actualAmounts[index].map((a) => a.toString()),
-      deposits: depositedAmounts[index].map((a) => a.toString()),
-    }));
-
-    const filteredWalletsWithAmounts = walletsWithAmounts.filter(
-      (wallet) => !isWalletExecuted(wallet.deposits, wallet.balances),
-    );
-    const useMockWalletAmounts = filteredWalletsWithAmounts.length === 0;
+    let wallet;
     if (useMockWalletAmounts) {
       console.log(
         "Warning: All wallets have been executed. Attempting to simulate using last wallet's original deposit...",
         '\n',
       );
-      walletsWithAmounts = [walletsWithAmounts[walletsWithAmounts.length - 1]];
+      wallet = wallets[wallets.length - 1];
     } else {
-      walletsWithAmounts = filteredWalletsWithAmounts;
+      const filteredWallets = wallets.filter((w) => !walletsExecuted.includes(w));
+      wallet = filteredWallets.splice(0, 1)[0];
+      if (filteredWallets.length > 0) console.log('Ignoring the following wallets: ', filteredWallets);
     }
 
-    // Get the first wallet in list that has not been executed
-    const { wallet, balances, deposits } = walletsWithAmounts.splice(0, 1)[0];
-    if (walletsWithAmounts.length > 0)
-      console.log(
-        'Ignoring the following wallets: ',
-        walletsWithAmounts.map((w) => w.wallet),
-      );
+    const [deposits, balances] = await Promise.all([
+      getTotalTokenAmountDeposited(provider, chainId, marketHash, wallet, tokensIn),
+      getBalances(provider, chainId, wallet, tokensIn),
+    ]);
 
-    const amountsIn = useMockWalletAmounts ? deposits : balances;
+    const amountsIn = useMockWalletAmounts
+      ? deposits.map((d) => d.toString())
+      : deposits.map((d, i) => d.add(balances[i]).toString()); // calculate based on what will actually be in wallet
+
     const tokenBalances: Record<string, string> = {};
     for (const i in tokensIn) {
       tokenBalances[tokensIn[i]] = amountsIn[i];
@@ -263,15 +252,6 @@ async function main() {
   } catch (e) {
     console.error(e);
   }
-}
-
-function isWalletExecuted(depositedAmounts: string[], actualAmounts: string[]): boolean {
-  for (const i in depositedAmounts) {
-    if (BigNumber.from(depositedAmounts[i]).gt(actualAmounts[i])) {
-      return true;
-    }
-  }
-  return false;
 }
 
 main();

@@ -176,3 +176,32 @@ export async function getWeirollWallets(
   );
   return [...new Set(wallets)];
 }
+
+export async function getWeirollWalletsExecuted(
+  provider: StaticJsonRpcProvider,
+  chainId: number,
+  marketHash: string,
+): Promise<AddressArg[]> {
+  const depositExecutorInterface = new Interface([
+    'function mockWeirollWalletsExecuted() external view returns (address[] weirollWalletsExecuted, uint256[] receiptTokensReceived)',
+    'event WeirollWalletsExecutedDepositRecipe(bytes32 indexed sourceMarketHash, address[] weirollWalletsExecuted, uint256[] receiptTokensReceived)',
+  ]);
+  const roles = getSimulationRolesByChainId(chainId);
+  const depositExecutor = roles.depositExecutor.address!;
+
+  const filter = {
+    address: depositExecutor,
+    topics: [depositExecutorInterface.getEventTopic('WeirollWalletsExecutedDepositRecipe'), marketHash],
+    fromBlock: 0,
+    toBlock: 'latest',
+  };
+  // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
+  // which we can simply decode using getWeirollWalletByCcdmNonce because it has the same return value
+  const wallets: AddressArg[] = [];
+  (await provider.getLogs(filter)).forEach((l) =>
+    wallets.push(
+      ...depositExecutorInterface.decodeFunctionResult('mockWeirollWalletsExecuted', l.data).weirollWalletsExecuted,
+    ),
+  );
+  return [...new Set(wallets)];
+}
