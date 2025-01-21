@@ -91,6 +91,44 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
+    it('beraEth', async () => {
+      // Arrange
+      const args = ['beraborrow', 'beraEth', '50000000000000', '--mode=forge', '--block=4485170'];
+
+      // Act
+      const report = await main_([...DEFAULT_ARGS, ...args]);
+
+      // Assert
+      expect(report).toMatchObject({
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
+        quote: { '0x25189a55463d2974F6b55268A09ccEe92f8aa043': '49000000000000' },
+        dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
+        gas: '832080',
+      });
+    });
+
+    it('beraEth (with slippage)', async () => {
+      // Arrange
+      const args = ['beraborrow', 'beraEth', '50000000000000', '--mode=forge', '--slippage=3', '--block=4485170'];
+
+      // Act
+      const report = await main_([...DEFAULT_ARGS, ...args]);
+
+      // Assert
+      expect(report).toMatchObject({
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '48985300000000',
+        minAmountOutHex: '0x2c8d4767dd00',
+        quote: {
+          '0x25189a55463d2974F6b55268A09ccEe92f8aa043': '49000000000000',
+        },
+        dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
+        gas: '832080',
+      });
+    });
+
     it('weth', async () => {
       // Arrange
       const args = ['beraborrow', 'weth', '100000000000', '--mode=forge', '--block=3444966'];
@@ -541,7 +579,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   describe('origami', () => {
     it('oboy-honey', async () => {
       // Arrange
-      const args = ['origami', 'oboy-honey', '10000000', '--mode=forge', '--block=3492994'];
+      const args = ['origami', 'oboy-honey', '1000000', '--mode=forge', '--block=4694128'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -552,10 +590,10 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOut: undefined,
         minAmountOutHex: undefined,
         quote: {
-          '0x9d98B51B3F0E085c7BDf33f26D273B6e277a27B8': '10000000000000000000',
+          '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714': '1000000000000000000',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '252645',
+        gas: '250848',
       });
     });
   });
