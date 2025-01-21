@@ -81,6 +81,18 @@ Optionally, get a full output by adding `--output=full` (this output won't be sa
 pnpm generate cartio dolomite dhoney --output=full
 ```
 
+## Build
+
+```sh
+pnpm build <network> <marketHash> <...args>
+```
+
+e.g.
+
+```sh
+pnpm build cartio 0xd4d6596bdc7cb7f8b214961f895c2d79d884f9c3dfcac62996c3f94c1641af0d --slippage=100 --skewRatio=9990 --minAmount0Bps=9950 --minAmount1Bps=9950
+```
+
 ## Simulate
 
 Simulation supported modes are: `forge`, and `quoter`. Simulation mode is set via `--mode=<simulationMode>`. By default
