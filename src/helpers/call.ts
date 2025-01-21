@@ -38,6 +38,12 @@ export async function getHoneyExchangeRate(
   return (await call(provider, honeyFactoryInterface, honeyFactory, 'mintRates', [underlyingToken]))[0] as BigNumber;
 }
 
+export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, chainId: number): Promise<BigNumber> {
+  const honeyFactoryInterface = new Interface(['function lastAssetsPerShare() external view returns (uint256)']);
+  const honeyFactory = chainIdToDeFiAddresses[chainId]!.rLst;
+  return (await call(provider, honeyFactoryInterface, honeyFactory, 'lastAssetsPerShare', []))[0] as BigNumber;
+}
+
 export async function getIslandMintAmounts(
   provider: StaticJsonRpcProvider,
   island: AddressArg,
