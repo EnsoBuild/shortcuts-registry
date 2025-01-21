@@ -7,7 +7,7 @@ import { helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, getSetterValue } from '../../utils';
+import { balanceOf, getSetterValue, mintBeraEth } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
@@ -29,7 +29,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraEth, rBeraEth, primary } = inputs;
+    const { weth, beraEth, primary } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth],
@@ -37,15 +37,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     });
     const amountIn = builder.add(balanceOf(weth, walletAddress()));
 
-    const dineroBeraeth = getStandardByProtocol('dinero-beraEth', chainId, true);
-    await dineroBeraeth.deposit.addToBuilder(builder, {
-      tokenIn: [weth],
-      tokenOut: beraEth,
-      amountIn: [amountIn],
-      primaryAddress: rBeraEth,
-    });
-
-    const beraEthAmount = builder.add(balanceOf(beraEth, walletAddress()));
+    const beraEthAmount = await mintBeraEth(amountIn, builder);
 
     const erc4626 = getStandardByProtocol('erc4626', chainId);
     await erc4626.deposit.addToBuilder(builder, {
