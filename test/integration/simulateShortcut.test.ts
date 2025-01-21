@@ -105,7 +105,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x25189a55463d2974F6b55268A09ccEe92f8aa043': '49000000000000' },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '837967',
+        gas: '832080',
       });
     });
 
