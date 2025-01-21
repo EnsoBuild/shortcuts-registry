@@ -44,7 +44,7 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     // Get HONEY
     const mintedAmountHoney = await mintHoney(usdc, usdcToMintHoney, builder);
     // Get NECT
-    const erc4626 = getStandardByProtocol('usdc-psm-bond-erc4626', chainId);
+    const erc4626 = getStandardByProtocol('erc4626', chainId);
     const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
       tokenIn: [usdc],
       tokenOut: nect,
