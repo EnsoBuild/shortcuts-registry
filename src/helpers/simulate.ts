@@ -210,7 +210,7 @@ export async function getSetters(
       const island = shortcut.inputs[chainId].island; // assumes we are minting honey for a kodiak island
       if (!island) throw 'Error: Shortcut not supported for calculating usdc to mint';
 
-      wethToMintBeraEth = await getwethToMintBeraEth(provider, chainId, wethAmountIn, island, setterArgsBps.skewRatio);
+      wethToMintBeraEth = await getWethToMintBeraEth(provider, chainId, wethAmountIn, island, setterArgsBps.skewRatio);
     }
   }
 
@@ -496,7 +496,7 @@ async function getUsdcToMintHoney(
   return usdcToMintHoney.mul(skewRatio).div(MAX_BPS);
 }
 
-export async function getwethToMintBeraEth(
+export async function getWethToMintBeraEth(
   provider: StaticJsonRpcProvider,
   chainId: number,
   amountIn: BigNumberish,
