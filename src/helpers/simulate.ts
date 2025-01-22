@@ -332,7 +332,7 @@ export async function simulateShortcutOnForge(
   const tokensDust = tokensDustRaw.difference(new Set(tokensOut) as Set<AddressArg>);
 
   // Get holder addresses for tokens In
-  const tokensInHolders: Set<AddressArg> = new Set();
+  const tokensInHolders: AddressArg[] = [];
   if (shortcut.getTokenHolder) {
     const tokenToHolder = shortcut.getTokenHolder(chainId);
     for (let i = 0; i < tokensIn.length; i++) {
@@ -343,7 +343,7 @@ export async function simulateShortcutOnForge(
             `If it is missing by mistake, please add it into 'chainIdToTokenHolder' map`,
         );
       }
-      tokensInHolders.add(tokenToHolder.get(tokensIn[i]) as AddressArg);
+      tokensInHolders.push(tokenToHolder.get(tokensIn[i]) as AddressArg);
     }
   }
   const forgeData = {
@@ -360,7 +360,6 @@ export async function simulateShortcutOnForge(
     tokensOut,
     tokensDust: [...tokensDust] as AddressArg[],
   };
-
   const forgeTestLog = simulateTransactionOnForge(
     shortcutExecutionMode,
     roles,
