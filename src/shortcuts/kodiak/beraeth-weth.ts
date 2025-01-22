@@ -15,33 +15,33 @@ export class KodiakberaethwethShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
-      beraeth: chainIdToDeFiAddresses[ChainIds.Cartio].beraeth,
+      beraeth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
       island: '0x4b73646408CB26090aBA90DDC29Bbf5fCb97D1A5',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
   setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'wethToMintberaeth']),
+    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'wethToMintBeraEth']),
   };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraeth, island, primary } = inputs;
+    const { weth, beraEth, island, primary } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth],
       tokensOut: [island],
     });
     const amountIn = builder.add(balanceOf(weth, walletAddress()));
-    const wethToMintberaeth = getSetterValue(builder, this.setterInputs[chainId], 'wethToMintberaeth');
-    const remainingweth = sub(amountIn, wethToMintberaeth, builder);
-    const mintedAmount = await mintBeraEth(wethToMintberaeth, builder);
+    const wethToMintBeraEth = getSetterValue(builder, this.setterInputs[chainId], 'wethToMintBeraEth');
+    const remainingweth = sub(amountIn, wethToMintBeraEth, builder);
+    const mintedAmount = await mintBeraEth(wethToMintBeraEth, builder);
 
     await depositKodiak(
       builder,
-      [weth, beraeth],
+      [weth, beraEth],
       [remainingweth, mintedAmount],
       island,
       primary,
@@ -64,8 +64,8 @@ export class KodiakberaethwethShortcut implements Shortcut {
       case ChainIds.Cartio:
         return new Map([
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:weth' }],
-          [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraeth' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-weth-beraeth-0.5%' }],
+          [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraEth' }],
+          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-weth-beraEth-0.5%' }],
           [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
         ]);
       default:
