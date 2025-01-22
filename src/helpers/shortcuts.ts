@@ -34,6 +34,7 @@ import { SatlayerSbtcShortcut } from '../shortcuts/satlayer/sbtc';
 import { SatlayerSolvBtcShortcut } from '../shortcuts/satlayer/solvBtc';
 import { SatlayerWabtcShortcut } from '../shortcuts/satlayer/wabtc';
 import { ThjUsdcShortcut } from '../shortcuts/thj/usdc';
+import { VedaUsdcShortcut } from '../shortcuts/veda/usdc';
 import { Shortcut } from '../types';
 import { buildVerificationHash } from './utils';
 
@@ -85,6 +86,9 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'honey-usdc': new KodiakHoneyUsdcShortcut(),
     'weth-honey': new KodiakWethHoneyShortcut(),
     'weth-wbtc': new KodiakWethWbtcShortcut(),
+  },
+  veda: {
+    usdc: new VedaUsdcShortcut(),
   },
   origami: {
     'oboy-honey': new OrigamiBoycoHoneyShortcut(),
