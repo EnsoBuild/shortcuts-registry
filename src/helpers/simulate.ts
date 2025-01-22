@@ -208,7 +208,7 @@ export async function getSetters(
     if (setterInputs.has('wethToMintBeraEth')) {
       const wethAmountIn = amountsIn[0]; // this assumes a single-sided deposit
       const island = shortcut.inputs[chainId].island; // assumes we are minting honey for a kodiak island
-      if (!island) throw 'Error: Shortcut not supported for calculating usdc to mint';
+      if (!island) throw 'Error: Shortcut not supported for calculating weth to mint';
 
       wethToMintBeraEth = await getWethToMintBeraEth(provider, chainId, wethAmountIn, island, setterArgsBps.skewRatio);
     }
