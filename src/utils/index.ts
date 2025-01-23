@@ -10,7 +10,13 @@ import {
 } from '@ensofinance/shortcuts-builder/types';
 import { PUBLIC_RPC_URLS, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
-import { addAction, areAddressesEqual, percentMul, resetApprovals } from '@ensofinance/shortcuts-standards/helpers';
+import {
+  addAction,
+  addApprovals,
+  areAddressesEqual,
+  percentMul,
+  resetApprovals,
+} from '@ensofinance/shortcuts-standards/helpers';
 import { Interface } from '@ethersproject/abi';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
@@ -92,6 +98,13 @@ export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder:
 }
 
 export async function redeemNect(amount: NumberArg, builder: Builder) {
+  const approvals = {
+    tokens: [chainIdToDeFiAddresses[builder.chainId].nect],
+    amounts: [amount],
+    spender: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
+  };
+
+  addApprovals(builder, approvals);
   const redeem = contractCall({
     address: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
     functionName: 'withdraw',
