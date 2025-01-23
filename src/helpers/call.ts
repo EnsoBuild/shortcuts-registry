@@ -39,9 +39,35 @@ export async function getHoneyExchangeRate(
 }
 
 export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, chainId: number): Promise<BigNumber> {
-  const rBeraEthInterface = new Interface(['function lastAssetsPerShare() external view returns (uint256)']);
-  const rBeraEth = chainIdToDeFiAddresses[chainId]!.rBeraEth;
-  return (await call(provider, rBeraEthInterface, rBeraEth, 'lastAssetsPerShare', []))[0] as BigNumber;
+  const quoterInterface = new Interface([
+    'function getAmountOut(address tokenIn, uint256 amountIn) external view returns (uint256)',
+  ]);
+
+  const beraEthInterface = new Interface([
+    'function getLSTAmount(uint256 rBeraETHAmount) external view returns (uint256)',
+  ]);
+
+  const addresses = chainIdToDeFiAddresses[chainId];
+  if (!addresses) {
+    throw new Error(`No addresses configured for chainId=${chainId}`);
+  }
+  const { weth, beraEth, bridgeQuoter } = addresses;
+
+  // Convert 1 WETH  → rBeraETH
+
+  const [rBeraEthAmount] = await call(
+    provider,
+    quoterInterface,
+    bridgeQuoter,
+    'getAmountOut',
+    [weth, BigNumber.from(10).pow(18)], // 1 WETH in wei
+  );
+
+  // Convert rBeraETH → beraETH
+
+  const [beraEthAmount] = await call(provider, beraEthInterface, beraEth, 'getLSTAmount', [rBeraEthAmount]);
+
+  return beraEthAmount;
 }
 
 export async function getIslandMintAmounts(

@@ -15,7 +15,7 @@ export class KodiakberaethwethShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
-      beraeth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
+      beraEth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
       island: '0x4b73646408CB26090aBA90DDC29Bbf5fCb97D1A5',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
