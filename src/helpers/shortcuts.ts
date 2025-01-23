@@ -25,8 +25,9 @@ import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
 import { InfraredHoneyUsdcShortcut } from '../shortcuts/infrared/honey-usdc';
 import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
 import { InfraredWethWbtcShortcut } from '../shortcuts/infrared/weth-wbtc';
-import { KodiakberaethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
+import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
+import { KodiaknectUsdeShortcut } from '../shortcuts/kodiak/nect-usde';
 import { KodiakWethHoneyShortcut } from '../shortcuts/kodiak/weth-honey';
 import { KodiakWethWbtcShortcut } from '../shortcuts/kodiak/weth-wbtc';
 import { OrigamiBoycoHoneyShortcut } from '../shortcuts/origami/oboy-HONEY-a';
@@ -89,7 +90,8 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'honey-usdc': new KodiakHoneyUsdcShortcut(),
     'weth-honey': new KodiakWethHoneyShortcut(),
     'weth-wbtc': new KodiakWethWbtcShortcut(),
-    'beraeth-weth': new KodiakberaethwethShortcut(),
+    'beraeth-weth': new KodiakbBraethwethShortcut(),
+    'nect-usde': new KodiaknectUsdeShortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),

@@ -2,51 +2,46 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { sub } from '@ensofinance/shortcuts-standards/helpers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
-import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getSetterValue, mintBeraEth } from '../../utils';
+import { AddressData, Input, Output, Shortcut } from '../../types';
+import { balanceOf, depositKodiak, mintNect, redeemNect } from '../../utils';
 
-export class KodiakbBraethwethShortcut implements Shortcut {
-  name = 'kodiak-beraeth-weth';
+export class KodiaknectUsdeShortcut implements Shortcut {
+  name = 'kodiak-nect-usde';
   description = '';
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
-      beraEth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
-      island: '0x4b73646408CB26090aBA90DDC29Bbf5fCb97D1A5',
+      nect: chainIdToDeFiAddresses[ChainIds.Cartio].nect,
+      usde: chainIdToDeFiAddresses[ChainIds.Cartio].usde,
+      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
+      island: '0x0d81a1E72950575e0df6228E528F362cc5d169c4',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
   setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'wethToMintBeraEth']),
+    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']),
   };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraEth, island, primary } = inputs;
+    const { nect, usdc, usde, island, primary } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth],
+      tokensIn: [usdc, usde],
       tokensOut: [island],
     });
-    const amountIn = builder.add(balanceOf(weth, walletAddress()));
-    const wethToMintBeraEth = getSetterValue(builder, this.setterInputs[chainId], 'wethToMintBeraEth');
-    const remainingweth = sub(amountIn, wethToMintBeraEth, builder);
-    const mintedAmount = await mintBeraEth(wethToMintBeraEth, builder);
+    const usdeAmount = builder.add(balanceOf(usde, walletAddress()));
+    const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
+    const mintedAmount = await mintNect(usdcAmount, builder);
 
-    await depositKodiak(
-      builder,
-      [weth, beraEth],
-      [remainingweth, mintedAmount],
-      island,
-      primary,
-      this.setterInputs[chainId],
-    );
+    await depositKodiak(builder, [nect, usde], [mintedAmount, usdeAmount], island, primary, this.setterInputs[chainId]);
+
+    const nectLeftoversAmount = builder.add(balanceOf(nect, walletAddress()));
+    await redeemNect(nectLeftoversAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -63,9 +58,10 @@ export class KodiakbBraethwethShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:weth' }],
-          [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraEth' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-weth-beraEth-0.5%' }],
+          [this.inputs[ChainIds.Cartio].usde, { label: 'ERC20:USDE' }],
+          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Cartio].nect, { label: 'ERC20:NECT' }],
+          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-nect-USDE-0.3%' }],
           [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
         ]);
       default:
