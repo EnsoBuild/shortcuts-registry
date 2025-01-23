@@ -3,6 +3,7 @@ import { BeraborrowBeraethShortcut } from '../shortcuts/beraborrow/beraEth';
 import { BeraborrowNectHoneyShortcut } from '../shortcuts/beraborrow/nect-honey';
 import { BeraborrowSbtcShortcut } from '../shortcuts/beraborrow/sbtc';
 import { BeraborrowWethShortcut } from '../shortcuts/beraborrow/weth';
+import { BeraborrowWethHoneyShortcut } from '../shortcuts/beraborrow/weth-honey';
 import { BurrbearUsdcShortcut } from '../shortcuts/burrbear/usdc';
 import { ConcreteLbtcShortcut } from '../shortcuts/concrete/lbtc';
 import { ConcreteSusdeShortcut } from '../shortcuts/concrete/susde';
@@ -44,6 +45,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
   },
   beraborrow: {
     'nect-honey': new BeraborrowNectHoneyShortcut(),
+    'weth-honey': new BeraborrowWethHoneyShortcut(),
     beraEth: new BeraborrowBeraethShortcut(),
     sbtc: new BeraborrowSbtcShortcut(),
     weth: new BeraborrowWethShortcut(),
