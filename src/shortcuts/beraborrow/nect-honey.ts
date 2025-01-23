@@ -1,13 +1,13 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { contractCall, walletAddress } from '@ensofinance/shortcuts-builder/helpers';
+import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, FromContractCallArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { Standards, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { Standards } from '@ensofinance/shortcuts-standards';
 import { sub } from '@ensofinance/shortcuts-standards/helpers/math';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getSetterValue, mintHoney, redeemHoney } from '../../utils';
+import { balanceOf, depositKodiak, getSetterValue, mintHoney, mintNect, redeemHoney, redeemNect } from '../../utils';
 
 export class BeraborrowNectHoneyShortcut implements Shortcut {
   name = 'nect-honey';
@@ -18,7 +18,6 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       nect: chainIdToDeFiAddresses[ChainIds.Cartio].nect,
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
-      usdcPsmBond: '0xd064C80776497821313b1Dc0E3192d1a67b2a9fa',
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.nectUsdcIsland, // KODI-HONEY-NECT
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
       quoterV2: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakQuoterV2,
@@ -32,7 +31,7 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { honey, nect, usdc, usdcPsmBond, island, primary } = inputs;
+    const { honey, nect, usdc, island, primary } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [usdc],
@@ -44,13 +43,7 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     // Get HONEY
     const mintedAmountHoney = await mintHoney(usdc, usdcToMintHoney, builder);
     // Get NECT
-    const erc4626 = getStandardByProtocol('erc4626', chainId);
-    const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [usdc],
-      tokenOut: nect,
-      amountIn: [remainingUsdc],
-      primaryAddress: usdcPsmBond,
-    });
+    const mintedAmountNect = await mintNect(remainingUsdc, builder);
 
     await depositKodiak(
       builder,
@@ -62,17 +55,10 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     );
 
     const honeyLeftoverAmount = builder.add(balanceOf(honey, walletAddress()));
-    await redeemHoney(usdc, honeyLeftoverAmount, builder);
-
     const nectLeftoversAmount = builder.add(balanceOf(nect, walletAddress()));
-    const withdrawLeftovers = contractCall({
-      address: usdcPsmBond,
-      functionName: 'withdraw',
-      abi: ['function withdraw(uint shares, address receiver, address owner) '],
-      args: [nectLeftoversAmount, walletAddress(), walletAddress()],
-    });
 
-    builder.add(withdrawLeftovers);
+    await redeemHoney(usdc, honeyLeftoverAmount, builder);
+    await redeemNect(nectLeftoversAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

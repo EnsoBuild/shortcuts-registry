@@ -126,6 +126,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     sbtc: '0x5d417e7798208E9285b5157498bBF23A23E421E7',
     stone: TokenAddresses.cartio.stone,
     usdc: TokenAddresses.cartio.usdc,
+    usde: '0xf805ce4F96e0EdD6f0b6cd4be22B34b92373d696',
     usdt: TokenAddresses.cartio.usdt,
     wbera: TokenAddresses.cartio.wbera,
     wbtc: TokenAddresses.cartio.wbtc,
@@ -135,6 +136,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     honeyFactory: Standards.Berachain_Honey.protocol.addresses!.cartio!.honeyFactory,
     kodiakRouter: Standards.Kodiak_Islands.protocol.addresses!.cartio!.router,
     kodiakQuoterV2: Standards.Kodiak_Islands.protocol.addresses!.cartio!.quoterV2,
+    usdcPsmBond: '0xd064C80776497821313b1Dc0E3192d1a67b2a9fa',
     burrbearZap: '0xd39e7aa57CB0703cE74Bc96dA005dFceE2Ac4F56',
   },
 };

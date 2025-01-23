@@ -10,7 +10,13 @@ import {
 } from '@ensofinance/shortcuts-builder/types';
 import { PUBLIC_RPC_URLS, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
-import { addAction, areAddressesEqual, percentMul, resetApprovals } from '@ensofinance/shortcuts-standards/helpers';
+import {
+  addAction,
+  addApprovals,
+  areAddressesEqual,
+  percentMul,
+  resetApprovals,
+} from '@ensofinance/shortcuts-standards/helpers';
 import { Interface } from '@ethersproject/abi';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
@@ -52,6 +58,17 @@ export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: B
   return amountOut as FromContractCallArg;
 }
 
+export async function mintNect(amountIn: NumberArg, builder: Builder) {
+  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
+  const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
+    tokenIn: [chainIdToDeFiAddresses[builder.chainId].usdc],
+    tokenOut: chainIdToDeFiAddresses[builder.chainId].nect,
+    amountIn: [amountIn],
+    primaryAddress: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
+  });
+  return mintedAmountNect as FromContractCallArg;
+}
+
 export async function mintBeraEth(amountIn: NumberArg, builder: Builder) {
   const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
 
@@ -78,6 +95,24 @@ export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder:
   });
 
   return amountOut as FromContractCallArg;
+}
+
+export async function redeemNect(amount: NumberArg, builder: Builder) {
+  const approvals = {
+    tokens: [chainIdToDeFiAddresses[builder.chainId].nect],
+    amounts: [amount],
+    spender: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
+  };
+
+  addApprovals(builder, approvals);
+  const redeem = contractCall({
+    address: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
+    functionName: 'withdraw',
+    abi: ['function withdraw(uint shares, address receiver, address owner) '],
+    args: [amount, walletAddress(), walletAddress()],
+  });
+
+  builder.add(redeem);
 }
 
 export async function depositBurrbear(builder: Builder, amountIn: NumberArg, setterInputs: Set<string>) {
