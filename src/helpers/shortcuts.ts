@@ -22,7 +22,7 @@ import { DolomiteDUsdcShortcut } from '../shortcuts/dolomite/dusdc';
 import { DolomiteDUsdtShortcut } from '../shortcuts/dolomite/dusdt';
 import { DolomiteDWbtcShortcut } from '../shortcuts/dolomite/dwbtc';
 import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
-import { GoldilocksUniBtcOtUniBtcShortcut } from '../shortcuts/goldilocks/unibtcOt-unibtc';
+import { GoldilocksUniBtcOtUniBtcShortcut } from '../shortcuts/goldilocks/unibtcot-unibtc';
 import { InfraredHoneyUsdcShortcut } from '../shortcuts/infrared/honey-usdc';
 import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
 import { InfraredWethWbtcShortcut } from '../shortcuts/infrared/weth-wbtc';
