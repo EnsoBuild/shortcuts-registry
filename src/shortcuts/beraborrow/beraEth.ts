@@ -7,7 +7,7 @@ import { helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, getSetterValue, mintBeraEth } from '../../utils';
+import { balanceOf, getBalance, getSetterValue, mintBeraEth } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
@@ -35,9 +35,10 @@ export class BeraborrowBeraethShortcut implements Shortcut {
       tokensIn: [weth],
       tokensOut: [primary],
     });
-    const amountIn = builder.add(balanceOf(weth, walletAddress()));
+    const amountIn = getBalance(weth, builder);
 
-    const beraEthAmount = await mintBeraEth(amountIn, builder);
+    await mintBeraEth(amountIn, builder);
+    const beraEthAmount = getBalance(beraEth, builder);
 
     const erc4626 = getStandardByProtocol('erc4626', chainId);
     await erc4626.deposit.addToBuilder(builder, {
