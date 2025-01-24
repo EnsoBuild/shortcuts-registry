@@ -117,6 +117,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     burr: TokenAddresses.cartio.burr,
     dweth: '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3',
     ebtc: TokenAddresses.cartio.ebtc,
+    unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
     honey: TokenAddresses.cartio.honey,
     mim: TokenAddresses.cartio.mim,
     nativeToken: GeneralAddresses.nativeToken,
@@ -163,6 +164,7 @@ const tokenToHolderCartio: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Cartio].wbera, '0x9C8a5c82e797e074Fe3f121B326b140CEC4bcb33'], // WBERA
   [chainIdToDeFiAddresses[ChainIds.Cartio].wbtc, '0x603C6152DF404CB5250Ce8E6FE01e4294254F728'], // WBTC
   [chainIdToDeFiAddresses[ChainIds.Cartio].weth, '0x8a73D1380345942F1cb32541F1b19C40D8e6C94B'], // WETH
+  [chainIdToDeFiAddresses[ChainIds.Cartio].unibtc, '0xC3827A4BC8224ee2D116637023b124CED6db6e90'], // UniBtc-OT
 ]);
 
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([

@@ -1,49 +1,49 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, NumberArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { Standards, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { div } from '@ensofinance/shortcuts-standards/helpers/math';
 
-import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
+import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { burnTokens, depositKodiak, getBalance } from '../../utils';
 
-export class GoldilocksEbtcShortcut implements Shortcut {
-  name = 'goldilocks-ebtc';
+export class GoldilocksUniBtcOtUniBtcShortcut implements Shortcut {
+  name = 'goldilocks-unibtcOt-unibtc';
   description = '';
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      ebtc: chainIdToDeFiAddresses[ChainIds.Cartio].ebtc,
-      ot: Standards.Goldilocks.protocol.addresses!.cartio!.eBtcOt,
-      yt: Standards.Goldilocks.protocol.addresses!.cartio!.eBtcYt,
-      vault: Standards.Goldilocks.protocol.addresses!.cartio!.eBtcVault,
-      island: '0x0000000000000000000000000000000000000000', // TODO: add it when deployed
+      unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
+      ot: '0xAc92f4033AcddE6C908D7b13F40014490795E2F9',
+      yt: '0x7Cf31aaaaFe1aBB46a935c543C65ce7346729B90',
+      vault: '0x834Cb23083be1C80F9737468e49555a56B149Af5',
+      island: '0xB4E5c02409070258FaAe3C895996b8E115209ec6',
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']),
   };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { ebtc, ot, yt, vault, island } = inputs;
+    const { unibtc, ot, yt, vault, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [ebtc],
-      tokensOut: [island, yt],
+      tokensIn: [unibtc],
+      tokensOut: [island],
     });
 
-    // Get the amount of the base token in the wallet, split 50/50, and deposit into vault
-    const amountIn = builder.add(balanceOf(ebtc, walletAddress()));
+    const amountIn = getBalance(unibtc, builder);
     const halfAmount = div(amountIn, 2, builder);
 
     const goldilocks = getStandardByProtocol('goldilocks', chainId);
-
     const { amountOut } = await goldilocks.deposit.addToBuilder(
       builder,
       {
-        tokenIn: ebtc,
+        tokenIn: unibtc,
         tokenOut: [ot, yt],
         amountIn: halfAmount,
         primaryAddress: vault,
@@ -54,19 +54,16 @@ export class GoldilocksEbtcShortcut implements Shortcut {
     if (!Array.isArray(amountOut)) throw 'Error: Invalid amountOut'; // should never throw
     const [otAmount] = amountOut as NumberArg[];
 
-    const kodiak = getStandardByProtocol('kodiak-islands', chainId);
-    await kodiak.deposit.addToBuilder(builder, {
-      tokenIn: [ebtc, ot],
-      tokenOut: island,
-      amountIn: [halfAmount, otAmount],
-      primaryAddress: Standards.Kodiak_Islands.protocol.addresses!.cartio!.router,
-    });
+    await depositKodiak(builder, [unibtc, ot], [halfAmount, otAmount], island, this.setterInputs[chainId]);
 
-    const otLeftOvers = builder.add(balanceOf(ot, walletAddress()));
+    const otLeftOvers = getBalance(ot, builder);
+    const ytAmount = getBalance(yt, builder);
+
+    await burnTokens(yt, ytAmount, builder);
 
     await goldilocks.redeem.addToBuilder(builder, {
       tokenIn: ot,
-      tokenOut: ebtc,
+      tokenOut: unibtc,
       amountIn: otLeftOvers,
       primaryAddress: vault,
     });
@@ -86,11 +83,11 @@ export class GoldilocksEbtcShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].ebtc, { label: 'ERC20:eBTC' }],
-          [this.inputs[ChainIds.Cartio].ot, { label: 'ERC20:eBTC-OT' }],
-          [this.inputs[ChainIds.Cartio].yt, { label: 'ERC20:eBTC-YT' }],
-          [this.inputs[ChainIds.Cartio].vault, { label: 'PointsGoldiVault:eBTC' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'KodiakIsland:' }],
+          [this.inputs[ChainIds.Cartio].ebtc, { label: 'ERC20:UniBtc' }],
+          [this.inputs[ChainIds.Cartio].ot, { label: 'ERC20:UniBtc-OT' }],
+          [this.inputs[ChainIds.Cartio].yt, { label: 'ERC20:UniBtc-YT' }],
+          [this.inputs[ChainIds.Cartio].vault, { label: 'GoldiVault:uniBtc' }],
+          [this.inputs[ChainIds.Cartio].island, { label: 'KodiakIsland:UniBtcOT/UniBtc' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

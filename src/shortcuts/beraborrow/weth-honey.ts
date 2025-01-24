@@ -31,7 +31,7 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, usdc, honey, island, primary, router } = inputs;
+    const { weth, usdc, honey, island, primary } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth, usdc],
@@ -41,7 +41,7 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
     const wethAmount = builder.add(balanceOf(weth, walletAddress()));
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(builder, [weth, honey], [wethAmount, mintedAmount], island, router, this.setterInputs[chainId]);
+    await depositKodiak(builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs[chainId]);
 
     const islandAmount = builder.add(balanceOf(island, walletAddress()));
 

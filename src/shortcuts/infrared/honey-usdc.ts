@@ -19,7 +19,6 @@ export class InfraredHoneyUsdcShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.honeyUsdcIsland,
       vault: '0xA303Faf709bD0d8d8Fec2Ca62e5ED4708Dd94EA2',
-      primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
   setterInputs: Record<number, Set<string>> = {
@@ -30,7 +29,7 @@ export class InfraredHoneyUsdcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, honey, island, primary, vault } = inputs;
+    const { usdc, honey, island, vault } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [usdc],
@@ -41,14 +40,7 @@ export class InfraredHoneyUsdcShortcut implements Shortcut {
     const remainingUsdc = sub(amountIn, usdcToMintHoney, builder);
     const mintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
 
-    await depositKodiak(
-      builder,
-      [usdc, honey],
-      [remainingUsdc, mintedAmount],
-      island,
-      primary,
-      this.setterInputs[chainId],
-    );
+    await depositKodiak(builder, [usdc, honey], [remainingUsdc, mintedAmount], island, this.setterInputs[chainId]);
 
     const amountIsland = builder.add(balanceOf(island, walletAddress()));
 

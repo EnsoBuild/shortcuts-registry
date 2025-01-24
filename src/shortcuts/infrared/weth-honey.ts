@@ -19,7 +19,6 @@ export class InfraredWethHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: '0xD4570a738675fB2c31e7b7b88998EE73E9E17d49',
       vault: '0xD2119799717D20D989550e1c7CBd25Ac40E7de1F',
-      primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
   setterInputs: Record<number, Set<string>> = {
@@ -30,7 +29,7 @@ export class InfraredWethHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, usdc, honey, island, primary, vault } = inputs;
+    const { weth, usdc, honey, island, vault } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth, usdc],
@@ -40,14 +39,7 @@ export class InfraredWethHoneyShortcut implements Shortcut {
     const wethAmount = builder.add(balanceOf(weth, walletAddress()));
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(
-      builder,
-      [weth, honey],
-      [wethAmount, mintedAmount],
-      island,
-      primary,
-      this.setterInputs[chainId],
-    );
+    await depositKodiak(builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs[chainId]);
 
     const amountIsland = builder.add(balanceOf(island, walletAddress()));
 

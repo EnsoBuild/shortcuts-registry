@@ -9,7 +9,7 @@ import {
   WalletAddressArg,
 } from '@ensofinance/shortcuts-builder/types';
 import { PUBLIC_RPC_URLS, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
+import { GeneralAddresses, TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 import {
   addAction,
   addApprovals,
@@ -115,6 +115,19 @@ export async function redeemNect(amount: NumberArg, builder: Builder) {
   builder.add(redeem);
 }
 
+export async function burnTokens(token: AddressArg, amount: NumberArg, builder: Builder) {
+  const erc20 = getStandardByProtocol('erc20', builder.chainId);
+  await erc20.transfer.addToBuilder(builder, {
+    token,
+    receiver: GeneralAddresses.null,
+    amount,
+  });
+}
+
+export function getBalance(token: AddressArg, builder: Builder) {
+  return builder.add(balanceOf(token, walletAddress()));
+}
+
 export async function depositBurrbear(builder: Builder, amountIn: NumberArg, setterInputs: Set<string>) {
   const primary = chainIdToDeFiAddresses[builder.chainId].burrbearZap;
   const chainName = getChainName(builder.chainId);
@@ -149,10 +162,10 @@ export async function depositKodiak(
   tokensIn: AddressArg[],
   amountsIn: NumberArg[],
   island: AddressArg,
-  primary: AddressArg,
   setterInputs: Set<string>,
 ) {
   const rpcUrl = PUBLIC_RPC_URLS[builder.chainId].rpcUrls.public;
+  const router = chainIdToDeFiAddresses[builder.chainId].kodiakRouter;
   const provider = new StaticJsonRpcProvider(rpcUrl);
   const islandInterface = new Interface(['function token0() external view returns(address)']);
   const token0Bytes = await provider.call({
@@ -166,7 +179,7 @@ export async function depositKodiak(
   const approvals = {
     tokens: tokensIn,
     amounts: amountsIn,
-    spender: primary,
+    spender: router,
   };
   const minAmount0Bps = getSetterValue(builder, setterInputs, 'minAmount0Bps');
   const minAmount1Bps = getSetterValue(builder, setterInputs, 'minAmount1Bps');
@@ -176,7 +189,7 @@ export async function depositKodiak(
   addAction({
     builder,
     action: {
-      address: primary,
+      address: router,
       abi: [
         'function addLiquidity(address island, uint256 amount0Max, uint256 amount1Max, uint256 amount0Min, uint256 amount1Min, uint256 amountSharesMin, address receiver) returns (uint256 amount0, uint256 amount1, uint256 mintAmount)',
       ],
@@ -187,7 +200,7 @@ export async function depositKodiak(
   });
   resetApprovals(builder, {
     tokens: tokensIn,
-    spender: primary,
+    spender: router,
   });
 }
 

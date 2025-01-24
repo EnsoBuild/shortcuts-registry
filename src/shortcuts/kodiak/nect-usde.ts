@@ -28,7 +28,7 @@ export class KodiaknectUsdeShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { nect, usdc, usde, island, primary } = inputs;
+    const { nect, usdc, usde, island } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [usdc, usde],
@@ -38,7 +38,7 @@ export class KodiaknectUsdeShortcut implements Shortcut {
     const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
     const mintedAmount = await mintNect(usdcAmount, builder);
 
-    await depositKodiak(builder, [nect, usde], [mintedAmount, usdeAmount], island, primary, this.setterInputs[chainId]);
+    await depositKodiak(builder, [nect, usde], [mintedAmount, usdeAmount], island, this.setterInputs[chainId]);
 
     const nectLeftoversAmount = builder.add(balanceOf(nect, walletAddress()));
     await redeemNect(nectLeftoversAmount, builder);
@@ -62,7 +62,7 @@ export class KodiaknectUsdeShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Cartio].nect, { label: 'ERC20:NECT' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-nect-USDE-0.3%' }],
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
