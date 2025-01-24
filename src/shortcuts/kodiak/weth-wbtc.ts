@@ -16,7 +16,6 @@ export class KodiakWethWbtcShortcut implements Shortcut {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
       wbtc: chainIdToDeFiAddresses[ChainIds.Cartio].wbtc,
       island: '0x1E5FFDC9B4D69398c782608105d6e2B724063E13',
-      primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
   setterInputs: Record<number, Set<string>> = {
@@ -27,7 +26,7 @@ export class KodiakWethWbtcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, wbtc, island, primary } = inputs;
+    const { weth, wbtc, island } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth, wbtc],
@@ -36,14 +35,7 @@ export class KodiakWethWbtcShortcut implements Shortcut {
     const amountInWeth = builder.add(balanceOf(weth, walletAddress()));
     const amountInWbtc = builder.add(balanceOf(wbtc, walletAddress()));
 
-    await depositKodiak(
-      builder,
-      [weth, wbtc],
-      [amountInWeth, amountInWbtc],
-      island,
-      primary,
-      this.setterInputs[chainId],
-    );
+    await depositKodiak(builder, [weth, wbtc], [amountInWeth, amountInWbtc], island, this.setterInputs[chainId]);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -63,7 +55,7 @@ export class KodiakWethWbtcShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
           [this.inputs[ChainIds.Cartio].wbtc, { label: 'ERC20:WBTC' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-WBTC-0.3%' }],
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

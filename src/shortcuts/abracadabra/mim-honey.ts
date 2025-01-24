@@ -28,7 +28,7 @@ export class AbracadabraMimHoneyhortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { mim, usdc, honey, island, primary } = inputs;
+    const { mim, usdc, honey, island } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [mim, usdc],
@@ -39,7 +39,7 @@ export class AbracadabraMimHoneyhortcut implements Shortcut {
     const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(builder, [mim, honey], [mimAmount, mintedAmount], island, primary, this.setterInputs[chainId]);
+    await depositKodiak(builder, [mim, honey], [mimAmount, mintedAmount], island, this.setterInputs[chainId]);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);

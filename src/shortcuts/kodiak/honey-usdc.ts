@@ -18,7 +18,6 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.honeyUsdcIsland,
-      primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
   setterInputs: Record<number, Set<string>> = {
@@ -29,7 +28,7 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, honey, island, primary } = inputs;
+    const { usdc, honey, island } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [usdc],
@@ -40,14 +39,7 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
     const remainingUsdc = sub(amountIn, usdcToMintHoney, builder);
     const mintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
 
-    await depositKodiak(
-      builder,
-      [usdc, honey],
-      [remainingUsdc, mintedAmount],
-      island,
-      primary,
-      this.setterInputs[chainId],
-    );
+    await depositKodiak(builder, [usdc, honey], [remainingUsdc, mintedAmount], island, this.setterInputs[chainId]);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);
@@ -70,7 +62,7 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Cartio].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-USDC-HONEY-0.5%' }],
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

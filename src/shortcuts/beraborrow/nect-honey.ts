@@ -19,7 +19,6 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       nect: chainIdToDeFiAddresses[ChainIds.Cartio].nect,
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.nectUsdcIsland, // KODI-HONEY-NECT
-      primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
       quoterV2: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakQuoterV2,
     },
   };
@@ -31,7 +30,7 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { honey, nect, usdc, island, primary } = inputs;
+    const { honey, nect, usdc, island } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [usdc],
@@ -50,7 +49,6 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       [honey, nect],
       [mintedAmountHoney, mintedAmountNect as FromContractCallArg],
       island,
-      primary,
       this.setterInputs[chainId],
     );
 
