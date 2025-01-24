@@ -1,12 +1,11 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { sub } from '@ensofinance/shortcuts-standards/helpers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getSetterValue, mintBeraEth } from '../../utils';
+import { depositKodiak, getBalance, getSetterValue, mintBeraEth } from '../../utils';
 
 export class KodiakbBraethwethShortcut implements Shortcut {
   name = 'kodiak-beraeth-weth';
@@ -34,12 +33,13 @@ export class KodiakbBraethwethShortcut implements Shortcut {
       tokensIn: [weth],
       tokensOut: [island],
     });
-    const amountIn = builder.add(balanceOf(weth, walletAddress()));
+    const amountIn = getBalance(weth, builder);
     const wethToMintBeraEth = getSetterValue(builder, this.setterInputs[chainId], 'wethToMintBeraEth');
     const remainingweth = sub(amountIn, wethToMintBeraEth, builder);
-    const mintedAmount = await mintBeraEth(wethToMintBeraEth, builder);
+    await mintBeraEth(wethToMintBeraEth, builder);
+    const beraEthAmount = getBalance(beraEth, builder);
 
-    await depositKodiak(builder, [weth, beraEth], [remainingweth, mintedAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(builder, [weth, beraEth], [remainingweth, beraEthAmount], island, this.setterInputs[chainId]);
 
     const payload = await builder.build({
       requireWeiroll: true,
