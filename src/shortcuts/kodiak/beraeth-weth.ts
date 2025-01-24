@@ -28,7 +28,7 @@ export class KodiakbBraethwethShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraEth, island, primary } = inputs;
+    const { weth, beraEth, island } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth],
@@ -39,14 +39,7 @@ export class KodiakbBraethwethShortcut implements Shortcut {
     const remainingweth = sub(amountIn, wethToMintBeraEth, builder);
     const mintedAmount = await mintBeraEth(wethToMintBeraEth, builder);
 
-    await depositKodiak(
-      builder,
-      [weth, beraEth],
-      [remainingweth, mintedAmount],
-      island,
-      primary,
-      this.setterInputs[chainId],
-    );
+    await depositKodiak(builder, [weth, beraEth], [remainingweth, mintedAmount], island, this.setterInputs[chainId]);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -66,7 +59,6 @@ export class KodiakbBraethwethShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:weth' }],
           [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraEth' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-weth-beraEth-0.5%' }],
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
