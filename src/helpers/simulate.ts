@@ -523,7 +523,9 @@ export async function getWethToMintBeraEth(
 
   const halfAmountIn = BigNumber.from(amountIn).div(2);
   const beraEthMintAmount = halfAmountIn.mul(beraEthExchangeRate).div(wethPrecision);
+  console.log('beraEthMinAmount: ', beraEthMintAmount.toString());
   const pairAmount = halfAmountIn.mul(pairExchangeRate).div(wethPrecision);
+  console.log('pairAmount: ', pairAmount.toString());
 
   const islandMintAmounts = await getIslandMintAmounts(
     provider,

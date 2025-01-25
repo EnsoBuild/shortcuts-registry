@@ -69,16 +69,22 @@ export async function mintNect(amountIn: NumberArg, builder: Builder) {
   return mintedAmountNect as FromContractCallArg;
 }
 
-export async function mintBeraEth(amountIn: NumberArg, builder: Builder) {
+export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {
   const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
 
   const dineroBeraeth = getStandardByProtocol('dinero-lst', builder.chainId, true);
-  await dineroBeraeth.deposit.addToBuilder(builder, {
-    tokenIn: [weth],
-    tokenOut: beraEth,
-    amountIn: [amountIn],
-    primaryAddress: rBeraEth,
-  });
+  const { amountOut } = await dineroBeraeth.deposit.addToBuilder(
+    builder,
+    {
+      tokenIn: [weth],
+      tokenOut: beraEth,
+      amountIn: [amountIn],
+      primaryAddress: rBeraEth,
+    },
+    ['amountOut'],
+  );
+  if (Array.isArray(amountOut)) return amountOut[0] as NumberArg;
+  return amountOut as NumberArg;
 }
 
 export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {

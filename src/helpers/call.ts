@@ -4,6 +4,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses } from '../constants';
+import { APITransaction, QuoteRequest, simulateTransactionOnQuoter } from '../simulations/simulateOnQuoter';
 import { Campaign } from '../types';
 import { getSimulationRolesByChainId } from './utils';
 
@@ -19,6 +20,37 @@ async function call(
     data: iface.encodeFunctionData(method, args),
   });
   return iface.decodeFunctionResult(method, data);
+}
+
+async function quote(
+  chainId: number,
+  iface: Interface,
+  target: string,
+  method: string,
+  args: ReadonlyArray<BigNumberish>,
+  tokenIn: AddressArg,
+  tokenOut: AddressArg,
+  amountIn: string,
+) {
+  const data = iface.encodeFunctionData(method, args);
+  const tx: APITransaction = {
+    data,
+    value: '0',
+    to: target,
+    from: '0x93621DCA56fE26Cdee86e4F6B18E116e9758Ff11',
+  };
+
+  const request: QuoteRequest = {
+    chainId,
+    transactions: [tx],
+    tokenIn: [tokenIn],
+    amountIn: [amountIn],
+    tokenOut: [tokenOut],
+  };
+
+  const response = (await simulateTransactionOnQuoter(request))[0];
+  if (response.status === 'Error') throw 'Quote error';
+  return response.amountOut[0];
 }
 
 export function getEncodedData(commands: string[], state: string[]): string {
@@ -39,6 +71,13 @@ export async function getHoneyExchangeRate(
 }
 
 export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, chainId: number): Promise<BigNumber> {
+  const addresses = chainIdToDeFiAddresses[chainId];
+  if (!addresses) {
+    throw new Error(`No addresses configured for chainId=${chainId}`);
+  }
+  const { weth, rBeraEth, beraEth } = addresses;
+
+  /*
   const quoterInterface = new Interface([
     'function getAmountOut(address tokenIn, uint256 amountIn) external view returns (uint256)',
   ]);
@@ -46,12 +85,6 @@ export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, ch
   const beraEthInterface = new Interface([
     'function getLSTAmount(uint256 rBeraETHAmount) external view returns (uint256)',
   ]);
-
-  const addresses = chainIdToDeFiAddresses[chainId];
-  if (!addresses) {
-    throw new Error(`No addresses configured for chainId=${chainId}`);
-  }
-  const { weth, beraEth, bridgeQuoter } = addresses;
 
   // Convert 1 WETH  → rBeraETH
 
@@ -66,8 +99,23 @@ export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, ch
   // Convert rBeraETH → beraETH
 
   const [beraEthAmount] = await call(provider, beraEthInterface, beraEth, 'getLSTAmount', [rBeraEthAmount]);
+*/
 
-  return beraEthAmount;
+  const amountIn = BigNumber.from(10).pow(18).toString();
+  const amountOut = await quote(
+    chainId,
+    new Interface([
+      'function depositAndWrap(address tokenIn, uint256 amountIn, uint256 minAmountOut) external returns (uint256)',
+    ]),
+    rBeraEth,
+    'depositAndWrap',
+    [weth, amountIn, 0],
+    weth,
+    beraEth,
+    amountIn,
+  );
+
+  return BigNumber.from(amountOut);
 }
 
 export async function getIslandMintAmounts(

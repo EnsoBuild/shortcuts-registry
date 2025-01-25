@@ -36,8 +36,7 @@ export class KodiakbBraethwethShortcut implements Shortcut {
     const amountIn = getBalance(weth, builder);
     const wethToMintBeraEth = getSetterValue(builder, this.setterInputs[chainId], 'wethToMintBeraEth');
     const remainingweth = sub(amountIn, wethToMintBeraEth, builder);
-    await mintBeraEth(wethToMintBeraEth, builder);
-    const beraEthAmount = getBalance(beraEth, builder);
+    const beraEthAmount = await mintBeraEth(wethToMintBeraEth, builder);
 
     await depositKodiak(builder, [weth, beraEth], [remainingweth, beraEthAmount], island, this.setterInputs[chainId]);
 
