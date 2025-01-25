@@ -6,7 +6,7 @@ import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { balanceOf, ensureMinAmountOut, getBalance } from '../../utils';
 
 export class ConcreteUsdeShortcut implements Shortcut {
   name = 'usde';
@@ -17,6 +17,10 @@ export class ConcreteUsdeShortcut implements Shortcut {
       usde: '0xf805ce4F96e0EdD6f0b6cd4be22B34b92373d696',
       vault: '0x1762DB9d291a58bf1Da054C9e8F806C2E4a6ebC4',
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {
@@ -29,15 +33,18 @@ export class ConcreteUsdeShortcut implements Shortcut {
       tokensIn: [usde],
       tokensOut: [vault],
     });
-    const amountIn = builder.add(balanceOf(usde, walletAddress()));
+    const usdeAmount = builder.add(balanceOf(usde, walletAddress()));
 
     const vaultVault = getStandardByProtocol('erc4626', chainId);
     await vaultVault.deposit.addToBuilder(builder, {
       tokenIn: [usde],
       tokenOut: vault,
-      amountIn: [amountIn],
+      amountIn: [usdeAmount],
       primaryAddress: vault,
     });
+
+    const vaultAmount = getBalance(vault, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

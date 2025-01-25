@@ -1,11 +1,10 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, mintHoney } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintHoney } from '../../utils';
 
 export class BerachainHoneyShortcut implements Shortcut {
   name = 'berachain-honey';
@@ -21,6 +20,10 @@ export class BerachainHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
     },
   };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
+  };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -32,8 +35,11 @@ export class BerachainHoneyShortcut implements Shortcut {
       tokensIn: [usdc],
       tokensOut: [honey],
     });
-    const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
+    const usdcAmount = getBalance(usdc, builder);
     await mintHoney(usdc, usdcAmount, builder);
+
+    const honeyAmount = getBalance(honey, builder);
+    ensureMinAmountOut(honeyAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

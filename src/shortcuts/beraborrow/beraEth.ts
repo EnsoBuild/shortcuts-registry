@@ -20,6 +20,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
   };
   setterInputs: Record<number, Set<string>> = {
     [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {

@@ -1,12 +1,11 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { Standards, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { Standards } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintSatLayerVault } from '../../utils';
 
 export class SatlayerPumpBtcShortcut implements Shortcut {
   name = 'satlayer-pumpbtc';
@@ -14,35 +13,31 @@ export class SatlayerPumpBtcShortcut implements Shortcut {
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      depositToken: chainIdToDeFiAddresses[ChainIds.Cartio].pumpbtc,
+      pumpbtc: chainIdToDeFiAddresses[ChainIds.Cartio].pumpbtc,
       receiptToken: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.receiptToken,
       vault: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.vault,
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { depositToken, vault, receiptToken } = inputs;
+    const { pumpbtc, vault, receiptToken } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [depositToken],
+      tokensIn: [pumpbtc],
       tokensOut: [receiptToken],
     });
 
-    // Get the amount of token in wallet
-    const amountIn = builder.add(balanceOf(depositToken, walletAddress()));
+    const pumpbtcAmount = getBalance(pumpbtc, builder);
+    const receiptTokenAmount = await mintSatLayerVault(pumpbtc, receiptToken, vault, pumpbtcAmount, builder);
 
-    // Mint
-    const satlayer = getStandardByProtocol('satlayer-vaults', chainId);
-
-    await satlayer.deposit.addToBuilder(builder, {
-      tokenIn: depositToken,
-      tokenOut: receiptToken,
-      amountIn,
-      primaryAddress: vault,
-    });
+    ensureMinAmountOut(receiptTokenAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -60,7 +55,7 @@ export class SatlayerPumpBtcShortcut implements Shortcut {
       case ChainIds.Cartio:
         return new Map([
           [this.inputs[ChainIds.Cartio].vault, { label: 'SatlayerPool' }],
-          [this.inputs[ChainIds.Cartio].depositToken, { label: 'ERC20:pumpBTC.bera' }],
+          [this.inputs[ChainIds.Cartio].pumpbtc, { label: 'ERC20:pumpBTC.bera' }],
           [this.inputs[ChainIds.Cartio].receiptToken, { label: 'ERC20:satpumpBTC.bera' }],
         ]);
       default:

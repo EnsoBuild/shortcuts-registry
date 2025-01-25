@@ -1,12 +1,10 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class OrigamiBoycoHoneyShortcut implements Shortcut {
   name = 'origami-oboy-honey';
@@ -17,6 +15,10 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {
@@ -30,17 +32,10 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
       tokensOut: [vault],
     });
 
-    // Get the amount of token in wallet
-    const amountIn = builder.add(balanceOf(usdc, walletAddress()));
+    const usdcAmount = getBalance(usdc, builder);
+    const vaultAmount = await mintErc4626(usdc, vault, usdcAmount, builder);
 
-    //Mint
-    const origami = getStandardByProtocol('erc4626', chainId);
-    await origami.deposit.addToBuilder(builder, {
-      tokenIn: usdc,
-      tokenOut: vault,
-      amountIn,
-      primaryAddress: vault,
-    });
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

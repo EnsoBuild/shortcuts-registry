@@ -58,6 +58,18 @@ export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: B
   return amountOut as FromContractCallArg;
 }
 
+export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amountIn: NumberArg, builder: Builder) {
+  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
+  const { amountOut } = await erc4626.deposit.addToBuilder(builder, {
+    tokenIn,
+    tokenOut,
+    amountIn: [amountIn],
+    primaryAddress: tokenOut,
+  });
+
+  return amountOut as FromContractCallArg;
+}
+
 export async function mintNect(amountIn: NumberArg, builder: Builder) {
   const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
   const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
@@ -67,6 +79,29 @@ export async function mintNect(amountIn: NumberArg, builder: Builder) {
     primaryAddress: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
   });
   return mintedAmountNect as FromContractCallArg;
+}
+
+export async function mintSatLayerVault(
+  tokenIn: AddressArg,
+  tokenOut: AddressArg,
+  vault: AddressArg,
+  amountIn: NumberArg,
+  builder: Builder,
+): Promise<NumberArg> {
+  const satlayer = getStandardByProtocol('satlayer-vaults', builder.chainId);
+  const { amountOut } = await satlayer.deposit.addToBuilder(
+    builder,
+    {
+      tokenIn,
+      tokenOut,
+      amountIn,
+      primaryAddress: vault,
+    },
+    ['amountOut'],
+  );
+
+  if (Array.isArray(amountOut)) return amountOut[0] as NumberArg;
+  return amountOut as NumberArg;
 }
 
 export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {

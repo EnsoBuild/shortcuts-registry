@@ -1,12 +1,10 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
-import { AddressArg, ChainIds, FromContractCallArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, mintHoney } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626, mintHoney } from '../../utils';
 
 export class DolomiteDHoneyShortcut implements Shortcut {
   name = 'dolomite-dhoney';
@@ -19,6 +17,10 @@ export class DolomiteDHoneyShortcut implements Shortcut {
       dhoney: '0x7f2B60fDff1494A0E3e060532c9980d7fad0404B',
       infraredVault: '0x53fACeCc391021a69Ba79351007079536AA64C6d',
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {
@@ -33,27 +35,15 @@ export class DolomiteDHoneyShortcut implements Shortcut {
     });
 
     // Get the amount of USDC in the wallet, used to mint Honey
-    const amountToMint = builder.add(balanceOf(usdc, walletAddress()));
-    // Mint Honey
-    const mintedAmount = await mintHoney(usdc, amountToMint, builder);
+    const usdcAmount = getBalance(usdc, builder);
+    const honeyMintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
     // Mint dHoney
-    const dHoney = getStandardByProtocol('dolomite-erc4626', chainId);
-    const { amountOut: dAmountOut } = await dHoney.deposit.addToBuilder(builder, {
-      tokenIn: honey,
-      tokenOut: dhoney,
-      amountIn: mintedAmount,
-      primaryAddress: dhoney,
-    });
+    const dHoneyAmount = await mintErc4626(honey, dhoney, honeyMintedAmount, builder);
+    // Mint Infrared Vault
+    const infraredVaultAmount = await mintErc4626(dhoney, infraredVault, dHoneyAmount, builder);
 
-    // Mint rewardVault-dHoney
-    const rewardVaultDHoney = getStandardByProtocol('erc4626', chainId);
-    await rewardVaultDHoney.deposit.addToBuilder(builder, {
-      tokenIn: dhoney,
-      tokenOut: infraredVault,
-      amountIn: dAmountOut as FromContractCallArg,
-      primaryAddress: infraredVault,
-    });
+    ensureMinAmountOut(infraredVaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

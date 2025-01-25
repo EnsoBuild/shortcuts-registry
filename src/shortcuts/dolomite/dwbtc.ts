@@ -1,12 +1,10 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class DolomiteDWbtcShortcut implements Shortcut {
   name = 'dolomite-wbtc';
@@ -14,33 +12,30 @@ export class DolomiteDWbtcShortcut implements Shortcut {
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      base: chainIdToDeFiAddresses[ChainIds.Cartio].wbtc,
+      wbtc: chainIdToDeFiAddresses[ChainIds.Cartio].wbtc,
       vault: '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f', //dwbtc
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { base, vault } = inputs;
+    const { wbtc, vault } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [base],
+      tokensIn: [wbtc],
       tokensOut: [vault],
     });
 
-    // Get the amount of token in wallet
-    const amountIn = builder.add(balanceOf(base, walletAddress()));
+    const wbtcAmount = getBalance(wbtc, builder);
+    const vaultAmount = await mintErc4626(wbtc, vault, wbtcAmount, builder);
 
-    //Mint
-    const dolomite = getStandardByProtocol('dolomite-erc4626', chainId);
-    await dolomite.deposit.addToBuilder(builder, {
-      tokenIn: base,
-      tokenOut: vault,
-      amountIn,
-      primaryAddress: vault,
-    });
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -57,7 +52,7 @@ export class DolomiteDWbtcShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].base, { label: 'ERC20:WBTC' }],
+          [this.inputs[ChainIds.Cartio].wbtc, { label: 'ERC20:WBTC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dWBTC' }],
         ]);
       default:

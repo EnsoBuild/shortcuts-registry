@@ -1,13 +1,12 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance } from '../../utils';
 
 export class DahliaWethShortcut implements Shortcut {
   name = 'weth';
@@ -18,6 +17,10 @@ export class DahliaWethShortcut implements Shortcut {
       weth: TokenAddresses.cartio.weth,
       vault: '0x479Df3548C4261Cb101BE33536B3D90CCA6eb327',
     },
+  };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
   };
 
   async build(chainId: number): Promise<Output> {
@@ -30,15 +33,17 @@ export class DahliaWethShortcut implements Shortcut {
       tokensIn: [weth],
       tokensOut: [vault],
     });
-    const amountIn = builder.add(balanceOf(weth, walletAddress()));
-
+    const wethAmount = getBalance(weth, builder);
     const erc4626 = getStandardByProtocol('erc4626', chainId);
     await erc4626.deposit.addToBuilder(builder, {
       tokenIn: [weth],
       tokenOut: vault,
-      amountIn: [amountIn],
+      amountIn: [wethAmount],
       primaryAddress: vault,
     });
+
+    const vaultAmount = getBalance(vault, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

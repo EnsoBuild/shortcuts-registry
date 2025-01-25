@@ -1,13 +1,12 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance } from '../../utils';
 
 export class VedaUsdcShortcut implements Shortcut {
   name = 'veda-usdc';
@@ -20,6 +19,10 @@ export class VedaUsdcShortcut implements Shortcut {
       vaultToken: '0xEF4123fC0D9472B01A3B4F757cf51aa8E644a508',
     },
   };
+  setterInputs: Record<number, Set<string>> = {
+    [ChainIds.Cartio]: new Set(['minAmountOut']),
+    [ChainIds.Berachain]: new Set(['minAmountOut']),
+  };
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -31,7 +34,7 @@ export class VedaUsdcShortcut implements Shortcut {
       tokensIn: [usdc],
       tokensOut: [vaultToken],
     });
-    const amountIn = builder.add(balanceOf(usdc, walletAddress()));
+    const amountIn = getBalance(usdc, builder);
 
     const vaultVault = getStandardByProtocol('etherfi-liquid', chainId);
     await vaultVault.deposit.addToBuilder(builder, {
@@ -40,6 +43,9 @@ export class VedaUsdcShortcut implements Shortcut {
       amountIn: [amountIn],
       primaryAddress: vault,
     });
+
+    const vaultTokenAmount = getBalance(vaultToken, builder);
+    ensureMinAmountOut(vaultTokenAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

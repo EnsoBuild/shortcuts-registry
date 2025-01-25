@@ -36,18 +36,18 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       tokensIn: [usdc],
       tokensOut: [island],
     });
-    const amountIn = builder.add(balanceOf(usdc, walletAddress()));
+    const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
     const usdcToMintHoney = getSetterValue(builder, this.setterInputs[chainId], 'usdcToMintHoney');
-    const remainingUsdc = sub(amountIn, usdcToMintHoney, builder);
+    const remainingUsdc = sub(usdcAmount, usdcToMintHoney, builder);
     // Get HONEY
-    const mintedAmountHoney = await mintHoney(usdc, usdcToMintHoney, builder);
+    const honeyMintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
     // Get NECT
-    const mintedAmountNect = await mintNect(remainingUsdc, builder);
+    const nectMintedAmount = await mintNect(remainingUsdc, builder);
 
     await depositKodiak(
       builder,
       [honey, nect],
-      [mintedAmountHoney, mintedAmountNect as FromContractCallArg],
+      [honeyMintedAmount, nectMintedAmount as FromContractCallArg],
       island,
       this.setterInputs[chainId],
     );
