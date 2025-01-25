@@ -1,12 +1,11 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class DahliaWethShortcut implements Shortcut {
   name = 'weth';
@@ -33,16 +32,10 @@ export class DahliaWethShortcut implements Shortcut {
       tokensIn: [weth],
       tokensOut: [vault],
     });
-    const wethAmount = getBalance(weth, builder);
-    const erc4626 = getStandardByProtocol('erc4626', chainId);
-    await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [weth],
-      tokenOut: vault,
-      amountIn: [wethAmount],
-      primaryAddress: vault,
-    });
 
-    const vaultAmount = getBalance(vault, builder);
+    const wethAmount = getBalance(weth, builder);
+
+    const vaultAmount = await mintErc4626(weth, vault, wethAmount, builder);
     ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({

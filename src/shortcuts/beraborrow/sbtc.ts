@@ -1,19 +1,18 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class BeraborrowSbtcShortcut implements Shortcut {
+export class BeraborrowsbtcShortcut implements Shortcut {
   name = 'sbtc';
   description = '';
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      sBtc: chainIdToDeFiAddresses[ChainIds.Cartio].sbtc,
+      sbtc: chainIdToDeFiAddresses[ChainIds.Cartio].sbtc,
       psm: '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265',
     },
   };
@@ -26,24 +25,16 @@ export class BeraborrowSbtcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { sBtc, psm } = inputs;
+    const { sbtc, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [sBtc],
+      tokensIn: [sbtc],
       tokensOut: [psm],
     });
-    const sbtcAmount = getBalance(sBtc, builder);
+    const sbtcAmount = getBalance(sbtc, builder);
 
-    const erc4626 = getStandardByProtocol('erc4626', chainId);
-    await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [sBtc],
-      tokenOut: psm,
-      amountIn: [sbtcAmount],
-      psmAddress: psm,
-    });
-
-    const psmAmount = getBalance(psm, builder);
-    ensureMinAmountOut(psmAmount, builder);
+    const vaultAmount = await mintErc4626(sbtc, psm, sbtcAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -60,8 +51,8 @@ export class BeraborrowSbtcShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco sBTC' }],
-          [this.inputs[ChainIds.Cartio].sBtc, { label: 'ERC20:SBTC' }],
+          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco sbtc' }],
+          [this.inputs[ChainIds.Cartio].sbtc, { label: 'ERC20:sbtc' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
