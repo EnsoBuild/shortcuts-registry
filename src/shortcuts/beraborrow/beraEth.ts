@@ -1,12 +1,11 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, getBalance, mintBeraEth, validateMinAmountOut } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintBeraEth } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
@@ -16,8 +15,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
       beraEth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
-      rBeraEth: chainIdToDeFiAddresses[ChainIds.Cartio].rBeraEth,
-      primary: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
+      psm: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
     },
   };
   setterInputs: Record<number, Set<string>> = {
@@ -28,27 +26,28 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraEth, primary } = inputs;
+    const { weth, beraEth, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth],
-      tokensOut: [primary],
+      tokensOut: [psm],
     });
-    const amountIn = getBalance(weth, builder);
 
-    await mintBeraEth(amountIn, builder);
+    const wethAmount = getBalance(weth, builder);
+    await mintBeraEth(wethAmount, builder);
+
     const beraEthAmount = getBalance(beraEth, builder);
 
     const erc4626 = getStandardByProtocol('erc4626', chainId);
     await erc4626.deposit.addToBuilder(builder, {
       tokenIn: [beraEth],
-      tokenOut: primary,
+      tokenOut: psm,
       amountIn: [beraEthAmount],
-      primaryAddress: primary,
+      primaryAddress: psm,
     });
 
-    const amountVaultToken = builder.add(balanceOf(primary, walletAddress()));
-    validateMinAmountOut(builder, this.setterInputs[chainId], amountVaultToken);
+    const psmAmount = getBalance(psm, builder);
+    ensureMinAmountOut(psmAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

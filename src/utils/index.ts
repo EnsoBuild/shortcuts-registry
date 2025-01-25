@@ -87,8 +87,9 @@ export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promis
   return amountOut as NumberArg;
 }
 
-export function validateMinAmountOut(builder: Builder, setterInputs: Set<string>, amount: NumberArg) {
-  const amountSharesMin = getSetterValue(builder, setterInputs, 'minAmountOut');
+export function ensureMinAmountOut(amount: NumberArg, builder: Builder) {
+  const set = new Set(['minAmountOut']);
+  const amountSharesMin = getSetterValue(builder, set, 'minAmountOut');
 
   const isCorrectAmount = builder.add({
     address: helperAddresses(builder.chainId).shortcutsHelpers,
