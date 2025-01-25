@@ -108,12 +108,49 @@ export const chainIdToSimulationRoles: Map<ChainIds, SimulationRoles> = new Map(
       },
     },
   ],
+  [
+    ChainIds.Berachain,
+    {
+      caller: {
+        address: '0x93621DCA56fE26Cdee86e4F6B18E116e9758Ff11',
+        label: 'Caller',
+      },
+      defaultWeirollWallet: {
+        address: '0x',
+        label: 'WeirollWallet',
+      },
+      recipeMarketHub: {
+        address: '0xA0A18b895Bd59F509d174921506245c14f98c0F6',
+        label: 'RecipeMarketHub',
+      },
+      multiCall: {
+        address: '0x',
+        label: 'MultiCall',
+      },
+      roycoWalletHelpers: {
+        address: '0x07899ac8BE7462151d6515FCd4773DD9267c9911',
+        label: 'RoycoWalletHelpers',
+      },
+      setter: {
+        address: '0x',
+        label: 'CCDMSetter',
+      },
+      nativeToken: {
+        address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+        label: 'NativeToken',
+      },
+      depositExecutor: {
+        address: '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C',
+        label: 'DepositExecutor',
+      },
+    },
+  ],
 ]);
 
 export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> = {
   [ChainIds.Cartio]: {
     ausdt: TokenAddresses.cartio.usdt,
-    btg: TokenAddresses.cartio.btg,
+    bgt: TokenAddresses.cartio.btg,
     burr: TokenAddresses.cartio.burr,
     dweth: '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3',
     ebtc: TokenAddresses.cartio.ebtc,
@@ -140,6 +177,36 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     kodiakQuoterV2: Standards.Kodiak_Islands.protocol.addresses!.cartio!.quoterV2,
     usdcPsmBond: '0xd064C80776497821313b1Dc0E3192d1a67b2a9fa',
     burrbearZap: '0xd39e7aa57CB0703cE74Bc96dA005dFceE2Ac4F56',
+  },
+  [ChainIds.Berachain]: {
+    ausdt: '0x779Ded0c9e1022225f8E0630b35a9b54bE713736',
+    bgt: '0x',
+    burr: '0x',
+    dweth: '0x',
+    ebtc: '0x',
+    unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
+    honey: '0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce',
+    mim: '0x5B82028cfc477C4E7ddA7FF33d59A23FA7Be002a',
+    nativeToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    nect: '0x',
+    pumpbtc: '0x',
+    rusd: '0x09D4214C03D01F49544C0448DBE3A27f768F2b34',
+    sbtc: '0x93F4d0ab6a8B4271f4a28Db399b5E30612D21116',
+    stone: '0xEc901DA9c68E90798BbBb74c11406A32A70652C3',
+    usdc: '0x549943e04f40284185054145c6E4e9568C1D3241',
+    usde: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
+    usdt: '0x779Ded0c9e1022225f8E0630b35a9b54bE713736',
+    wbera: '0x',
+    wbtc: '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
+    weth: '0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590',
+    beraEth: '0x',
+    rBeraEth: '0x',
+    bridgeQuoter: '0x',
+    honeyFactory: '0xA4aFef880F5cE1f63c9fb48F661E27F8B4216401',
+    kodiakRouter: '0x',
+    kodiakQuoterV2: '0x',
+    usdcPsmBond: '0x',
+    burrbearZap: '0x',
   },
 };
 

@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import {
   DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
@@ -9,6 +10,7 @@ import {
 } from '../src/constants';
 import {
   getAmountsInFromArgs,
+  getAuthHeaderByChainId,
   getBasisPointsFromArgs,
   getBlockNumberFromArgs,
   getForgePath,
@@ -30,6 +32,15 @@ export async function main_(args: string[]): Promise<Report> {
   const amountsIn = getAmountsInFromArgs(args);
 
   const rpcUrl = getRpcUrlByChainId(chainId);
+  const authHeader = getAuthHeaderByChainId(chainId);
+  const provider = new StaticJsonRpcProvider({
+    url: rpcUrl,
+    headers: authHeader
+      ? {
+          Authorization: `Bearer ${authHeader}`,
+        }
+      : undefined,
+  });
   const roles = getSimulationRolesByChainId(chainId);
   const simulationLogConfig = {
     isReportLogged: true,
@@ -67,6 +78,7 @@ export async function main_(args: string[]): Promise<Report> {
     case SimulationMode.FORGE: {
       const forgePath = getForgePath();
       report = await simulateShortcutOnForge(
+        provider,
         shortcut,
         chainId,
         script,
@@ -75,7 +87,6 @@ export async function main_(args: string[]): Promise<Report> {
         tokensOut,
         setterArgsBps,
         forgePath,
-        rpcUrl,
         blockNumber,
         roles,
         shortcutExecutionMode,
@@ -85,6 +96,7 @@ export async function main_(args: string[]): Promise<Report> {
     }
     case SimulationMode.QUOTER: {
       report = await simulateShortcutOnQuoter(
+        provider,
         shortcut,
         chainId,
         script,
@@ -92,7 +104,6 @@ export async function main_(args: string[]): Promise<Report> {
         tokensIn,
         tokensOut,
         setterArgsBps,
-        rpcUrl,
         roles,
         shortcutExecutionMode,
         simulationLogConfig,

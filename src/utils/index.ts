@@ -45,7 +45,7 @@ export function balanceOf(token: AddressArg, owner: WalletAddressArg) {
 }
 
 export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {
-  const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId);
+  const berachainHoney = getStandardByProtocol('berachain-honey', 80000); // TODO: return this to 'builder.chainId' after standards get updated to support bera
   const { honey, honeyFactory } = chainIdToDeFiAddresses[builder.chainId];
 
   const { amountOut } = await berachainHoney.deposit.addToBuilder(builder, {

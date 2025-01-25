@@ -40,6 +40,12 @@ export function getRpcUrlByChainId(chainId: number): string {
   return rpcUrl;
 }
 
+export function getAuthHeaderByChainId(chainId: number): string | undefined {
+  const chainName = getChainName(chainId);
+
+  return process.env[`AUTH_TOKEN_${chainName.toUpperCase()}`];
+}
+
 export function getShortcutExecutionMode(shortcut: Shortcut, chainId: number): ShortcutExecutionMode {
   if (shortcut.setterInputs?.[chainId]) {
     return ShortcutExecutionMode.MULTICALL__AGGREGATE;

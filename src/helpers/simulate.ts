@@ -123,6 +123,7 @@ export async function generateSetterCallData(
 }
 
 export async function getSetters(
+  provider: StaticJsonRpcProvider,
   shortcut: Shortcut,
   chainId: ChainIds,
   script: WeirollScript,
@@ -130,13 +131,10 @@ export async function getSetters(
   tokensIn: AddressArg[],
   tokensOut: AddressArg[],
   setterArgsBps: Record<string, BigNumber>,
-  rpcUrl: string,
   roles: SimulationRoles,
   simulationMode: SimulationMode,
   blockNumber?: number,
 ): Promise<Record<string, BigNumber | undefined>> {
-  const provider = new StaticJsonRpcProvider(rpcUrl);
-
   const setterInputs = shortcut.setterInputs?.[chainId];
 
   let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethToMintBeraEth;
@@ -151,6 +149,7 @@ export async function getSetters(
           case SimulationMode.FORGE: {
             const forgePath = getForgePath();
             report = await simulateShortcutOnForge(
+              provider,
               shortcut,
               chainId,
               script,
@@ -159,7 +158,6 @@ export async function getSetters(
               tokensOut,
               { ...setterArgsBps, slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE },
               forgePath,
-              rpcUrl,
               blockNumber || -1,
               roles,
               ShortcutExecutionMode.MULTICALL__AGGREGATE,
@@ -169,6 +167,7 @@ export async function getSetters(
           }
           case SimulationMode.QUOTER: {
             report = await simulateShortcutOnQuoter(
+              provider,
               shortcut,
               chainId,
               script,
@@ -176,7 +175,6 @@ export async function getSetters(
               tokensIn,
               tokensOut,
               { ...setterArgsBps, slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE },
-              rpcUrl,
               roles,
               ShortcutExecutionMode.MULTICALL__AGGREGATE,
               { isReportLogged: false, isCalldataLogged: false },
@@ -218,6 +216,7 @@ export async function getSetters(
 }
 
 export async function simulateShortcutOnQuoter(
+  provider: StaticJsonRpcProvider,
   shortcut: Shortcut,
   chainId: ChainIds,
   script: WeirollScript,
@@ -225,12 +224,12 @@ export async function simulateShortcutOnQuoter(
   tokensIn: AddressArg[],
   tokensOut: AddressArg[],
   setterArgsBps: Record<string, BigNumber>,
-  rpcUrl: string,
   roles: SimulationRoles,
   shortcutExecutionMode: ShortcutExecutionMode,
   simulationLogConfig: SimulationLogConfig,
 ): Promise<Report> {
   const { txData, reportPre } = await generateTxData(
+    provider,
     shortcut,
     chainId,
     script,
@@ -238,7 +237,6 @@ export async function simulateShortcutOnQuoter(
     tokensIn,
     tokensOut,
     setterArgsBps,
-    rpcUrl,
     roles,
     shortcutExecutionMode,
     SimulationMode.QUOTER,
@@ -292,6 +290,7 @@ export async function simulateShortcutOnQuoter(
 }
 
 export async function simulateShortcutOnForge(
+  provider: StaticJsonRpcProvider,
   shortcut: Shortcut,
   chainId: ChainIds,
   script: WeirollScript,
@@ -300,7 +299,6 @@ export async function simulateShortcutOnForge(
   tokensOut: AddressArg[],
   setterArgsBps: Record<string, BigNumber>,
   forgePath: string,
-  rpcUrl: string,
   blockNumber: number,
   roles: SimulationRoles,
   shortcutExecutionMode: ShortcutExecutionMode,
@@ -312,6 +310,7 @@ export async function simulateShortcutOnForge(
   const forgeContractABI = CONTRCT_SIMULATION_FORK_TEST_EVENTS_ABI;
 
   const { txData, reportPre } = await generateTxData(
+    provider,
     shortcut,
     chainId,
     script,
@@ -319,7 +318,6 @@ export async function simulateShortcutOnForge(
     tokensIn,
     tokensOut,
     setterArgsBps,
-    rpcUrl,
     roles,
     shortcutExecutionMode,
     SimulationMode.FORGE,
@@ -382,6 +380,7 @@ export async function simulateShortcutOnForge(
   };
 
   const forgeTestLog = simulateTransactionOnForge(
+    provider,
     shortcutExecutionMode,
     roles,
     txData,
@@ -389,7 +388,6 @@ export async function simulateShortcutOnForge(
     addressToLabel,
     forgeData,
     chainId,
-    rpcUrl,
     blockNumber,
   );
   // console.log('forgeTestLog:\n', JSON.stringify(forgeTestLog, null, 2), '\n');
@@ -550,6 +548,7 @@ export async function getWethToMintBeraEth(
 }
 
 async function generateTxData(
+  provider: StaticJsonRpcProvider,
   shortcut: Shortcut,
   chainId: ChainIds,
   script: WeirollScript,
@@ -557,7 +556,6 @@ async function generateTxData(
   tokensIn: AddressArg[],
   tokensOut: AddressArg[],
   setterArgsBps: Record<string, BigNumber>,
-  rpcUrl: string,
   roles: SimulationRoles,
   shortcutExecutionMode: ShortcutExecutionMode,
   simulationMode: SimulationMode,
@@ -574,6 +572,7 @@ async function generateTxData(
   switch (shortcutExecutionMode) {
     case ShortcutExecutionMode.MULTICALL__AGGREGATE: {
       const setters = await getSetters(
+        provider,
         shortcut,
         chainId,
         script,
@@ -581,7 +580,6 @@ async function generateTxData(
         tokensIn,
         tokensOut,
         setterArgsBps,
-        rpcUrl,
         roles,
         simulationMode,
         blockNumber,
@@ -596,7 +594,6 @@ async function generateTxData(
         setters,
       );
 
-      const provider = new StaticJsonRpcProvider(rpcUrl);
       const wallet = await getNextWeirollWalletFromMockRecipeMarketHub(provider, roles.recipeMarketHub.address!);
       roles.weirollWallet = { address: wallet, label: 'WeirollWallet' };
       roles.callee = roles.multiCall;
@@ -614,9 +611,10 @@ async function generateTxData(
       break;
     }
     case ShortcutExecutionMode.WEIROLL_WALLET__EXECUTE_WEIROLL: {
+      const wallet = await getNextWeirollWalletFromMockRecipeMarketHub(provider, roles.recipeMarketHub.address!);
+      roles.weirollWallet = { address: wallet, label: 'WeirollWallet' };
+      roles.callee = roles.recipeMarketHub;
       txData = getEncodedData(commands, state);
-      roles.weirollWallet = roles.defaultWeirollWallet;
-      roles.callee = roles.defaultWeirollWallet;
       break;
     }
     default:

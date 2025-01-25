@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ensofinance/shortcuts-builder':
-        specifier: 0.0.6
-        version: 0.0.6
+        specifier: 0.0.7
+        version: 0.0.7
       '@ensofinance/shortcuts-standards':
         specifier: 1.0.64
         version: 1.0.64(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2)(ethers@5.7.2)(lodash@4.17.21)
@@ -133,8 +133,8 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@ensofinance/shortcuts-builder@0.0.6':
-    resolution: {integrity: sha512-TFpBtMos4hKbZ5sdtitX1W2lYSE3KVeWdR/o0jePTPDpi8Y1rVc6BNDbwBY1Xp7SmDJb4++VMgJVTGobDqeBRw==}
+  '@ensofinance/shortcuts-builder@0.0.7':
+    resolution: {integrity: sha512-l0XldAn4i4h3k2wa2zVYkrmWxroeK4/EJkAYmWHOUts1e4bNMtH6O0VKrZzTOTU2HY2yyP9pSJiHwlS84+40zQ==}
 
   '@ensofinance/shortcuts-standards@1.0.64':
     resolution: {integrity: sha512-cSi5TBM+QfeI1dbEukp8OAwTGx+RusUbsrOU/mJR9YoI/b/vhOn+0Dz1+brz7TLT7hrkWC+BR0z6DcByPb0nGQ==}
@@ -1600,7 +1600,7 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@ensofinance/shortcuts-builder@0.0.6':
+  '@ensofinance/shortcuts-builder@0.0.7':
     dependencies:
       '@ensofinance/weiroll.js': 0.4.1
       '@ethersproject/abi': 5.7.0
@@ -1618,7 +1618,7 @@ snapshots:
 
   '@ensofinance/shortcuts-standards@1.0.64(@ethersproject/abi@5.7.0)(@ethersproject/providers@5.7.2)(ethers@5.7.2)(lodash@4.17.21)':
     dependencies:
-      '@ensofinance/shortcuts-builder': 0.0.6
+      '@ensofinance/shortcuts-builder': 0.0.7
       '@ethersproject/address': 5.7.0
       '@ethersproject/bignumber': 5.7.0
       '@ethersproject/bytes': 5.7.0
