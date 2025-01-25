@@ -6,7 +6,7 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class BeraborrowsbtcShortcut implements Shortcut {
+export class BeraborrowSbtcShortcut implements Shortcut {
   name = 'sbtc';
   description = '';
   supportedChains = [ChainIds.Cartio];

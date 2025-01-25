@@ -65,7 +65,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Beraborrow Boyco beraEth' }],
+          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco beraEth' }],
           [this.inputs[ChainIds.Cartio].beraEth, { label: 'ERC20:beraEth' }],
         ]);
       default:
