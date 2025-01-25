@@ -124,7 +124,7 @@ export const chainIdToSimulationRoles: Map<ChainIds, SimulationRoles> = new Map(
         label: 'RecipeMarketHub',
       },
       multiCall: {
-        address: '0x',
+        address: '0xcA11bde05977b3631167028862bE2a173976CA11',
         label: 'MultiCall',
       },
       roycoWalletHelpers: {
@@ -132,7 +132,7 @@ export const chainIdToSimulationRoles: Map<ChainIds, SimulationRoles> = new Map(
         label: 'RoycoWalletHelpers',
       },
       setter: {
-        address: '0x',
+        address: '0x39027795AE6f2b56AdA04F0C25CF5ADBd095933b',
         label: 'CCDMSetter',
       },
       nativeToken: {
@@ -188,7 +188,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     honey: '0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce',
     mim: '0x5B82028cfc477C4E7ddA7FF33d59A23FA7Be002a',
     nativeToken: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-    nect: '0x',
+    nect: '0x1cE0a25D13CE4d52071aE7e02Cf1F6606F4C79d3',
     pumpbtc: '0x',
     rusd: '0x09D4214C03D01F49544C0448DBE3A27f768F2b34',
     sbtc: '0x93F4d0ab6a8B4271f4a28Db399b5E30612D21116',
@@ -204,8 +204,8 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     bridgeQuoter: '0x',
     honeyFactory: '0xA4aFef880F5cE1f63c9fb48F661E27F8B4216401',
     kodiakRouter: '0x',
-    kodiakQuoterV2: '0x',
-    usdcPsmBond: '0x',
+    kodiakQuoterV2: '0x644C8D6E501f7C994B74F5ceA96abe65d0BA662B',
+    usdcPsmBond: '0xCaB847887a2d516Dfa690fa346638429415c089b',
     burrbearZap: '0x',
   },
 };

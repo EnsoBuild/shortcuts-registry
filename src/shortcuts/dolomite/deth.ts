@@ -15,6 +15,10 @@ export class DolomiteDEthShortcut implements Shortcut {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth, // weth
       vault: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF', // deth
     },
+    [ChainIds.Berachain]: {
+      base: chainIdToDeFiAddresses[ChainIds.Berachain].weth, // weth
+      vault: '0x', // deth
+    },
   };
   setterInputs: Record<number, Set<string>> = {
     [ChainIds.Cartio]: new Set(['minAmountOut']),

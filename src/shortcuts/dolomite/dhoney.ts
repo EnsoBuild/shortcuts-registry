@@ -17,6 +17,12 @@ export class DolomiteDHoneyShortcut implements Shortcut {
       dhoney: '0x7f2B60fDff1494A0E3e060532c9980d7fad0404B',
       infraredVault: '0x53fACeCc391021a69Ba79351007079536AA64C6d',
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      dhoney: '0x',
+      infraredVault: '0x',
+    },
   };
   setterInputs: Record<number, Set<string>> = {
     [ChainIds.Cartio]: new Set(['minAmountOut']),

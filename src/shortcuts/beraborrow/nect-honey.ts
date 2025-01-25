@@ -21,6 +21,13 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.nectUsdcIsland, // KODI-HONEY-NECT
       quoterV2: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakQuoterV2,
     },
+    [ChainIds.Berachain]: {
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      nect: chainIdToDeFiAddresses[ChainIds.Berachain].nect,
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      island: '0x', // KODI-HONEY-NECT
+      quoterV2: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakQuoterV2,
+    },
   };
   setterInputs: Record<number, Set<string>> = {
     [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']),

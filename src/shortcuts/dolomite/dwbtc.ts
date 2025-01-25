@@ -15,6 +15,10 @@ export class DolomiteDWbtcShortcut implements Shortcut {
       wbtc: chainIdToDeFiAddresses[ChainIds.Cartio].wbtc,
       vault: '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f', //dwbtc
     },
+    [ChainIds.Berachain]: {
+      base: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
+      vault: '0x', //dwbtc
+    },
   };
   setterInputs: Record<number, Set<string>> = {
     [ChainIds.Cartio]: new Set(['minAmountOut']),
