@@ -9,7 +9,7 @@ import {
   WalletAddressArg,
 } from '@ensofinance/shortcuts-builder/types';
 import { PUBLIC_RPC_URLS, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { GeneralAddresses, TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
+import { GeneralAddresses, TokenAddresses, helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 import {
   addAction,
   addApprovals,
@@ -87,6 +87,23 @@ export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promis
   return amountOut as NumberArg;
 }
 
+export function validateMinAmountOut(builder: Builder, setterInputs: Set<string>, amount: NumberArg) {
+  const amountSharesMin = getSetterValue(builder, setterInputs, 'minAmountOut');
+
+  const isCorrectAmount = builder.add({
+    address: helperAddresses(builder.chainId).shortcutsHelpers,
+    abi: ['function isEqualOrGreaterThan(uint256, uint256) external view returns (bool)'],
+    functionName: 'isEqualOrGreaterThan',
+    args: [amount, amountSharesMin],
+  });
+
+  builder.add({
+    address: helperAddresses(builder.chainId).shortcutsHelpers,
+    abi: ['function check(bool condition) public pure returns (bool)'],
+    functionName: 'check',
+    args: [isCorrectAmount],
+  });
+}
 export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {
   const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId);
   const { honey, honeyFactory } = chainIdToDeFiAddresses[builder.chainId];

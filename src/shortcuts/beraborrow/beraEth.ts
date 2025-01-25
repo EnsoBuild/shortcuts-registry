@@ -3,11 +3,10 @@ import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementatio
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, getBalance, getSetterValue, mintBeraEth } from '../../utils';
+import { balanceOf, getBalance, mintBeraEth, validateMinAmountOut } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
@@ -49,21 +48,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     });
 
     const amountVaultToken = builder.add(balanceOf(primary, walletAddress()));
-    const amountSharesMin = getSetterValue(builder, this.setterInputs[chainId], 'minAmountOut');
-
-    const isCorrectAmount = builder.add({
-      address: helperAddresses(builder.chainId).shortcutsHelpers,
-      abi: ['function isEqualOrGreaterThan(uint256, uint256) external view returns (bool)'],
-      functionName: 'isEqualOrGreaterThan',
-      args: [amountVaultToken, amountSharesMin],
-    });
-
-    builder.add({
-      address: helperAddresses(builder.chainId).shortcutsHelpers,
-      abi: ['function check(bool condition) public pure returns (bool)'],
-      functionName: 'check',
-      args: [isCorrectAmount],
-    });
+    validateMinAmountOut(builder, this.setterInputs[chainId], amountVaultToken);
 
     const payload = await builder.build({
       requireWeiroll: true,
