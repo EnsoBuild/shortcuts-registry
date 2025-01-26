@@ -173,7 +173,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     ausdt: '0x779Ded0c9e1022225f8E0630b35a9b54bE713736',
     beraEth: '0x6fc6545d5cDE268D5C7f1e476D444F39c995120d',
     bgt: '0x',
-    bridgeQuoter: '0x',
+    bridgeQuoter: '0xcab283e4bb527Aa9b157Bae7180FeF19E2aaa71a',
     burrbearZap: '0xcb2dcB9905c6844EF33586A75402d6431b151418',
     dweth: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF',
     ebtc: '0x',
