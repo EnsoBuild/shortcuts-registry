@@ -30,6 +30,7 @@ import { ConcreteWethShortcut } from '../shortcuts/concrete/weth';
 import { D2UsdcShortcut } from '../shortcuts/d2/usdc';
 import { DahliaUsdcShortcut } from '../shortcuts/dahlia/usdc';
 import { DahliaWethShortcut } from '../shortcuts/dahlia/weth';
+import { DolomiteDberaethShortcut } from '../shortcuts/dolomite/dberaeth';
 import { DolomiteDEthShortcut } from '../shortcuts/dolomite/deth';
 import { DolomiteDHoneyShortcut } from '../shortcuts/dolomite/dhoney';
 import { DolomiteDnectShortcut } from '../shortcuts/dolomite/dnect';
@@ -112,6 +113,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
   },
   dolomite: {
     deth: new DolomiteDEthShortcut(),
+    dberaeth: new DolomiteDberaethShortcut(),
     dnect: new DolomiteDnectShortcut(),
     dhoney: new DolomiteDHoneyShortcut(),
     dpumpbtc: new DolomiteDPumpBtcShortcut(),
