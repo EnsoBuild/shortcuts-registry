@@ -1,4 +1,4 @@
-import { AddressArg } from '@ensofinance/shortcuts-builder/types';
+import { AddressArg, ChainIds } from '@ensofinance/shortcuts-builder/types';
 import { Interface } from '@ethersproject/abi';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
@@ -8,6 +8,10 @@ import { APITransaction, QuoteRequest, simulateTransactionOnQuoter } from '../si
 import { Campaign } from '../types';
 import { getSimulationRolesByChainId } from './utils';
 
+const depositExecutorCreationBlock: Record<number, number> = {
+  [ChainIds.Cartio]: 4417729,
+  [ChainIds.Berachain]: 148757,
+};
 async function call(
   provider: StaticJsonRpcProvider,
   iface: Interface,
@@ -243,17 +247,27 @@ export async function getWeirollWallets(
   const roles = getSimulationRolesByChainId(chainId);
   const depositExecutor = roles.depositExecutor.address!;
 
-  const filter = {
-    address: depositExecutor,
-    topics: [depositExecutorInterface.getEventTopic('CCDMBridgeProcessed'), marketHash],
-    fromBlock: 240001,
-    toBlock: 250000,
-  };
-  // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
-  // which we can simply decode using getWeirollWalletByCcdmNonce because it has the same return value
-  const wallets = (await provider.getLogs(filter)).map(
-    (l) => depositExecutorInterface.decodeFunctionResult('getWeirollWalletByCcdmNonce', l.data).wallet,
-  );
+  const wallets: AddressArg[] = [];
+
+  const latestBlock = await provider.getBlockNumber();
+  let fromBlock = depositExecutorCreationBlock[chainId];
+  while (fromBlock < latestBlock) {
+    let toBlock = fromBlock + 9999;
+    if (toBlock > latestBlock) toBlock = latestBlock;
+    const filter = {
+      address: depositExecutor,
+      topics: [depositExecutorInterface.getEventTopic('CCDMBridgeProcessed'), marketHash],
+      fromBlock,
+      toBlock,
+    };
+    // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
+    // which we can simply decode using getWeirollWalletByCcdmNonce because it has the same return value
+    (await provider.getLogs(filter)).forEach((l) =>
+      wallets.push(depositExecutorInterface.decodeFunctionResult('getWeirollWalletByCcdmNonce', l.data).wallet),
+    );
+    fromBlock = toBlock + 1;
+  }
+
   return [...new Set(wallets)];
 }
 
@@ -269,19 +283,28 @@ export async function getWeirollWalletsExecuted(
   const roles = getSimulationRolesByChainId(chainId);
   const depositExecutor = roles.depositExecutor.address!;
 
-  const filter = {
-    address: depositExecutor,
-    topics: [depositExecutorInterface.getEventTopic('WeirollWalletsExecutedDepositRecipe'), marketHash],
-    fromBlock: 240001,
-    toBlock: 250000,
-  };
-  // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
-  // which we can simply decode using getWeirollWalletByCcdmNonce because it has the same return value
   const wallets: AddressArg[] = [];
-  (await provider.getLogs(filter)).forEach((l) =>
-    wallets.push(
-      ...depositExecutorInterface.decodeFunctionResult('mockWeirollWalletsExecuted', l.data).weirollWalletsExecuted,
-    ),
-  );
+
+  const latestBlock = await provider.getBlockNumber();
+  let fromBlock = depositExecutorCreationBlock[chainId];
+  while (fromBlock < latestBlock) {
+    let toBlock = fromBlock + 9999;
+    if (toBlock > latestBlock) toBlock = latestBlock;
+    const filter = {
+      address: depositExecutor,
+      topics: [depositExecutorInterface.getEventTopic('WeirollWalletsExecutedDepositRecipe'), marketHash],
+      fromBlock,
+      toBlock,
+    };
+    // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
+    // which wedecode using mockWeirollWalletsExecuted to define the return values
+    (await provider.getLogs(filter)).forEach((l) =>
+      wallets.push(
+        ...depositExecutorInterface.decodeFunctionResult('mockWeirollWalletsExecuted', l.data).weirollWalletsExecuted,
+      ),
+    );
+    fromBlock = toBlock + 1;
+  }
+
   return [...new Set(wallets)];
 }
