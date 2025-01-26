@@ -27,7 +27,9 @@ import { ConcreteSusdeShortcut } from '../shortcuts/concrete/susde';
 import { ConcreteUsdcShortcut } from '../shortcuts/concrete/usdc';
 import { ConcreteUsdeShortcut } from '../shortcuts/concrete/usde';
 import { ConcreteWethShortcut } from '../shortcuts/concrete/weth';
-import { D2UsdcShortcut } from '../shortcuts/d2/usdc';
+import { D2UsdcBeralandShortcut } from '../shortcuts/d2/usdc-beraland';
+import { D2UsdcHyperberaShortcut } from '../shortcuts/d2/usdc-hyperbera';
+import { D2UsdcKodiakplusShortcut } from '../shortcuts/d2/usdc-kodiakplus';
 import { DahliaUsdcShortcut } from '../shortcuts/dahlia/usdc';
 import { DahliaWethShortcut } from '../shortcuts/dahlia/weth';
 import { DolomiteDberaethShortcut } from '../shortcuts/dolomite/dberaeth';
@@ -125,7 +127,9 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     dylpumpbtc: new DolomiteDYlPumpBtcShortcut(),
   },
   d2: {
-    usdc: new D2UsdcShortcut(),
+    'usdc-kodiakplus': new D2UsdcKodiakplusShortcut(),
+    'usdc-beraland': new D2UsdcBeralandShortcut(),
+    'usdc-hyperbera': new D2UsdcHyperberaShortcut(),
   },
 
   goldilocks: {

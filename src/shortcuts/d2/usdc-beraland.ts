@@ -1,20 +1,19 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class D2UsdcShortcut implements Shortcut {
-  name = 'usdc';
+export class D2UsdcBeralandShortcut implements Shortcut {
+  name = 'usdc-beraland';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      usdc: TokenAddresses.cartio.usdc,
-      vault: '0xa4869CbdC3Bc1B71b7C29e642207bb9439Ac05ba',
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      vault: '0xbE75c8A7E58C7901D2e128dc8d3b6DE2481F1F79',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -48,10 +47,10 @@ export class D2UsdcShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
+      case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:D2 Vault' }],
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:D2 Vault' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
