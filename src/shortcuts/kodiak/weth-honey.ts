@@ -2,6 +2,7 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
@@ -18,12 +19,16 @@ export class KodiakWethHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: '0xD4570a738675fB2c31e7b7b88998EE73E9E17d49',
     },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      island: '0x0000000000000000000000000000000000000000',
+    },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']),
-  };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
@@ -37,7 +42,7 @@ export class KodiakWethHoneyShortcut implements Shortcut {
     const wethAmount = builder.add(balanceOf(weth, walletAddress()));
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(provider, builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);

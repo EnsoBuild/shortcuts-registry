@@ -3,6 +3,7 @@ import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementatio
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
@@ -23,11 +24,9 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
       router: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']),
-  };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
@@ -41,7 +40,7 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
     const wethAmount = builder.add(balanceOf(weth, walletAddress()));
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(provider, builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs);
 
     const islandAmount = builder.add(balanceOf(island, walletAddress()));
 

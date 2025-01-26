@@ -3,6 +3,7 @@ import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementatio
 import { AddressArg, ChainIds, NumberArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { div } from '@ensofinance/shortcuts-standards/helpers/math';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
@@ -21,11 +22,9 @@ export class GoldilocksUniBtcOtUniBtcShortcut implements Shortcut {
       island: '0xB4E5c02409070258FaAe3C895996b8E115209ec6',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']),
-  };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
@@ -54,7 +53,7 @@ export class GoldilocksUniBtcOtUniBtcShortcut implements Shortcut {
     if (!Array.isArray(amountOut)) throw 'Error: Invalid amountOut'; // should never throw
     const [otAmount] = amountOut as NumberArg[];
 
-    await depositKodiak(builder, [unibtc, ot], [halfAmount, otAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(provider, builder, [unibtc, ot], [halfAmount, otAmount], island, this.setterInputs);
 
     const otLeftOvers = getBalance(ot, builder);
     const ytAmount = getBalance(yt, builder);

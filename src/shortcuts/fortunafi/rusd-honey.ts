@@ -38,7 +38,7 @@ export class FortunafiRusdHoneyShortcut implements Shortcut {
     const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(builder, [rusd, honey], [rusdAmount, mintedAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(builder, [rusd, honey], [rusdAmount, mintedAmount], island, this.setterInputs);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);

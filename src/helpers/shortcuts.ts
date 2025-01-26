@@ -1,3 +1,5 @@
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
+
 import { AbracadabraMimHoneyhortcut } from '../shortcuts/abracadabra/mim-honey';
 import { BeraborrowBeraethShortcut } from '../shortcuts/beraborrow/beraEth';
 import { BeraborrowNectHoneyShortcut } from '../shortcuts/beraborrow/nect-honey';
@@ -120,16 +122,20 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
   },
 };
 
-export async function buildShortcutsHashMap(chainId: number): Promise<Record<string, Shortcut>> {
+export async function buildShortcutsHashMap(
+  chainId: number,
+  provider: StaticJsonRpcProvider,
+): Promise<Record<string, Shortcut>> {
   const shortcutsArray = [];
   for (const protocol in shortcuts) {
     for (const market in shortcuts[protocol]) {
-      shortcutsArray.push(shortcuts[protocol][market]);
+      const shortcut = shortcuts[protocol][market];
+      if (shortcut.inputs[chainId]) shortcutsArray.push(shortcuts[protocol][market]);
     }
   }
   const hashArray = await Promise.all(
     shortcutsArray.map(async (shortcut) => {
-      const { script, metadata } = await shortcut.build(chainId);
+      const { script, metadata } = await shortcut.build(chainId, provider);
       return buildVerificationHash(metadata.tokensOut![0], script);
     }),
   );

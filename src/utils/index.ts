@@ -8,7 +8,7 @@ import {
   Transaction,
   WalletAddressArg,
 } from '@ensofinance/shortcuts-builder/types';
-import { PUBLIC_RPC_URLS, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { GeneralAddresses, TokenAddresses, helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 import {
   addAction,
@@ -59,7 +59,7 @@ export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: B
 }
 
 export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amountIn: NumberArg, builder: Builder) {
-  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
+  const erc4626 = getStandardByProtocol('erc4626', 80000); // TODO: return this to 'builder.chainId' after standards get updated to support bera
   const { amountOut } = await erc4626.deposit.addToBuilder(builder, {
     tokenIn,
     tokenOut,
@@ -71,7 +71,7 @@ export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amo
 }
 
 export async function mintNect(amountIn: NumberArg, builder: Builder) {
-  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
+  const erc4626 = getStandardByProtocol('erc4626', 80000); // TODO: return this to 'builder.chainId' after standards get updated to support bera
   const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
     tokenIn: [chainIdToDeFiAddresses[builder.chainId].usdc],
     tokenOut: chainIdToDeFiAddresses[builder.chainId].nect,
@@ -107,7 +107,7 @@ export async function mintSatLayerVault(
 export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {
   const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
 
-  const dineroBeraeth = getStandardByProtocol('dinero-lst', builder.chainId, true);
+  const dineroBeraeth = getStandardByProtocol('dinero-lst', 80000, true); // TODO: return this to 'builder.chainId' after standards get updated to support bera
   const { amountOut } = await dineroBeraeth.deposit.addToBuilder(
     builder,
     {
@@ -141,7 +141,7 @@ export function ensureMinAmountOut(amount: NumberArg, builder: Builder) {
   });
 }
 export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {
-  const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId);
+  const berachainHoney = getStandardByProtocol('berachain-honey', 80000); //TODO fix when the standards supports berachain
   const { honey, honeyFactory } = chainIdToDeFiAddresses[builder.chainId];
 
   const { amountOut } = await berachainHoney.redeem.addToBuilder(builder, {
@@ -215,15 +215,14 @@ export async function depositBurrbear(builder: Builder, amountIn: NumberArg, set
 }
 
 export async function depositKodiak(
+  provider: StaticJsonRpcProvider,
   builder: Builder,
   tokensIn: AddressArg[],
   amountsIn: NumberArg[],
   island: AddressArg,
   setterInputs: Set<string>,
 ) {
-  const rpcUrl = PUBLIC_RPC_URLS[builder.chainId].rpcUrls.public;
   const router = chainIdToDeFiAddresses[builder.chainId].kodiakRouter;
-  const provider = new StaticJsonRpcProvider(rpcUrl);
   const islandInterface = new Interface(['function token0() external view returns(address)']);
   const token0Bytes = await provider.call({
     to: island,
@@ -261,8 +260,12 @@ export async function depositKodiak(
   });
 }
 
-export async function buildRoycoMarketShortcut(shortcut: Shortcut, chainId: ChainIds): Promise<RoycoOutput> {
-  const output = await shortcut.build(chainId);
+export async function buildRoycoMarketShortcut(
+  shortcut: Shortcut,
+  chainId: ChainIds,
+  provider: StaticJsonRpcProvider,
+): Promise<RoycoOutput> {
+  const output = await shortcut.build(chainId, provider);
 
   return {
     weirollCommands: output.script.commands,

@@ -58,6 +58,10 @@ const usdcExchangeRates: Record<number, Record<AddressArg, BigNumber>> = {
     [chainIdToDeFiAddresses[ChainIds.Cartio]!.usdc]: BigNumber.from(10).pow(6),
     [chainIdToDeFiAddresses[ChainIds.Cartio]!.nect]: BigNumber.from(10).pow(18),
   },
+  [ChainIds.Berachain]: {
+    [chainIdToDeFiAddresses[ChainIds.Berachain]!.usdc]: BigNumber.from(10).pow(6),
+    [chainIdToDeFiAddresses[ChainIds.Berachain]!.nect]: BigNumber.from(10).pow(18),
+  },
 };
 
 const wethExchangeRates: Record<number, Record<AddressArg, BigNumber>> = {
@@ -135,7 +139,7 @@ export async function getSetters(
   simulationMode: SimulationMode,
   blockNumber?: number,
 ): Promise<Record<string, BigNumber | undefined>> {
-  const setterInputs = shortcut.setterInputs?.[chainId];
+  const setterInputs = shortcut.setterInputs;
 
   let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethToMintBeraEth;
   if (setterInputs) {
@@ -589,7 +593,7 @@ async function generateTxData(
         reportPre.minAmountOutHex = setters.minAmountOut.toHexString();
       }
       const { setterData, setterInputData } = await generateSetterCallData(
-        shortcut.setterInputs![chainId],
+        shortcut.setterInputs,
         roles.setter.address!,
         setters,
       );

@@ -9,6 +9,7 @@ import { DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE, MAX_BPS, MIN_BPS, SimulationMode }
 import {
   buildShortcutsHashMap,
   buildVerificationHash,
+  getAuthHeaderByChainId,
   getBalances,
   getBasisPointsFromArgs,
   getCampaign,
@@ -53,24 +54,32 @@ async function main() {
     if (!chainId) throw 'Error: Unknown chain';
 
     const rpcUrl = getRpcUrlByChainId(chainId);
-    const provider = new StaticJsonRpcProvider(rpcUrl);
+    const authHeader = getAuthHeaderByChainId(chainId);
+    const provider = new StaticJsonRpcProvider({
+      url: rpcUrl,
+      headers: authHeader
+        ? {
+            Authorization: `Bearer ${authHeader}`,
+          }
+        : undefined,
+    });
 
     const campaign = await getCampaign(provider, chainId, marketHash);
     const { owner, verified, receiptToken, depositRecipe } = campaign;
     if (!verified) throw 'Error: Market is not verified';
     const preVerificationHash = buildVerificationHash(receiptToken, depositRecipe);
 
-    const shortcutHashMap = await buildShortcutsHashMap(chainId);
+    const shortcutHashMap = await buildShortcutsHashMap(chainId, provider);
     const shortcut = shortcutHashMap[preVerificationHash];
     if (!shortcut) throw 'Error: Cannot find shortcut using market hash';
     console.log('Shortcut: ', shortcut.name);
     // confirm verification hash
-    const { metadata, script } = await shortcut.build(chainId);
+    const { metadata, script } = await shortcut.build(chainId, provider);
     const tokensIn = metadata.tokensIn!;
     const tokensOut = metadata.tokensOut!;
     const verificationHash = buildVerificationHash(receiptToken, depositRecipe);
 
-    console.log('Verification Hash: ', verificationHash);
+    console.log('Verification Hash: ', verificationHash, '\n');
     const campaignVerificationHash = await getCampaignVerificationHash(provider, chainId, marketHash);
     if (verificationHash !== campaignVerificationHash)
       console.log(`Warning: On-chain verification hash (${campaignVerificationHash}) does not match calculated hash!`);
@@ -111,6 +120,7 @@ async function main() {
     const roles = getSimulationRolesByChainId(chainId);
     if (useMockWalletAmounts) {
       await simulateShortcutOnQuoter(
+        provider,
         shortcut,
         chainId,
         script,
@@ -118,9 +128,8 @@ async function main() {
         tokensIn,
         tokensOut,
         setterArgsBps,
-        rpcUrl,
         roles,
-        getShortcutExecutionMode(shortcut, chainId),
+        getShortcutExecutionMode(shortcut),
         {
           isReportLogged: true,
           isCalldataLogged: true,
@@ -130,6 +139,7 @@ async function main() {
       console.log(`Building transaction for ${wallet}...`, '\n');
 
       const setters = await getSetters(
+        provider,
         shortcut,
         chainId,
         script,
@@ -137,12 +147,11 @@ async function main() {
         tokensIn,
         tokensOut,
         setterArgsBps,
-        rpcUrl,
         roles,
         SimulationMode.QUOTER,
       );
       const { setterData, setterInputData, safeTransactions } = await generateSetterCallData(
-        shortcut.setterInputs?.[chainId],
+        shortcut.setterInputs,
         roles.setter.address!,
         setters,
       );

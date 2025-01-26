@@ -17,10 +17,7 @@ export class ConcretewbtcShortcut implements Shortcut {
       vault: '0x773E6667852030E1AcC7AEa5a0b2412Ae1A77941',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

@@ -1,9 +1,8 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getAddress } from '@ethersproject/address';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
@@ -13,14 +12,15 @@ export class DolomiteDSbtcShortcut implements Shortcut {
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      sbtc: getAddress('0x5d417e7798208E9285b5157498bBF23A23E421E7') as AddressArg, // SBTC
-      vault: getAddress('0xA8Cb3818Fa799018bc862ADE08F8a37e08BA1062') as AddressArg, // dSBTC
+      sbtc: '0x5d417e7798208E9285b5157498bBF23A23E421E7', // SBTC
+      vault: '0xA8Cb3818Fa799018bc862ADE08F8a37e08BA1062', // dSBTC
+    },
+    [ChainIds.Berachain]: {
+      sbtc: chainIdToDeFiAddresses[ChainIds.Berachain].sbtc, // SBTC
+      vault: '0xA8Cb3818Fa799018bc862ADE08F8a37e08BA1062', // dSBTC
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

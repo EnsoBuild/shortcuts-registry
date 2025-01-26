@@ -6,7 +6,7 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class BeraborrowsbtcShortcut implements Shortcut {
+export class BeraborrowSbtcShortcut implements Shortcut {
   name = 'sbtc';
   description = '';
   supportedChains = [ChainIds.Cartio];
@@ -16,10 +16,7 @@ export class BeraborrowsbtcShortcut implements Shortcut {
       psm: '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

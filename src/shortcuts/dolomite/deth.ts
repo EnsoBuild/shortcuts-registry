@@ -16,14 +16,11 @@ export class DolomiteDEthShortcut implements Shortcut {
       vault: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF', // deth
     },
     [ChainIds.Berachain]: {
-      base: chainIdToDeFiAddresses[ChainIds.Berachain].weth, // weth
-      vault: '0x', // deth
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth, // weth
+      vault: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF', // deth
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

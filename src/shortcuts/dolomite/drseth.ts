@@ -1,7 +1,6 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getAddress } from '@ethersproject/address';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
@@ -13,14 +12,15 @@ export class DolomiteDRsEthShortcut implements Shortcut {
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      rseth: getAddress('0x9eCaf80c1303CCA8791aFBc0AD405c8a35e8d9f1') as AddressArg,
-      vault: getAddress('0xE6dE202a0d14af12b298b6c07CB8653d1c2E12dD') as AddressArg, // drsETH
+      rseth: '0x9eCaf80c1303CCA8791aFBc0AD405c8a35e8d9f1',
+      vault: '0xE6dE202a0d14af12b298b6c07CB8653d1c2E12dD', // drsETH
+    },
+    [ChainIds.Berachain]: {
+      rseth: '0x4186BFC76E2E237523CBC30FD220FE055156b41F',
+      vault: '0xE6dE202a0d14af12b298b6c07CB8653d1c2E12dD', // drsETH
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

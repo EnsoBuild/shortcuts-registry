@@ -47,7 +47,7 @@ export async function main_(args: string[]): Promise<Report> {
     isCalldataLogged: getIsCalldataLoggedFromArgs(args),
   };
 
-  const { script, metadata } = await shortcut.build(chainId);
+  const { script, metadata } = await shortcut.build(chainId, provider);
 
   // Validate tokens
   const { tokensIn, tokensOut } = metadata;
@@ -58,7 +58,7 @@ export async function main_(args: string[]): Promise<Report> {
 
   // Validate slippage
   // NB: currently only a single slippage is supported due Royco campaign shortcuts expecting a single receipt token
-  const shortcutExecutionMode = getShortcutExecutionMode(shortcut, chainId);
+  const shortcutExecutionMode = getShortcutExecutionMode(shortcut);
   const setterArgsBps: Record<string, BigNumber> = {
     slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
     skewRatio: MAX_BPS,

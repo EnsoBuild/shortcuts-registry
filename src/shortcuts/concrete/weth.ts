@@ -18,10 +18,7 @@ export class ConcreteWethShortcut implements Shortcut {
       vault: getAddress('0x18AA409860b89353172C5A7fF4f5fd28a19f3c5a') as AddressArg,
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

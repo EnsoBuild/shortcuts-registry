@@ -15,11 +15,12 @@ export class DolomiteDUsdcShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       vault: '0x444868B6e8079ac2c55eea115250f92C2b2c4D14', //dusdc
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      vault: '0x444868B6e8079ac2c55eea115250f92C2b2c4D14', //dusdc
+    },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

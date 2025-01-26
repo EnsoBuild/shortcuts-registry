@@ -17,10 +17,7 @@ export class ThjUsdcShortcut implements Shortcut {
       vault: '0x46BA968312ab17A9cD667771bB2D14D8d3Ce00B9',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

@@ -246,8 +246,8 @@ export async function getWeirollWallets(
   const filter = {
     address: depositExecutor,
     topics: [depositExecutorInterface.getEventTopic('CCDMBridgeProcessed'), marketHash],
-    fromBlock: 0,
-    toBlock: 'latest',
+    fromBlock: 240001,
+    toBlock: 250000,
   };
   // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
   // which we can simply decode using getWeirollWalletByCcdmNonce because it has the same return value
@@ -272,8 +272,8 @@ export async function getWeirollWalletsExecuted(
   const filter = {
     address: depositExecutor,
     topics: [depositExecutorInterface.getEventTopic('WeirollWalletsExecutedDepositRecipe'), marketHash],
-    fromBlock: 0,
-    toBlock: 'latest',
+    fromBlock: 240001,
+    toBlock: 250000,
   };
   // All params except for the weiroll wallet address are indexed so that is all that is present in the log data,
   // which we can simply decode using getWeirollWalletByCcdmNonce because it has the same return value

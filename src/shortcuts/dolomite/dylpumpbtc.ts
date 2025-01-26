@@ -1,7 +1,6 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getAddress } from '@ethersproject/address';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
@@ -13,14 +12,15 @@ export class DolomiteDYlPumpBtcShortcut implements Shortcut {
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      ylpumpbtc: getAddress('0x4Ebd8983Ca3b7c3621cdB9AD87191f2cB5677726') as AddressArg, // yl-pumpBTC
-      vault: getAddress('0xC6AdB1e9cb781b9573B2cB83809E318D9619BC74') as AddressArg, // dyl-pumpBTC
+      ylpumpbtc: '0x4Ebd8983Ca3b7c3621cdB9AD87191f2cB5677726', // yl-pumpBTC
+      vault: '0xC6AdB1e9cb781b9573B2cB83809E318D9619BC74', // dyl-pumpBTC
+    },
+    [ChainIds.Berachain]: {
+      ylpumpbtc: '0xdCB3D91555385DaE23e6B966b5626aa7A75Be940', // yl-pumpBTC
+      vault: '0xC6AdB1e9cb781b9573B2cB83809E318D9619BC74', // dyl-pumpBTC
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

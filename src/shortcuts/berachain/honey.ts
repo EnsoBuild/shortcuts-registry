@@ -20,10 +20,7 @@ export class BerachainHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

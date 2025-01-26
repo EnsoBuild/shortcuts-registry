@@ -17,10 +17,7 @@ export class DahliaUsdcShortcut implements Shortcut {
       vault: '0x95B0de63dbbe5D92BD05B7c0C12A32673f490A42',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

@@ -16,10 +16,7 @@ export class ConcreteSusdeShortcut implements Shortcut {
       vault: '0x1168848b115DA87587Be9cb2A962FD4A09D930Ea',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

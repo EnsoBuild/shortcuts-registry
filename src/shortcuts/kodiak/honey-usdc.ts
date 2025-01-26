@@ -4,6 +4,7 @@ import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { Standards } from '@ensofinance/shortcuts-standards';
 import { sub } from '@ensofinance/shortcuts-standards/helpers';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
@@ -19,12 +20,15 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.honeyUsdcIsland,
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      island: '0xb73deE52F38539bA854979eab6342A60dD4C8c03',
+    },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']),
-  };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
@@ -35,11 +39,11 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
       tokensOut: [island],
     });
     const amountIn = builder.add(balanceOf(usdc, walletAddress()));
-    const usdcToMintHoney = getSetterValue(builder, this.setterInputs[chainId], 'usdcToMintHoney');
+    const usdcToMintHoney = getSetterValue(builder, this.setterInputs, 'usdcToMintHoney');
     const remainingUsdc = sub(amountIn, usdcToMintHoney, builder);
     const mintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
 
-    await depositKodiak(builder, [usdc, honey], [remainingUsdc, mintedAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(provider, builder, [usdc, honey], [remainingUsdc, mintedAmount], island, this.setterInputs);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);

@@ -19,10 +19,7 @@ export class VedaUsdcShortcut implements Shortcut {
       vaultToken: '0xEF4123fC0D9472B01A3B4F757cf51aa8E644a508',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

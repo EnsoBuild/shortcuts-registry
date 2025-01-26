@@ -16,14 +16,11 @@ export class DolomiteDWbtcShortcut implements Shortcut {
       vault: '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f', //dwbtc
     },
     [ChainIds.Berachain]: {
-      base: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
-      vault: '0x', //dwbtc
+      wbtc: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
+      vault: '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f', //dwbtc
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

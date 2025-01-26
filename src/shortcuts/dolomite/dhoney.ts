@@ -20,14 +20,11 @@ export class DolomiteDHoneyShortcut implements Shortcut {
     [ChainIds.Berachain]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
-      dhoney: '0x',
-      infraredVault: '0x',
+      dhoney: '0x7f2B60fDff1494A0E3e060532c9980d7fad0404B',
+      infraredVault: '0x0000000000000000000000000000000000000000', //TODO
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

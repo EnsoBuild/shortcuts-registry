@@ -1,8 +1,15 @@
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import fs from 'fs';
 import path from 'path';
 
 import { ShortcutOutputFormat } from '../src/constants';
-import { getShortcut, getShortcutOutputFormatFromArgs, hashContent } from '../src/helpers';
+import {
+  getAuthHeaderByChainId,
+  getRpcUrlByChainId,
+  getShortcut,
+  getShortcutOutputFormatFromArgs,
+  hashContent,
+} from '../src/helpers';
 import { Output, RoycoOutput } from '../src/types';
 import { buildRoycoMarketShortcut } from '../src/utils';
 
@@ -13,21 +20,32 @@ export async function main_(args: string[]) {
     const market = args[2];
 
     const { shortcut, chainId } = await getShortcut(args);
+    const rpcUrl = getRpcUrlByChainId(chainId);
+    const authHeader = getAuthHeaderByChainId(chainId);
+    const provider = new StaticJsonRpcProvider({
+      url: rpcUrl,
+      headers: authHeader
+        ? {
+            Authorization: `Bearer ${authHeader}`,
+          }
+        : undefined,
+    });
+
     const outputFmt = getShortcutOutputFormatFromArgs(args);
     let output: RoycoOutput | Output;
 
     switch (outputFmt) {
       case ShortcutOutputFormat.ROYCO:
-        output = await buildRoycoMarketShortcut(shortcut, chainId);
+        output = await buildRoycoMarketShortcut(shortcut, chainId, provider);
+        console.log(JSON.stringify([output.weirollCommands, output.weirollState], null, 2), '\n');
         break;
       case ShortcutOutputFormat.FULL:
-        output = await shortcut.build(chainId);
+        output = await shortcut.build(chainId, provider);
+        console.log(JSON.stringify(output, null, 2), '\n');
         break;
       default:
         throw new Error(`Unsupported '--output=' format: ${outputFmt}`);
     }
-
-    console.log(output, '\n');
 
     if ([ShortcutOutputFormat.FULL].includes(outputFmt)) return;
 

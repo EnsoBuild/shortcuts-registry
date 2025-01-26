@@ -17,10 +17,7 @@ export class BeraborrowWethShortcut implements Shortcut {
       psm: '0xEdB3CD4f17b20b69Cd7bf8c1126E2759e4A710Be',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

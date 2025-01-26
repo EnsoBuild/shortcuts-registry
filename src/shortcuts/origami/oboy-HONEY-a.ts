@@ -16,10 +16,7 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
       vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

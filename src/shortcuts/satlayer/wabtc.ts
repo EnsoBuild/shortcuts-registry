@@ -18,10 +18,7 @@ export class SatlayerWabtcShortcut implements Shortcut {
       vault: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.vault,
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

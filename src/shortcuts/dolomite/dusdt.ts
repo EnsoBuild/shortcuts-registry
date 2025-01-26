@@ -16,14 +16,11 @@ export class DolomiteDUsdtShortcut implements Shortcut {
       vault: '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8', //dusdt
     },
     [ChainIds.Berachain]: {
-      base: chainIdToDeFiAddresses[ChainIds.Berachain].usdt,
-      vault: '0x', //dusdt
+      usdt: chainIdToDeFiAddresses[ChainIds.Berachain].usdt,
+      vault: '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8', //dusdt
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-    [ChainIds.Berachain]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();

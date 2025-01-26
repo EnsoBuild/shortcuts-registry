@@ -19,9 +19,7 @@ export class BurrbearUsdcShortcut implements Shortcut {
       bexLp: '0xFbb99BAD8eca0736A9ab2a7f566dEbC9acb607f0', //Honey-USDC-NECT
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -38,7 +36,7 @@ export class BurrbearUsdcShortcut implements Shortcut {
     const amountIn = builder.add(balanceOf(usdc, walletAddress()));
 
     //Mint
-    await depositBurrbear(builder, amountIn, this.setterInputs[chainId]);
+    await depositBurrbear(builder, amountIn, this.setterInputs);
 
     const payload = await builder.build({
       requireWeiroll: true,
