@@ -31,8 +31,8 @@ export class KodiakWbtcUnibtcShortcut implements Shortcut {
       tokensIn: [unibtc, wbtc],
       tokensOut: [island],
     });
-    const amountInUnibtc = builder.add(balanceOf(unibtc, walletAddress()));
     const amountInWbtc = builder.add(balanceOf(wbtc, walletAddress()));
+    const amountInUnibtc = builder.add(balanceOf(unibtc, walletAddress()));
 
     await depositKodiak(provider, builder, [wbtc, unibtc], [amountInWbtc, amountInUnibtc], island, this.setterInputs);
 

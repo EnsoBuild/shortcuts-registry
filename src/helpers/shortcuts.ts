@@ -1,6 +1,5 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
-import { AbracadabraMimHoneyhortcut } from '../shortcuts/abracadabra/mim-honey';
 import { BeraborrowBeraethShortcut } from '../shortcuts/beraborrow/beraEth';
 import { BeraborrowNectHoneyShortcut } from '../shortcuts/beraborrow/nect-honey';
 import { BeraborrowPumpbtcShortcut } from '../shortcuts/beraborrow/pumpbtc';
@@ -46,6 +45,7 @@ import { InfraredWbtcWethShortcut } from '../shortcuts/infrared/wbtc-weth';
 import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
 import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
+import { AbracadabraMimHoneyhortcut } from '../shortcuts/kodiak/mim-honey';
 import { KodiaknectUsdeShortcut } from '../shortcuts/kodiak/nect-usde';
 import { KodiakwbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcUnibtcShortcut } from '../shortcuts/kodiak/wbtc-unibtc';
@@ -56,6 +56,7 @@ import { SatlayerLbtcShortcut } from '../shortcuts/satlayer/lbtc';
 import { SatlayerPumpBtcShortcut } from '../shortcuts/satlayer/pumpbtc';
 import { SatlayerSbtcShortcut } from '../shortcuts/satlayer/sbtc';
 import { SatlayerSolvbtcbnnBnnShortcut } from '../shortcuts/satlayer/solvbtcbnn';
+import { SatlayerUnibtcShortcut } from '../shortcuts/satlayer/unibtc';
 import { SatlayerWabtcShortcut } from '../shortcuts/satlayer/wabtc';
 import { ThjUsdcShortcut } from '../shortcuts/thj/usdc';
 import { VedaUsdcShortcut } from '../shortcuts/veda/usdc';
@@ -63,9 +64,6 @@ import { Shortcut } from '../types';
 import { buildVerificationHash } from './utils';
 
 export const shortcuts: Record<string, Record<string, Shortcut>> = {
-  abracadabra: {
-    'honey-mim': new AbracadabraMimHoneyhortcut(),
-  },
   beraborrow: {
     'nect-honey': new BeraborrowNectHoneyShortcut(),
     'weth-honey': new BeraborrowWethHoneyShortcut(),
@@ -133,6 +131,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'nect-usde': new KodiaknectUsdeShortcut(),
     'wbtc-honey': new KodiakwbtcHoneyShortcut(),
     'wbtc-unibtc': new KodiakWbtcUnibtcShortcut(),
+    'mim-honey': new AbracadabraMimHoneyhortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),
@@ -146,6 +145,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     lbtc: new SatlayerLbtcShortcut(),
     wabtc: new SatlayerWabtcShortcut(),
     solvbtcbnn: new SatlayerSolvbtcbnnBnnShortcut(),
+    unibtc: new SatlayerUnibtcShortcut(),
   },
   infrared: {
     'wbtc-weth': new InfraredWbtcWethShortcut(),

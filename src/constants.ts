@@ -177,7 +177,6 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     kodiakQuoterV2: Standards.Kodiak_Islands.protocol.addresses!.cartio!.quoterV2,
     usdcPsmBond: '0xd064C80776497821313b1Dc0E3192d1a67b2a9fa',
     burrbearZap: '0xd39e7aa57CB0703cE74Bc96dA005dFceE2Ac4F56',
-    satlayerVault: '0x50198b5E1330753F167F6e0544e4C8aF829BC99d',
   },
   [ChainIds.Berachain]: {
     ausdt: '0x779Ded0c9e1022225f8E0630b35a9b54bE713736',
@@ -218,6 +217,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     ylrseth: '0x9B2316cfe980515de7430F1c4E831B89a5921137',
     ylsteth: '0xa958090601E21A82e9873042652e35891D945a8C',
     ylbtclst: '0xE946Dd7d03F6F5C440F68c84808Ca88d26475FC5',
+    satlayerVault: '0x50198b5E1330753F167F6e0544e4C8aF829BC99d',
   },
 };
 
