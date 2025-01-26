@@ -20,14 +20,12 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       nect: chainIdToDeFiAddresses[ChainIds.Cartio].nect,
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.nectUsdcIsland, // KODI-HONEY-NECT
-      quoterV2: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakQuoterV2,
     },
     [ChainIds.Berachain]: {
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
       nect: chainIdToDeFiAddresses[ChainIds.Berachain].nect,
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       island: '0x74E852a4f88bfbEff01275bB95d5ed77f2967d12', // KODI-HONEY-NECT
-      quoterV2: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakQuoterV2,
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']);
@@ -86,11 +84,23 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
               label: 'Kodiak Island-HONEY-NECT',
             },
           ],
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
-          [this.inputs[ChainIds.Cartio].quoterV2, { label: 'Kodiak QuoterV2' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
           [this.inputs[ChainIds.Cartio].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Cartio].nect, { label: 'ERC20:NECT' }],
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [
+            this.inputs[ChainIds.Berachain].island,
+            {
+              label: 'Kodiak Island-HONEY-NECT',
+            },
+          ],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
+          [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
+          [this.inputs[ChainIds.Berachain].nect, { label: 'ERC20:NECT' }],
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

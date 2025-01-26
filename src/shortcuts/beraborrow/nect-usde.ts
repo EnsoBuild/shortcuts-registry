@@ -8,8 +8,8 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
 import { balanceOf, depositKodiak, mintNect, redeemNect } from '../../utils';
 
-export class KodiaknectUsdeShortcut implements Shortcut {
-  name = 'kodiak-nect-usde';
+export class BeraborrowNectUsdeShortcut implements Shortcut {
+  name = 'beraborrow-nect-usde';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
