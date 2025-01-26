@@ -3,7 +3,6 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
   buildShortcutsHashMap,
   buildVerificationHash,
-  getAuthHeaderByChainId,
   getCampaign,
   getCampaignVerificationHash,
   getChainId,
@@ -22,14 +21,8 @@ async function main() {
     if (!chainId) throw 'Error: Unknown chain';
 
     const rpcUrl = getRpcUrlByChainId(chainId);
-    const authHeader = getAuthHeaderByChainId(chainId);
     const provider = new StaticJsonRpcProvider({
       url: rpcUrl,
-      headers: authHeader
-        ? {
-            Authorization: `Bearer ${authHeader}`,
-          }
-        : undefined,
     });
 
     const campaign = await getCampaign(provider, chainId, marketHash);

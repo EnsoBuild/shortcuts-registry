@@ -3,13 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { ShortcutOutputFormat } from '../src/constants';
-import {
-  getAuthHeaderByChainId,
-  getRpcUrlByChainId,
-  getShortcut,
-  getShortcutOutputFormatFromArgs,
-  hashContent,
-} from '../src/helpers';
+import { getRpcUrlByChainId, getShortcut, getShortcutOutputFormatFromArgs, hashContent } from '../src/helpers';
 import { Output, RoycoOutput } from '../src/types';
 import { buildRoycoMarketShortcut } from '../src/utils';
 
@@ -21,14 +15,8 @@ export async function main_(args: string[]) {
 
     const { shortcut, chainId } = await getShortcut(args);
     const rpcUrl = getRpcUrlByChainId(chainId);
-    const authHeader = getAuthHeaderByChainId(chainId);
     const provider = new StaticJsonRpcProvider({
       url: rpcUrl,
-      headers: authHeader
-        ? {
-            Authorization: `Bearer ${authHeader}`,
-          }
-        : undefined,
     });
 
     const outputFmt = getShortcutOutputFormatFromArgs(args);

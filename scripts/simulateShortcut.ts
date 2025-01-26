@@ -10,7 +10,6 @@ import {
 } from '../src/constants';
 import {
   getAmountsInFromArgs,
-  getAuthHeaderByChainId,
   getBasisPointsFromArgs,
   getBlockNumberFromArgs,
   getForgePath,
@@ -32,14 +31,8 @@ export async function main_(args: string[]): Promise<Report> {
   const amountsIn = getAmountsInFromArgs(args);
 
   const rpcUrl = getRpcUrlByChainId(chainId);
-  const authHeader = getAuthHeaderByChainId(chainId);
   const provider = new StaticJsonRpcProvider({
     url: rpcUrl,
-    headers: authHeader
-      ? {
-          Authorization: `Bearer ${authHeader}`,
-        }
-      : undefined,
   });
   const roles = getSimulationRolesByChainId(chainId);
   const simulationLogConfig = {
