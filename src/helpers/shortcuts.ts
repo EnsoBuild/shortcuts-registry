@@ -32,6 +32,7 @@ import { DahliaUsdcShortcut } from '../shortcuts/dahlia/usdc';
 import { DahliaWethShortcut } from '../shortcuts/dahlia/weth';
 import { DolomiteDEthShortcut } from '../shortcuts/dolomite/deth';
 import { DolomiteDHoneyShortcut } from '../shortcuts/dolomite/dhoney';
+import { DolomiteDnectShortcut } from '../shortcuts/dolomite/dnect';
 import { DolomiteDPumpBtcShortcut } from '../shortcuts/dolomite/dpumpbtc';
 import { DolomiteDRsEthShortcut } from '../shortcuts/dolomite/drseth';
 import { DolomiteDSbtcShortcut } from '../shortcuts/dolomite/dsbtc';
@@ -47,8 +48,9 @@ import { InfraredWbtcWethShortcut } from '../shortcuts/infrared/wbtc-weth';
 import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
 import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
-import { AbracadabraMimHoneyhortcut } from '../shortcuts/kodiak/mim-honey';
+import { KodiakMimHoneyhShortcut } from '../shortcuts/kodiak/mim-honey';
 import { KodiaknectUsdeShortcut } from '../shortcuts/kodiak/nect-usde';
+import { KodiakRusdHoneyShortcut } from '../shortcuts/kodiak/rusd-honey';
 import { KodiakUsdtHoneyShortcut } from '../shortcuts/kodiak/usdt-honey';
 import { KodiakwbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcUnibtcShortcut } from '../shortcuts/kodiak/wbtc-unibtc';
@@ -110,6 +112,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
   },
   dolomite: {
     deth: new DolomiteDEthShortcut(),
+    dnect: new DolomiteDnectShortcut(),
     dhoney: new DolomiteDHoneyShortcut(),
     dpumpbtc: new DolomiteDPumpBtcShortcut(),
     drseth: new DolomiteDRsEthShortcut(),
@@ -129,15 +132,16 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'solvbtcbnnot-solvbtc': new GoldilockssolvbtcbnnsolvbtcbnnOtShortcut(),
   },
   kodiak: {
-    'honey-usdc': new KodiakHoneyUsdcShortcut(),
-    'weth-honey': new KodiakWethHoneyShortcut(),
-    'wbtc-weth': new KodiakWbtcWethShortcut(),
     'beraeth-weth': new KodiakbBraethwethShortcut(),
+    'honey-usdc': new KodiakHoneyUsdcShortcut(),
+    'mim-honey': new KodiakMimHoneyhShortcut(),
     'nect-usde': new KodiaknectUsdeShortcut(),
+    'rusd-honey': new KodiakRusdHoneyShortcut(),
+    'usdt-honey': new KodiakUsdtHoneyShortcut(),
     'wbtc-honey': new KodiakwbtcHoneyShortcut(),
     'wbtc-unibtc': new KodiakWbtcUnibtcShortcut(),
-    'mim-honey': new AbracadabraMimHoneyhortcut(),
-    'usdt-honey': new KodiakUsdtHoneyShortcut(),
+    'wbtc-weth': new KodiakWbtcWethShortcut(),
+    'weth-honey': new KodiakWethHoneyShortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),

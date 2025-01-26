@@ -8,10 +8,10 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { balanceOf, depositKodiak, mintHoney, redeemHoney } from '../../utils';
 
-export class AbracadabraMimHoneyhortcut implements Shortcut {
-  name = 'abracadabra-mim-honey';
+export class KodiakMimHoneyhShortcut implements Shortcut {
+  name = 'kodiak-mim-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
@@ -76,6 +76,20 @@ export class AbracadabraMimHoneyhortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Cartio].mim, { label: 'ERC20:MIM' }],
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [
+            this.inputs[ChainIds.Cartio].island,
+            {
+              label: 'Kodiak Island-HONEY-NECT',
+            },
+          ],
+          [this.inputs[ChainIds.Berachain].primary, { label: 'Kodiak Island Router' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-MIM-HONEY-0.05%' }],
+          [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
+          [this.inputs[ChainIds.Berachain].mim, { label: 'ERC20:MIM' }],
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

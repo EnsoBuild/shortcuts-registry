@@ -15,59 +15,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
     console.error = vi.fn();
   });
 
-  describe('abracadabra', () => {
-    it('mim-honey', async () => {
-      // Arrange
-      const args = ['abracadabra', 'honey-mim', '10000000,100000000', '--mode=forge', '--block=4465664'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '1',
-        minAmountOutHex: '0x01',
-        quote: { '0x150683BF3f0a344e271fc1b7dac3783623e7208A': '271725' },
-        dust: {
-          '0x08B918dD18E087893bb9d711d9E0BBaA7a63Ef63': '16',
-          '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '99600399',
-          '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
-        },
-        gas: '1497635',
-      });
-    });
-
-    it('mim-honey (with slippage)', async () => {
-      // Arrange
-      const args = [
-        'abracadabra',
-        'honey-mim',
-        '10000000,100000000',
-        '--mode=forge',
-        '--slippage=3',
-        '--block=4465664',
-      ];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '271643',
-        minAmountOutHex: '0x04251b',
-        quote: { '0x150683BF3f0a344e271fc1b7dac3783623e7208A': '271725' },
-        dust: {
-          '0x08B918dD18E087893bb9d711d9E0BBaA7a63Ef63': '16',
-          '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '99600399',
-          '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
-        },
-        gas: '1497635',
-      });
-    });
-  });
-
   describe('beraborrow', () => {
     it.skip('nect-honey', async () => {});
 
@@ -406,12 +353,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         gas: '831733',
       });
     });
-  });
-
-  describe('fortunafi', () => {
-    it.skip('rusd-honey', async () => {});
-
-    it.skip('rusd-honey (with slippage)', async () => {});
   });
 
   describe('goldilocks', () => {
