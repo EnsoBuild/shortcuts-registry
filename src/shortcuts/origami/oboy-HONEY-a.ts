@@ -33,6 +33,8 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
       tokensOut: [vault],
     });
 
+    console.log(usdc, vault);
+
     const usdcAmount = getBalance(usdc, builder);
     const vaultAmount = await mintErc4626(usdc, vault, usdcAmount, builder);
 

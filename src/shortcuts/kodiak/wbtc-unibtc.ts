@@ -8,13 +8,13 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { balanceOf, depositKodiak } from '../../utils';
 
-export class KodiakUnibtcWbtcShortcut implements Shortcut {
-  name = 'kodiak-unibtc-wbtc';
+export class KodiakWbtcUnibtcShortcut implements Shortcut {
+  name = 'kodiak-wbtc-unibtc';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
-      unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
+      unibtc: chainIdToDeFiAddresses[ChainIds.Berachain].unibtc,
       wbtc: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
       island: '0xB67D60fc02E0870EdDca24D4fa8eA516c890152b',
     },
@@ -34,7 +34,7 @@ export class KodiakUnibtcWbtcShortcut implements Shortcut {
     const amountInUnibtc = builder.add(balanceOf(unibtc, walletAddress()));
     const amountInWbtc = builder.add(balanceOf(wbtc, walletAddress()));
 
-    await depositKodiak(provider, builder, [unibtc, wbtc], [amountInUnibtc, amountInWbtc], island, this.setterInputs);
+    await depositKodiak(provider, builder, [wbtc, unibtc], [amountInWbtc, amountInUnibtc], island, this.setterInputs);
 
     const payload = await builder.build({
       requireWeiroll: true,
