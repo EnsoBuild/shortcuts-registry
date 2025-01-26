@@ -39,6 +39,7 @@ import { DolomiteDUsdcShortcut } from '../shortcuts/dolomite/dusdc';
 import { DolomiteDUsdtShortcut } from '../shortcuts/dolomite/dusdt';
 import { DolomiteDWbtcShortcut } from '../shortcuts/dolomite/dwbtc';
 import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
+import { GoldilocksRsethRsethotShortcut } from '../shortcuts/goldilocks/rseth-rsethot';
 import { GoldilocksUniBtcOtUniBtcShortcut } from '../shortcuts/goldilocks/unibtcot-unibtc';
 import { InfraredHoneyUsdcShortcut } from '../shortcuts/infrared/honey-usdc';
 import { InfraredWbtcWethShortcut } from '../shortcuts/infrared/wbtc-weth';
@@ -47,6 +48,7 @@ import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
 import { AbracadabraMimHoneyhortcut } from '../shortcuts/kodiak/mim-honey';
 import { KodiaknectUsdeShortcut } from '../shortcuts/kodiak/nect-usde';
+import { KodiakUsdtHoneyShortcut } from '../shortcuts/kodiak/usdt-honey';
 import { KodiakwbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcUnibtcShortcut } from '../shortcuts/kodiak/wbtc-unibtc';
 import { KodiakWbtcWethShortcut } from '../shortcuts/kodiak/wbtc-weth';
@@ -122,6 +124,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
 
   goldilocks: {
     'unibtcot-unibtc': new GoldilocksUniBtcOtUniBtcShortcut(),
+    'rseth-rsethot': new GoldilocksRsethRsethotShortcut(),
   },
   kodiak: {
     'honey-usdc': new KodiakHoneyUsdcShortcut(),
@@ -132,6 +135,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'wbtc-honey': new KodiakwbtcHoneyShortcut(),
     'wbtc-unibtc': new KodiakWbtcUnibtcShortcut(),
     'mim-honey': new AbracadabraMimHoneyhortcut(),
+    'usdt-honey': new KodiakUsdtHoneyShortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),

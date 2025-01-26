@@ -17,7 +17,7 @@ export class ThjUsdcShortcut implements Shortcut {
       vault: '0x46BA968312ab17A9cD667771bB2D14D8d3Ce00B9',
     },
     [ChainIds.Berachain]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       vault: '0xC0ab623479371af246DD11872586720683B61e43',
     },
   };
@@ -56,6 +56,11 @@ export class ThjUsdcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:THJ Interpol Vault' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:THJ Interpol Vault' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
