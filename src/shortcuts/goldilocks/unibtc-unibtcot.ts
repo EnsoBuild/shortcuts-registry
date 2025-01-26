@@ -5,14 +5,14 @@ import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { div } from '@ensofinance/shortcuts-standards/helpers/math';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { burnTokens, depositKodiak, getBalance } from '../../utils';
 
-export class GoldilocksUniBtcOtUniBtcShortcut implements Shortcut {
-  name = 'goldilocks-unibtcOt-unibtc';
+export class GoldilocksUniBtcUniBtcOtShortcut implements Shortcut {
+  name = 'goldilocks-unibtc-unibtcot';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
@@ -20,6 +20,13 @@ export class GoldilocksUniBtcOtUniBtcShortcut implements Shortcut {
       yt: '0x7Cf31aaaaFe1aBB46a935c543C65ce7346729B90',
       vault: '0x834Cb23083be1C80F9737468e49555a56B149Af5',
       island: '0xB4E5c02409070258FaAe3C895996b8E115209ec6',
+    },
+    [ChainIds.Berachain]: {
+      unibtc: chainIdToDeFiAddresses[ChainIds.Berachain].unibtc,
+      ot: '0xE771779B350d2cC291E9461387d7f41765a7cB8b',
+      yt: '0x888d15E66b5eb410ea5Df520Fc46f030BBa31299',
+      vault: '0x8742DB52a4EAEFE88bE5D3431980E221aaAA1EE3',
+      island: '0x1d5224Aff66EbB2Cf46De98f69A5982f650F098c',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
@@ -87,6 +94,16 @@ export class GoldilocksUniBtcOtUniBtcShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].yt, { label: 'ERC20:UniBtc-YT' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'GoldiVault:uniBtc' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'KodiakIsland:UniBtcOT/UniBtc' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].ebtc, { label: 'ERC20:UniBtc' }],
+          [this.inputs[ChainIds.Berachain].ot, { label: 'ERC20:UniBtc-OT' }],
+          [this.inputs[ChainIds.Berachain].yt, { label: 'ERC20:UniBtc-YT' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'GoldiVault:uniBtc' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'KodiakIsland:UniBtcOT/UniBtc' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
