@@ -65,7 +65,8 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
   beraborrow: {
     'nect-honey': new BeraborrowNectHoneyShortcut(),
     'weth-honey': new BeraborrowWethHoneyShortcut(),
-    beraeth: new BeraborrowBeraethShortcut(),
+
+    beraEth: new BeraborrowBeraethShortcut(),
     pumpbtc: new BeraborrowPumpbtcShortcut(),
     rseth: new BeraborrowRsethShortcut(),
     sbtc: new BeraborrowSbtcShortcut(),
