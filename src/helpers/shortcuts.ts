@@ -42,6 +42,10 @@ import { DolomiteDUsdcShortcut } from '../shortcuts/dolomite/dusdc';
 import { DolomiteDUsdtShortcut } from '../shortcuts/dolomite/dusdt';
 import { DolomiteDWbtcShortcut } from '../shortcuts/dolomite/dwbtc';
 import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
+import { DolomiteInfraredDethShortcut } from '../shortcuts/dolomite/ir-deth';
+import { DolomiteInfraredDHoneyShortcut } from '../shortcuts/dolomite/ir-dhoney';
+import { DolomiteInfraredDUsdtShortcut } from '../shortcuts/dolomite/ir-dusdt';
+import { DolomiteInfraredDwbtcShortcut } from '../shortcuts/dolomite/ir-dwbtc';
 import { GoldilocksRsethRsethotShortcut } from '../shortcuts/goldilocks/rseth-rsethot';
 import { GoldilockssolvbtcbnnsolvbtcbnnOtShortcut } from '../shortcuts/goldilocks/solvbtcbnnot-solvbtc';
 import { GoldilocksUniBtcUniBtcOtShortcut } from '../shortcuts/goldilocks/unibtc-unibtcot';
@@ -127,6 +131,10 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     dusdt: new DolomiteDUsdtShortcut(),
     dwbtc: new DolomiteDWbtcShortcut(),
     dylpumpbtc: new DolomiteDYlPumpBtcShortcut(),
+    'ir-deth': new DolomiteInfraredDethShortcut(),
+    'ir-dusdt': new DolomiteInfraredDUsdtShortcut(),
+    'ir-dhoney': new DolomiteInfraredDHoneyShortcut(),
+    'ir-dwbtc': new DolomiteInfraredDwbtcShortcut(),
   },
   d2: {
     'usdc-kodiakplus': new D2UsdcKodiakplusShortcut(),
