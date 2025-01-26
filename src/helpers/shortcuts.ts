@@ -13,6 +13,7 @@ import { BeraborrowStoneShortcut } from '../shortcuts/beraborrow/stone';
 import { BeraborrowUnibtcShortcut } from '../shortcuts/beraborrow/unibtc';
 import { BeraborrowUsdcShortcut } from '../shortcuts/beraborrow/usdc';
 import { BeraborrowUsdeShortcut } from '../shortcuts/beraborrow/usde';
+import { BeraborrowWbtcHoneyShortcut } from '../shortcuts/beraborrow/wbtc-honey';
 import { BeraborrowWbtcWethShortcut } from '../shortcuts/beraborrow/wbtc-weth';
 import { BeraborrowWethShortcut } from '../shortcuts/beraborrow/weth';
 import { BeraborrowWethHoneyShortcut } from '../shortcuts/beraborrow/weth-honey';
@@ -46,6 +47,7 @@ import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
 import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
 import { KodiaknectUsdeShortcut } from '../shortcuts/kodiak/nect-usde';
+import { KodiakwbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcWethShortcut } from '../shortcuts/kodiak/wbtc-weth';
 import { KodiakWethHoneyShortcut } from '../shortcuts/kodiak/weth-honey';
 import { OrigamiBoycoHoneyShortcut } from '../shortcuts/origami/oboy-HONEY-a';
@@ -84,6 +86,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     ylrseth: new BeraborrowYlrsethShortcut(),
     ylsteth: new BeraborrowYlstethShortcut(),
     'wbtc-weth': new BeraborrowWbtcWethShortcut(),
+    'wbtc-honey': new BeraborrowWbtcHoneyShortcut(),
   },
   berachain: {
     honey: new BerachainHoneyShortcut(),
@@ -127,6 +130,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'wbtc-weth': new KodiakWbtcWethShortcut(),
     'beraeth-weth': new KodiakbBraethwethShortcut(),
     'nect-usde': new KodiaknectUsdeShortcut(),
+    'wbtc-honey': new KodiakwbtcHoneyShortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),
