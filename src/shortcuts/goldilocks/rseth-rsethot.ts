@@ -56,9 +56,6 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
     await depositKodiak(provider, builder, [rseth, ot], [halfAmount, otAmount], island, this.setterInputs);
 
     const otLeftOvers = getBalance(ot, builder);
-    const ytAmount = getBalance(yt, builder);
-
-    await burnTokens(yt, ytAmount, builder);
 
     await goldilocks.redeem.addToBuilder(builder, {
       tokenIn: ot,
@@ -66,6 +63,9 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
       amountIn: otLeftOvers,
       primaryAddress: vault,
     });
+
+    const ytAmount = getBalance(yt, builder);
+    await burnTokens(yt, ytAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
