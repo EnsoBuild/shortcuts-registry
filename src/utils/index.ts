@@ -45,7 +45,7 @@ export function balanceOf(token: AddressArg, owner: WalletAddressArg) {
 }
 
 export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {
-  const berachainHoney = getStandardByProtocol('berachain-honey', 80000); // TODO: return this to 'builder.chainId' after standards get updated to support bera
+  const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId);
   const { honey, honeyFactory } = chainIdToDeFiAddresses[builder.chainId];
 
   const { amountOut } = await berachainHoney.deposit.addToBuilder(builder, {
@@ -59,7 +59,7 @@ export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: B
 }
 
 export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amountIn: NumberArg, builder: Builder) {
-  const erc4626 = getStandardByProtocol('erc4626', 80000); // TODO: return this to 'builder.chainId' after standards get updated to support bera
+  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
   const { amountOut } = await erc4626.deposit.addToBuilder(builder, {
     tokenIn,
     tokenOut,
@@ -71,7 +71,7 @@ export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amo
 }
 
 export async function mintNect(amountIn: NumberArg, builder: Builder) {
-  const erc4626 = getStandardByProtocol('erc4626', 80000); // TODO: return this to 'builder.chainId' after standards get updated to support bera
+  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
   const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
     tokenIn: [chainIdToDeFiAddresses[builder.chainId].usdc],
     tokenOut: chainIdToDeFiAddresses[builder.chainId].nect,
@@ -107,7 +107,7 @@ export async function mintSatLayerVault(
 export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {
   const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
 
-  const dineroBeraeth = getStandardByProtocol('dinero-lst', 80000, true); // TODO: return this to 'builder.chainId' after standards get updated to support bera
+  const dineroBeraeth = getStandardByProtocol('dinero-lst', builder.chainId, true); // TODO: return this to 'builder.chainId' after standards get updated to support bera
   const { amountOut } = await dineroBeraeth.deposit.addToBuilder(
     builder,
     {
@@ -141,7 +141,7 @@ export function ensureMinAmountOut(amount: NumberArg, builder: Builder) {
   });
 }
 export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {
-  const berachainHoney = getStandardByProtocol('berachain-honey', 80000); //TODO fix when the standards supports berachain
+  const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId); //TODO fix when the standards supports berachain
   const { honey, honeyFactory } = chainIdToDeFiAddresses[builder.chainId];
 
   const { amountOut } = await berachainHoney.redeem.addToBuilder(builder, {
