@@ -15,6 +15,10 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      vault: '0x0b53Afe5de9f9df65C3Fe8A9DA81dC410d14d4d4',
+    },
   };
   setterInputs = new Set(['minAmountOut']);
 
