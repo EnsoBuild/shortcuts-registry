@@ -9,7 +9,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class DolomiteDSbtcShortcut implements Shortcut {
   name = 'dolomite-dsbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       sbtc: '0x5d417e7798208E9285b5157498bBF23A23E421E7', // SBTC
@@ -55,6 +55,11 @@ export class DolomiteDSbtcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].sbtc, { label: 'ERC20:SBTC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dSBTC' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].sbtc, { label: 'ERC20:SBTC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dSBTC' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

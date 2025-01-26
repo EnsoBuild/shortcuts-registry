@@ -9,7 +9,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class DolomiteDEthShortcut implements Shortcut {
   name = 'dolomite-deth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth, // weth
@@ -57,6 +57,11 @@ export class DolomiteDEthShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dWETH' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dWETH' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

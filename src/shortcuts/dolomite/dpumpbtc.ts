@@ -10,7 +10,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class DolomiteDPumpBtcShortcut implements Shortcut {
   name = 'dolomite-dpumpbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       pumpbtc: getAddress('0x49a49AB0A048bCADB8b4E51c5c970C46bF889CCD') as AddressArg, // pumpBTC
@@ -56,6 +56,11 @@ export class DolomiteDPumpBtcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].pumpbtc, { label: 'ERC20:pumpBTC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dpumpBTC' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].pumpbtc, { label: 'ERC20:pumpBTC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dpumpBTC' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

@@ -9,7 +9,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class DolomiteDYlPumpBtcShortcut implements Shortcut {
   name = 'dolomite-dylpumpbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       ylpumpbtc: '0x4Ebd8983Ca3b7c3621cdB9AD87191f2cB5677726', // yl-pumpBTC
@@ -55,6 +55,11 @@ export class DolomiteDYlPumpBtcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].ylpumpbtc, { label: 'ERC20:yl-pumpBTC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dyl-pumpBTC' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].ylpumpbtc, { label: 'ERC20:yl-pumpBTC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dyl-pumpBTC' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

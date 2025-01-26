@@ -9,7 +9,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class DolomiteDWbtcShortcut implements Shortcut {
   name = 'dolomite-wbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       wbtc: chainIdToDeFiAddresses[ChainIds.Cartio].wbtc,
@@ -55,6 +55,11 @@ export class DolomiteDWbtcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].wbtc, { label: 'ERC20:WBTC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dWBTC' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].wbtc, { label: 'ERC20:WBTC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dWBTC' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

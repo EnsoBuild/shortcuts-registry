@@ -245,6 +245,12 @@ const tokenToHolderCartio: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Cartio].unibtc, '0xC3827A4BC8224ee2D116637023b124CED6db6e90'], // UniBtc-OT
 ]);
 
+const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
+  [chainIdToDeFiAddresses[ChainIds.Berachain].nativeToken, '0x0000000000000000000000000000000000000000'], // Native Token (funded via `vm.deal(<address>, 1_000 ether)`)
+  [chainIdToDeFiAddresses[ChainIds.Berachain].weth, '0x8E4Ef86AfAf6AFde0D36F794C968C805e2f64bf5'],
+]);
+
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([
   [ChainIds.Cartio, tokenToHolderCartio],
+  [ChainIds.Berachain, tokenToHolderBerchain],
 ]);

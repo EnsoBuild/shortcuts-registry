@@ -9,7 +9,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class DolomiteDUsdtShortcut implements Shortcut {
   name = 'dolomite-dusdt';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdt: chainIdToDeFiAddresses[ChainIds.Cartio].usdt,
@@ -55,6 +55,11 @@ export class DolomiteDUsdtShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].usdt, { label: 'ERC20:USDT' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dUSDT' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdt, { label: 'ERC20:USDT' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dUSDT' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
