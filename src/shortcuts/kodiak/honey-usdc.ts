@@ -13,7 +13,7 @@ import { balanceOf, depositKodiak, getSetterValue, mintHoney, redeemHoney } from
 export class KodiakHoneyUsdcShortcut implements Shortcut {
   name = 'kodiak-honey-usdc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,

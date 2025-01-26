@@ -1,24 +1,19 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class BeraborrowWethShortcut implements Shortcut {
-  name = 'weth';
+export class BeraborrowStbtcShortcut implements Shortcut {
+  name = 'stbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      weth: TokenAddresses.cartio.weth,
-      psm: '0xEdB3CD4f17b20b69Cd7bf8c1126E2759e4A710Be',
-    },
     [ChainIds.Berachain]: {
-      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
-      psm: '0x849232E2144BD5118B5e4A070FE15035cC07b388',
+      stbtc: chainIdToDeFiAddresses[ChainIds.Berachain].stbtc,
+      psm: '0xdf3F6ABbA9Cb5bA375ffeC89bF246800b4Aed3eC',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -27,16 +22,15 @@ export class BeraborrowWethShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, psm } = inputs;
+    const { stbtc, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth],
+      tokensIn: [stbtc],
       tokensOut: [psm],
     });
+    const stbtcAmount = getBalance(stbtc, builder);
 
-    const wethAmount = getBalance(weth, builder);
-
-    const vaultAmount = await mintErc4626(weth, psm, wethAmount, builder);
+    const vaultAmount = await mintErc4626(stbtc, psm, stbtcAmount, builder);
     ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
@@ -52,15 +46,10 @@ export class BeraborrowWethShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
-        return new Map([
-          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco WETH' }],
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
-        ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco WETH' }],
-          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco stbtc' }],
+          [this.inputs[ChainIds.Berachain].stbtc, { label: 'ERC20:stbtc' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

@@ -9,7 +9,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class OrigamiBoycoHoneyShortcut implements Shortcut {
   name = 'origami-oboy-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
@@ -55,6 +55,11 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'Origami oboy-HONEY-a' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'Origami oboy-HONEY-a' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

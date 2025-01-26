@@ -11,7 +11,7 @@ import { depositKodiak, getBalance, getSetterValue, mintBeraEth } from '../../ut
 export class KodiakbBraethwethShortcut implements Shortcut {
   name = 'kodiak-beraeth-weth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,

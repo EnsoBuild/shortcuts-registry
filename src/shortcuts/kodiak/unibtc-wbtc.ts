@@ -11,7 +11,7 @@ import { balanceOf, depositKodiak } from '../../utils';
 export class KodiakUnibtcWbtcShortcut implements Shortcut {
   name = 'kodiak-unibtc-wbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
