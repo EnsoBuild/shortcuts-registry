@@ -184,7 +184,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     bgt: '0x',
     bridgeQuoter: '0x',
     burr: '0x',
-    burrbearZap: '0x',
+    burrbearZap: '0xcb2dcB9905c6844EF33586A75402d6431b151418',
     dweth: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF',
     ebtc: '0x',
     honey: '0xFCBD14DC51f0A4d49d5E53C2E0950e0bC26d0Dce',
