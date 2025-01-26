@@ -14,7 +14,7 @@ export class BeraborrowWethShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: TokenAddresses.cartio.weth,
-      psm: '0x849232E2144BD5118B5e4A070FE15035cC07b388',
+      psm: '0xEdB3CD4f17b20b69Cd7bf8c1126E2759e4A710Be',
     },
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
