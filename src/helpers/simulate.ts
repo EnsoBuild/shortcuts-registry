@@ -68,6 +68,9 @@ const wethExchangeRates: Record<number, Record<AddressArg, BigNumber>> = {
   [ChainIds.Cartio]: {
     [chainIdToDeFiAddresses[ChainIds.Cartio]!.weth]: BigNumber.from(10).pow(18),
   },
+  [ChainIds.Berachain]: {
+    [chainIdToDeFiAddresses[ChainIds.Berachain]!.weth]: BigNumber.from(10).pow(18),
+  },
 };
 
 export function encodeMulticall(calls: [AddressArg, string][]) {
