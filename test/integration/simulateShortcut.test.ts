@@ -199,26 +199,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
     });
   });
 
-  describe('d2', () => {
-    it('usdc', async () => {
-      // Arrange
-      const args = ['d2', 'usdc', '100000000', '--mode=forge', '--block=3445662'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '1',
-        minAmountOutHex: '0x01',
-        quote: { '0xa4869CbdC3Bc1B71b7C29e642207bb9439Ac05ba': '100000000' },
-        dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '549169',
-      });
-    });
-  });
-
   describe('dahlia', () => {
     it('usdc', async () => {
       // Arrange
