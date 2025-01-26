@@ -248,6 +248,8 @@ const tokenToHolderCartio: Map<AddressArg, AddressArg> = new Map([
 const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Berachain].nativeToken, '0x0000000000000000000000000000000000000000'], // Native Token (funded via `vm.deal(<address>, 1_000 ether)`)
   [chainIdToDeFiAddresses[ChainIds.Berachain].weth, '0x8E4Ef86AfAf6AFde0D36F794C968C805e2f64bf5'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].usdc, '0xcEE8F35e33C8B4d137eb12DEeB17cEB67B513F2B'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].rseth, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
 ]);
 
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([
