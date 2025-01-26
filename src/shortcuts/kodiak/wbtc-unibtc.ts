@@ -51,10 +51,17 @@ export class KodiakWbtcUnibtcShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
+          [this.inputs[ChainIds.Cartio].unibtc, { label: 'ERC20:unibtc' }],
           [this.inputs[ChainIds.Cartio].wbtc, { label: 'ERC20:WBTC' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-WBTC-0.3%' }],
+          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-unibtc-WBTC-0.3%' }],
           [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].unibtc, { label: 'ERC20:unibtc' }],
+          [this.inputs[ChainIds.Berachain].wbtc, { label: 'ERC20:WBTC' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-unibtc-WBTC-0.3%' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

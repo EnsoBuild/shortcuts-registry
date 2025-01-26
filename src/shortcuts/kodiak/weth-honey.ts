@@ -68,6 +68,14 @@ export class KodiakWethHoneyShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
           [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
+        ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
     }

@@ -74,7 +74,6 @@ export interface SimulationLogConfig {
 
 export interface SimulationRoles {
   readonly caller: AddressData;
-  readonly defaultWeirollWallet: AddressData;
   readonly recipeMarketHub: AddressData;
   readonly multiCall: AddressData;
   readonly setter: AddressData;

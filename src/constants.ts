@@ -78,10 +78,6 @@ export const chainIdToSimulationRoles: Map<ChainIds, SimulationRoles> = new Map(
         address: '0x93621DCA56fE26Cdee86e4F6B18E116e9758Ff11',
         label: 'Caller',
       },
-      defaultWeirollWallet: {
-        address: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        label: 'WeirollWallet',
-      },
       recipeMarketHub: {
         address: '0x65a605E074f9Efc26d9Cf28CCdbC532B94772056',
         label: 'RecipeMarketHub',
@@ -115,10 +111,6 @@ export const chainIdToSimulationRoles: Map<ChainIds, SimulationRoles> = new Map(
         address: '0x93621DCA56fE26Cdee86e4F6B18E116e9758Ff11',
         label: 'Caller',
       },
-      defaultWeirollWallet: {
-        address: '0x',
-        label: 'WeirollWallet',
-      },
       recipeMarketHub: {
         address: '0xA0A18b895Bd59F509d174921506245c14f98c0F6',
         label: 'RecipeMarketHub',
@@ -151,7 +143,6 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
   [ChainIds.Cartio]: {
     ausdt: TokenAddresses.cartio.usdt,
     bgt: TokenAddresses.cartio.btg,
-    burr: TokenAddresses.cartio.burr,
     dweth: '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3',
     ebtc: TokenAddresses.cartio.ebtc,
     unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
@@ -183,7 +174,6 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     beraEth: '0x6fc6545d5cDE268D5C7f1e476D444F39c995120d',
     bgt: '0x',
     bridgeQuoter: '0x',
-    burr: '0x',
     burrbearZap: '0xcb2dcB9905c6844EF33586A75402d6431b151418',
     dweth: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF',
     ebtc: '0x',
@@ -225,11 +215,6 @@ const tokenToHolderCartio: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Cartio].nativeToken, '0x0000000000000000000000000000000000000000'], // Native Token (funded via `vm.deal(<address>, 1_000 ether)`)
   [chainIdToDeFiAddresses[ChainIds.Cartio].ausdt, '0xCACa41c458f48D4d7c710F2E62AEe931E149A37d'], // aUSDT
   [chainIdToDeFiAddresses[ChainIds.Cartio].bgt, '0x211bE45338B7C6d5721B5543Eb868547088Aca39'], // BGT
-  [chainIdToDeFiAddresses[ChainIds.Cartio].burr, '0x5B34eBA09e567d37884c0AA58509119c87Bfb589'], // BURR
-  // [
-  //   chainIdToDeFiAddresses[ChainIds.Cartio].dweth,
-  //   '0x0000000000000000000000000000000000000000',
-  // ], // dWETH (no holder found)
   [chainIdToDeFiAddresses[ChainIds.Cartio].ebtc, '0x895614c89beC7D11454312f740854d08CbF57A78'], // eBTC
   [chainIdToDeFiAddresses[ChainIds.Cartio].honey, '0x3869E8A2A1432D09666f87b9E61FBf6f71eb6c75'], // HONEY
   [chainIdToDeFiAddresses[ChainIds.Cartio].mim, '0xB734c264F83E39Ef6EC200F99550779998cC812d'], // MIM
@@ -250,6 +235,8 @@ const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Berachain].weth, '0x8E4Ef86AfAf6AFde0D36F794C968C805e2f64bf5'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].usdc, '0xcEE8F35e33C8B4d137eb12DEeB17cEB67B513F2B'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].rseth, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].unibtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].wbtc, '0x9E175acE5148c5430aA4ce1C0E56856d8df24A89'],
 ]);
 
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([
