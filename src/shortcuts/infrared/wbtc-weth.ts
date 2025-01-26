@@ -2,15 +2,16 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { Standards, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { balanceOf, depositKodiak } from '../../utils';
 
-export class InfraredWethWbtcShortcut implements Shortcut {
-  name = 'infrared-weth-wbtc';
+export class InfraredWbtcWethShortcut implements Shortcut {
+  name = 'infrared-wbtc-weth';
   description = '';
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {
@@ -19,15 +20,15 @@ export class InfraredWethWbtcShortcut implements Shortcut {
       wbtc: TokenAddresses.cartio.wbtc,
       island: '0x1E5FFDC9B4D69398c782608105d6e2B724063E13',
       vault: '0xe1e4F5b13F6E87140A657222BB9D38B78ad00bf8',
-      primary: Standards.Kodiak_Islands.protocol.addresses!.cartio!.router,
     },
   };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, wbtc, island, primary, vault } = inputs;
+    const { weth, wbtc, island, vault } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth, wbtc],
@@ -36,15 +37,7 @@ export class InfraredWethWbtcShortcut implements Shortcut {
     const amountInWeth = builder.add(balanceOf(weth, walletAddress()));
     const amountInWbtc = builder.add(balanceOf(wbtc, walletAddress()));
 
-    const kodiak = getStandardByProtocol('kodiak-islands', chainId);
-
-    await kodiak.deposit.addToBuilder(builder, {
-      tokenIn: [weth, wbtc],
-      tokenOut: island,
-      amountIn: [amountInWeth, amountInWbtc],
-      primaryAddress: primary,
-    });
-
+    await depositKodiak(provider, builder, [wbtc, weth], [amountInWbtc, amountInWeth], island, this.setterInputs);
     const amountIsland = builder.add(balanceOf(island, walletAddress()));
 
     const erc4626 = getStandardByProtocol('erc4626', chainId);
@@ -74,7 +67,7 @@ export class InfraredWethWbtcShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].wbtc, { label: 'ERC20:WBTC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:INFRARED_VAULT' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-WBTC-0.3%' }],
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Kodiak Island Router' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

@@ -423,9 +423,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   });
 
   describe('infrared', () => {
-    it('weth-wbtc', async () => {
+    it('wbtc-weth', async () => {
       // Arrange
-      const args = ['infrared', 'weth-wbtc', '1000000000,100000', '--mode=forge', '--block=3491563'];
+      const args = ['infrared', 'wbtc-weth', '1000000000,100000', '--mode=forge', '--block=3491563'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -433,15 +433,15 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       // Assert
       expect(report).toMatchObject({
         weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0xe1e4F5b13F6E87140A657222BB9D38B78ad00bf8': '2798' },
         dust: {
           '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '206540',
           '0xFa5bf670A92AfF186E5176aA55690E0277010040': '99999',
           '0x1E5FFDC9B4D69398c782608105d6e2B724063E13': '0',
         },
-        gas: '1234351',
+        gas: '1481118',
       });
     });
   });
@@ -533,9 +533,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('weth-wbtc', async () => {
+    it('wbtc-weth', async () => {
       // Arrange
-      const args = ['kodiak', 'weth-wbtc', '1000000000,100000', '--mode=forge', '--block=4465664'];
+      const args = ['kodiak', 'wbtc-weth', '1000000000,100000', '--mode=forge', '--block=4465664'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -554,9 +554,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('weth-wbtc (with slippage)', async () => {
+    it('wbtc-weth (with slippage)', async () => {
       // Arrange
-      const args = ['kodiak', 'weth-wbtc', '1000000000,100000', '--mode=forge', '--slippage=3', '--block=4465664'];
+      const args = ['kodiak', 'wbtc-weth', '1000000000,100000', '--mode=forge', '--slippage=3', '--block=4465664'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);

@@ -13,6 +13,7 @@ import { BeraborrowStoneShortcut } from '../shortcuts/beraborrow/stone';
 import { BeraborrowUnibtcShortcut } from '../shortcuts/beraborrow/unibtc';
 import { BeraborrowUsdcShortcut } from '../shortcuts/beraborrow/usdc';
 import { BeraborrowUsdeShortcut } from '../shortcuts/beraborrow/usde';
+import { BeraborrowWbtcWethShortcut } from '../shortcuts/beraborrow/wbtc-weth';
 import { BeraborrowWethShortcut } from '../shortcuts/beraborrow/weth';
 import { BeraborrowWethHoneyShortcut } from '../shortcuts/beraborrow/weth-honey';
 import { BeraborrowYlbtclstShortcut } from '../shortcuts/beraborrow/ylbtclst';
@@ -40,8 +41,8 @@ import { DolomiteDWbtcShortcut } from '../shortcuts/dolomite/dwbtc';
 import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
 import { GoldilocksUniBtcOtUniBtcShortcut } from '../shortcuts/goldilocks/unibtcot-unibtc';
 import { InfraredHoneyUsdcShortcut } from '../shortcuts/infrared/honey-usdc';
+import { InfraredWbtcWethShortcut } from '../shortcuts/infrared/wbtc-weth';
 import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
-import { InfraredWethWbtcShortcut } from '../shortcuts/infrared/weth-wbtc';
 import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
 import { KodiaknectUsdeShortcut } from '../shortcuts/kodiak/nect-usde';
@@ -82,6 +83,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     ylpumpbtc: new BeraborrowYlpumpbtcShortcut(),
     ylrseth: new BeraborrowYlrsethShortcut(),
     ylsteth: new BeraborrowYlstethShortcut(),
+    'wbtc-weth': new BeraborrowWbtcWethShortcut(),
   },
   berachain: {
     honey: new BerachainHoneyShortcut(),
@@ -140,7 +142,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     solvbtcbnn: new SatlayerSolvbtcbnnBnnShortcut(),
   },
   infrared: {
-    'weth-wbtc': new InfraredWethWbtcShortcut(),
+    'wbtc-weth': new InfraredWbtcWethShortcut(),
     'honey-usdc': new InfraredHoneyUsdcShortcut(),
     'weth-honey': new InfraredWethHoneyShortcut(),
   },
