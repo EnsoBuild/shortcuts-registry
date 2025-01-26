@@ -9,7 +9,6 @@ import { DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE, MAX_BPS, MIN_BPS, SimulationMode }
 import {
   buildShortcutsHashMap,
   buildVerificationHash,
-  getAuthHeaderByChainId,
   getBalances,
   getBasisPointsFromArgs,
   getCampaign,
@@ -54,14 +53,8 @@ async function main() {
     if (!chainId) throw 'Error: Unknown chain';
 
     const rpcUrl = getRpcUrlByChainId(chainId);
-    const authHeader = getAuthHeaderByChainId(chainId);
     const provider = new StaticJsonRpcProvider({
       url: rpcUrl,
-      headers: authHeader
-        ? {
-            Authorization: `Bearer ${authHeader}`,
-          }
-        : undefined,
     });
 
     const campaign = await getCampaign(provider, chainId, marketHash);
