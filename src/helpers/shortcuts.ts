@@ -3,9 +3,22 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { AbracadabraMimHoneyhortcut } from '../shortcuts/abracadabra/mim-honey';
 import { BeraborrowBeraethShortcut } from '../shortcuts/beraborrow/beraEth';
 import { BeraborrowNectHoneyShortcut } from '../shortcuts/beraborrow/nect-honey';
+import { BeraborrowPumpbtcShortcut } from '../shortcuts/beraborrow/pumpBtc';
+import { BeraborrowRsethShortcut } from '../shortcuts/beraborrow/rseth';
 import { BeraborrowSbtcShortcut } from '../shortcuts/beraborrow/sbtc';
+import { BeraborrowSolvbtcShortcut } from '../shortcuts/beraborrow/solvBtc';
+import { BeraborrowSolvbtcbnnShortcut } from '../shortcuts/beraborrow/solvBtcBnn';
+import { BeraborrowStbtcShortcut } from '../shortcuts/beraborrow/stbtc';
+import { BeraborrowStoneShortcut } from '../shortcuts/beraborrow/stone';
+import { BeraborrowUnibtcShortcut } from '../shortcuts/beraborrow/uniBtc';
+import { BeraborrowUsdcShortcut } from '../shortcuts/beraborrow/usdc';
+import { BeraborrowUsdeShortcut } from '../shortcuts/beraborrow/usde';
 import { BeraborrowWethShortcut } from '../shortcuts/beraborrow/weth';
 import { BeraborrowWethHoneyShortcut } from '../shortcuts/beraborrow/weth-honey';
+import { BeraborrowYlbtclstShortcut } from '../shortcuts/beraborrow/ylbtclst';
+import { BeraborrowYlpumpbtcShortcut } from '../shortcuts/beraborrow/ylpumpbtc';
+import { BeraborrowYlrsethShortcut } from '../shortcuts/beraborrow/ylrseth';
+import { BeraborrowYlstethShortcut } from '../shortcuts/beraborrow/ylsteth';
 import { BerachainHoneyShortcut } from '../shortcuts/berachain/honey';
 import { BurrbearUsdcShortcut } from '../shortcuts/burrbear/usdc';
 import { ConcreteLbtcShortcut } from '../shortcuts/concrete/lbtc';
@@ -52,9 +65,22 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
   beraborrow: {
     'nect-honey': new BeraborrowNectHoneyShortcut(),
     'weth-honey': new BeraborrowWethHoneyShortcut(),
-    beraEth: new BeraborrowBeraethShortcut(),
+    beraeth: new BeraborrowBeraethShortcut(),
+    pumpbtc: new BeraborrowPumpbtcShortcut(),
+    rseth: new BeraborrowRsethShortcut(),
     sbtc: new BeraborrowSbtcShortcut(),
+    solvbtc: new BeraborrowSolvbtcShortcut(),
+    solvbtcbnn: new BeraborrowSolvbtcbnnShortcut(),
+    stbtc: new BeraborrowStbtcShortcut(),
+    stone: new BeraborrowStoneShortcut(),
+    unibtc: new BeraborrowUnibtcShortcut(),
+    usdc: new BeraborrowUsdcShortcut(),
+    usde: new BeraborrowUsdeShortcut(),
     weth: new BeraborrowWethShortcut(),
+    ylbtclst: new BeraborrowYlbtclstShortcut(),
+    ylpumpbtc: new BeraborrowYlpumpbtcShortcut(),
+    ylrseth: new BeraborrowYlrsethShortcut(),
+    ylsteth: new BeraborrowYlstethShortcut(),
   },
   berachain: {
     honey: new BerachainHoneyShortcut(),

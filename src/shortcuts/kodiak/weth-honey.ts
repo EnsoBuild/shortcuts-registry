@@ -11,7 +11,7 @@ import { balanceOf, depositKodiak, mintHoney, redeemHoney } from '../../utils';
 export class KodiakWethHoneyShortcut implements Shortcut {
   name = 'kodiak-weth-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,

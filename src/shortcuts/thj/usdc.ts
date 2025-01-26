@@ -10,7 +10,7 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class ThjUsdcShortcut implements Shortcut {
   name = 'usdc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdc: TokenAddresses.cartio.usdc,

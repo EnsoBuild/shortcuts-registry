@@ -11,7 +11,7 @@ import { balanceOf, depositKodiak, mintNect, redeemNect } from '../../utils';
 export class KodiaknectUsdeShortcut implements Shortcut {
   name = 'kodiak-nect-usde';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       nect: chainIdToDeFiAddresses[ChainIds.Cartio].nect,
@@ -69,6 +69,14 @@ export class KodiaknectUsdeShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].nect, { label: 'ERC20:NECT' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-nect-USDE-0.3%' }],
           [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usde, { label: 'ERC20:USDE' }],
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].nect, { label: 'ERC20:NECT' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-nect-USDE-0.3%' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

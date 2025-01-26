@@ -9,11 +9,15 @@ import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 export class BeraborrowSbtcShortcut implements Shortcut {
   name = 'sbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       sbtc: chainIdToDeFiAddresses[ChainIds.Cartio].sbtc,
       psm: '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265',
+    },
+    [ChainIds.Berachain]: {
+      sbtc: chainIdToDeFiAddresses[ChainIds.Berachain].sbtc,
+      psm: '0x583Cc8a82B55A96a9dED97f5353397c85ee8b60E',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -50,6 +54,11 @@ export class BeraborrowSbtcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco sbtc' }],
           [this.inputs[ChainIds.Cartio].sbtc, { label: 'ERC20:sbtc' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco sbtc' }],
+          [this.inputs[ChainIds.Berachain].sbtc, { label: 'ERC20:sbtc' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

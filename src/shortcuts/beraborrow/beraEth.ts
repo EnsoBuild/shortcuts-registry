@@ -10,12 +10,17 @@ import { ensureMinAmountOut, getBalance, mintBeraEth } from '../../utils';
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
       beraEth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
       psm: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
+    },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      beraEth: chainIdToDeFiAddresses[ChainIds.Berachain].beraEth,
+      psm: '0x8dcb18B561CE7E7b309A2d172bdc2633266dfc85',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -64,6 +69,11 @@ export class BeraborrowBeraethShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco beraEth' }],
           [this.inputs[ChainIds.Cartio].beraEth, { label: 'ERC20:beraEth' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco beraEth' }],
+          [this.inputs[ChainIds.Berachain].beraEth, { label: 'ERC20:beraEth' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

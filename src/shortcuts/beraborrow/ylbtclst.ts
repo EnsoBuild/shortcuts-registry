@@ -6,18 +6,14 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class OrigamiBoycoHoneyShortcut implements Shortcut {
-  name = 'origami-oboy-honey';
+export class BeraborrowYlbtclstShortcut implements Shortcut {
+  name = 'ylbtclst';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
-      vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
-    },
     [ChainIds.Berachain]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
-      vault: '0x0b53Afe5de9f9df65C3Fe8A9DA81dC410d14d4d4',
+      ylbtclst: chainIdToDeFiAddresses[ChainIds.Berachain].ylbtclst,
+      psm: '0x77A0F11926FaaeBe041D723F5B20069FCB4C4c4A',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -26,16 +22,16 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, vault } = inputs;
+    const { ylbtclst, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [usdc],
-      tokensOut: [vault],
+      tokensIn: [ylbtclst],
+      tokensOut: [psm],
     });
 
-    const usdcAmount = getBalance(usdc, builder);
-    const vaultAmount = await mintErc4626(usdc, vault, usdcAmount, builder);
+    const ylbtclstAmount = getBalance(ylbtclst, builder);
 
+    const vaultAmount = await mintErc4626(ylbtclst, psm, ylbtclstAmount, builder);
     ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
@@ -51,15 +47,10 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
-        return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].vault, { label: 'Origami oboy-HONEY-a' }],
-        ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Berachain].vault, { label: 'Origami oboy-HONEY-a' }],
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco ylbtclst' }],
+          [this.inputs[ChainIds.Berachain].ylbtclst, { label: 'ERC20:ylbtclst' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
