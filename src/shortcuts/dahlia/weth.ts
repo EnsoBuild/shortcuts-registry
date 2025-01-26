@@ -3,18 +3,22 @@ import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementatio
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class DahliaWethShortcut implements Shortcut {
   name = 'weth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: TokenAddresses.cartio.weth,
       vault: '0x479Df3548C4261Cb101BE33536B3D90CCA6eb327',
+    },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      vault: '0x2416e726F38d2c5299592460e87Af266E3B5b19C',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -52,6 +56,11 @@ export class DahliaWethShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].vault, { label: 'Dahlia Vault' }],
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].vault, { label: 'Dahlia Vault' }],
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
