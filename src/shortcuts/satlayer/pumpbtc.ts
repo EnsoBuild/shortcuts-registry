@@ -10,12 +10,17 @@ import { ensureMinAmountOut, getBalance, mintSatLayerVault } from '../../utils';
 export class SatlayerPumpBtcShortcut implements Shortcut {
   name = 'satlayer-pumpbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       pumpbtc: chainIdToDeFiAddresses[ChainIds.Cartio].pumpbtc,
       receiptToken: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.receiptToken,
       vault: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.vault,
+    },
+    [ChainIds.Berachain]: {
+      pumpbtc: chainIdToDeFiAddresses[ChainIds.Berachain].pumpbtc,
+      receiptToken: '0xAD9f7d8a79Ab96C10Ed94d49463c2FF0F5Ca4eC8',
+      vault: chainIdToDeFiAddresses[ChainIds.Berachain].satlayerVault,
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -54,6 +59,12 @@ export class SatlayerPumpBtcShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].vault, { label: 'SatlayerPool' }],
           [this.inputs[ChainIds.Cartio].pumpbtc, { label: 'ERC20:pumpBTC.bera' }],
           [this.inputs[ChainIds.Cartio].receiptToken, { label: 'ERC20:satpumpBTC.bera' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].vault, { label: 'SatlayerPool' }],
+          [this.inputs[ChainIds.Berachain].pumpbtc, { label: 'ERC20:pumpBTC.bera' }],
+          [this.inputs[ChainIds.Berachain].receiptToken, { label: 'ERC20:satpumpBTC.bera' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

@@ -1,25 +1,19 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { Standards } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintSatLayerVault } from '../../utils';
 
-export class SatlayerLbtcShortcut implements Shortcut {
-  name = 'satlayer-lbtc';
+export class SatlayerSolvbtcbnnBnnShortcut implements Shortcut {
+  name = 'satlayer-solvbtcbnnbnn';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      lbtc: '0x73a58b73018c1a417534232529b57b99132b13D2', // LBTC
-      receiptToken: '0xD9B6b1db8707cED387043b1c568fB172c809cffD',
-      vault: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.vault,
-    },
     [ChainIds.Berachain]: {
-      lbtc: chainIdToDeFiAddresses[ChainIds.Berachain].lbtc,
-      receiptToken: '0x961395ed9960fE5e281585bEAa730b99AF3AB763',
+      solvbtcbnn: chainIdToDeFiAddresses[ChainIds.Berachain].solvbtcbnn,
+      receiptToken: '0xE7041941E9E4f3d12D9Eb6D9b228d3781548b126',
       vault: chainIdToDeFiAddresses[ChainIds.Berachain].satlayerVault,
     },
   };
@@ -29,16 +23,16 @@ export class SatlayerLbtcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { lbtc, vault, receiptToken } = inputs;
+    const { solvbtcbnn, vault, receiptToken } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [lbtc],
+      tokensIn: [solvbtcbnn],
       tokensOut: [receiptToken],
     });
 
-    const lbtcAmount = getBalance(lbtc, builder);
+    const solvbtcbnnAmount = getBalance(solvbtcbnn, builder);
+    const receiptTokenAmount = await mintSatLayerVault(solvbtcbnn, receiptToken, vault, solvbtcbnnAmount, builder);
 
-    const receiptTokenAmount = await mintSatLayerVault(lbtc, receiptToken, vault, lbtcAmount, builder);
     ensureMinAmountOut(receiptTokenAmount, builder);
 
     const payload = await builder.build({
@@ -54,17 +48,11 @@ export class SatlayerLbtcShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
-        return new Map([
-          [this.inputs[ChainIds.Cartio].vault, { label: 'SatlayerPool' }],
-          [this.inputs[ChainIds.Cartio].lbtc, { label: 'ERC20:lBtc' }],
-          [this.inputs[ChainIds.Cartio].receiptToken, { label: 'ERC20:satBtc' }],
-        ]);
       case ChainIds.Berachain:
         return new Map([
           [this.inputs[ChainIds.Berachain].vault, { label: 'SatlayerPool' }],
-          [this.inputs[ChainIds.Berachain].lbtc, { label: 'ERC20:lBtc' }],
-          [this.inputs[ChainIds.Berachain].receiptToken, { label: 'ERC20:satBtc' }],
+          [this.inputs[ChainIds.Berachain].solvbtcbnn, { label: 'ERC20:solvbtcbnn' }],
+          [this.inputs[ChainIds.Berachain].receiptToken, { label: 'ERC20:satsolvbtcbnn' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

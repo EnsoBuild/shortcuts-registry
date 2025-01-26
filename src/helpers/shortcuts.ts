@@ -51,7 +51,7 @@ import { OrigamiBoycoHoneyShortcut } from '../shortcuts/origami/oboy-HONEY-a';
 import { SatlayerLbtcShortcut } from '../shortcuts/satlayer/lbtc';
 import { SatlayerPumpBtcShortcut } from '../shortcuts/satlayer/pumpbtc';
 import { SatlayerSbtcShortcut } from '../shortcuts/satlayer/sbtc';
-import { SatlayerSolvBtcShortcut } from '../shortcuts/satlayer/solvBtc';
+import { SatlayerSolvbtcbnnBnnShortcut } from '../shortcuts/satlayer/solvbtcbnn';
 import { SatlayerWabtcShortcut } from '../shortcuts/satlayer/wabtc';
 import { ThjUsdcShortcut } from '../shortcuts/thj/usdc';
 import { VedaUsdcShortcut } from '../shortcuts/veda/usdc';
@@ -137,7 +137,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     sbtc: new SatlayerSbtcShortcut(),
     lbtc: new SatlayerLbtcShortcut(),
     wabtc: new SatlayerWabtcShortcut(),
-    solvbtc: new SatlayerSolvBtcShortcut(),
+    solvbtcbnn: new SatlayerSolvbtcbnnBnnShortcut(),
   },
   infrared: {
     'weth-wbtc': new InfraredWethWbtcShortcut(),

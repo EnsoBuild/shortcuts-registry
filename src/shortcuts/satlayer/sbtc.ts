@@ -3,19 +3,24 @@ import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementatio
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { Standards } from '@ensofinance/shortcuts-standards';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintSatLayerVault } from '../../utils';
 
 export class SatlayerSbtcShortcut implements Shortcut {
   name = 'satlayer-sbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       sbtc: '0x443FF9a2d8F238a8859B4709C16B2CE18400745a',
       receiptToken: '0xEf687e4533dc2368A4929C9952d21274aA28b59C',
       vault: Standards.Satlayer_Vaults.protocol.addresses!.cartio!.vault,
+    },
+    [ChainIds.Berachain]: {
+      sbtc: chainIdToDeFiAddresses[ChainIds.Berachain].sbtc,
+      receiptToken: '0xd235571526170E7D167040166aae59cb8627AbC2',
+      vault: chainIdToDeFiAddresses[ChainIds.Berachain].satlayerVault,
     },
   };
   setterInputs = new Set(['minAmountOut']);
