@@ -3,7 +3,7 @@ import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementatio
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
@@ -15,6 +15,10 @@ export class ThjUsdcShortcut implements Shortcut {
     [ChainIds.Cartio]: {
       usdc: TokenAddresses.cartio.usdc,
       vault: '0x46BA968312ab17A9cD667771bB2D14D8d3Ce00B9',
+    },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
+      vault: '0xC0ab623479371af246DD11872586720683B61e43',
     },
   };
   setterInputs = new Set(['minAmountOut']);
