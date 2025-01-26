@@ -81,7 +81,7 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
-          [this.inputs[ChainIds.Cartio].router, { label: 'Kodiak Island Router' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
           [this.inputs[ChainIds.Cartio].primary, { label: 'Beraborrow Vault' }],
         ]);
       case ChainIds.Berachain:
@@ -90,7 +90,7 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
           [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
           [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
-          [this.inputs[ChainIds.Berachain].router, { label: 'Kodiak Island Router' }],
+          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
           [this.inputs[ChainIds.Berachain].primary, { label: 'Beraborrow Vault' }],
         ]);
       default:
