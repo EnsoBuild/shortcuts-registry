@@ -19,12 +19,14 @@ export class KodiakWethHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: '0xD4570a738675fB2c31e7b7b88998EE73E9E17d49',
     },
+    /*
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
-      island: '0x0000000000000000000000000000000000000000',
+      island: '0x0', // TODO
     },
+    */
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 

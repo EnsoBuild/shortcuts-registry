@@ -19,6 +19,12 @@ export class KodiakbBraethwethShortcut implements Shortcut {
       island: '0x4b73646408CB26090aBA90DDC29Bbf5fCb97D1A5',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      beraEth: chainIdToDeFiAddresses[ChainIds.Berachain].beraEth,
+      island: '0x03bCcF796cDef61064c4a2EffdD21f1AC8C29E92',
+      primary: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter,
+    },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'wethToMintBeraEth']);
 

@@ -20,6 +20,13 @@ export class KodiaknectUsdeShortcut implements Shortcut {
       island: '0x0d81a1E72950575e0df6228E528F362cc5d169c4',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
+    [ChainIds.Berachain]: {
+      nect: chainIdToDeFiAddresses[ChainIds.Berachain].nect,
+      usde: chainIdToDeFiAddresses[ChainIds.Berachain].usde,
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      island: '0x78F87aA41a4C32a619467d5B36e0319F3EAf2DA2',
+      primary: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter,
+    },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
