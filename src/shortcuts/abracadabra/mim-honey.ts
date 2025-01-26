@@ -20,6 +20,13 @@ export class AbracadabraMimHoneyhortcut implements Shortcut {
       island: '0x150683BF3f0a344e271fc1b7dac3783623e7208A',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      mim: chainIdToDeFiAddresses[ChainIds.Berachain].mim,
+      island: '0x933b2e6a71edBF11BBA75C5Ad241D246b145E0b0',
+      primary: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter,
+    },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
