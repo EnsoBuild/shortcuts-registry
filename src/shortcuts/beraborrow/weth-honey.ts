@@ -12,7 +12,7 @@ import { balanceOf, depositKodiak, mintHoney, redeemHoney } from '../../utils';
 export class BeraborrowWethHoneyShortcut implements Shortcut {
   name = 'beraborrow-weth-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
@@ -20,8 +20,15 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
       honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
       island: '0xD4570a738675fB2c31e7b7b88998EE73E9E17d49',
       primary: '0xb9e24b49d1372DEb64b8039ab837074b703c8206',
-      vaultToken: '0xA608F68D67Daa7C6D08E25428261397C00bbCb35',
       router: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
+    },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      island: '0xf6c6Be0FF6d6F70A04dBE4F1aDE62cB23053Bd95',
+      primary: '0x9b6Cf6Ab16C409B3a2c796211c274c8a8da28D1d',
+      router: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter,
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
@@ -76,6 +83,15 @@ export class BeraborrowWethHoneyShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
           [this.inputs[ChainIds.Cartio].router, { label: 'Kodiak Island Router' }],
           [this.inputs[ChainIds.Cartio].primary, { label: 'Beraborrow Vault' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
+          [this.inputs[ChainIds.Berachain].router, { label: 'Kodiak Island Router' }],
+          [this.inputs[ChainIds.Berachain].primary, { label: 'Beraborrow Vault' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
