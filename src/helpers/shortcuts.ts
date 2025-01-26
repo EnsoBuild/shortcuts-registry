@@ -32,15 +32,11 @@ import { D2UsdcKodiakplusShortcut } from '../shortcuts/d2/usdc-kodiakplus';
 import { DahliaUsdcShortcut } from '../shortcuts/dahlia/usdc';
 import { DahliaWethShortcut } from '../shortcuts/dahlia/weth';
 import { DolomiteDberaethShortcut } from '../shortcuts/dolomite/dberaeth';
-import { DolomiteDEthShortcut } from '../shortcuts/dolomite/deth';
-import { DolomiteDHoneyShortcut } from '../shortcuts/dolomite/dhoney';
 import { DolomiteDnectShortcut } from '../shortcuts/dolomite/dnect';
 import { DolomiteDPumpBtcShortcut } from '../shortcuts/dolomite/dpumpbtc';
 import { DolomiteDRsEthShortcut } from '../shortcuts/dolomite/drseth';
 import { DolomiteDSbtcShortcut } from '../shortcuts/dolomite/dsbtc';
 import { DolomiteDUsdcShortcut } from '../shortcuts/dolomite/dusdc';
-import { DolomiteDUsdtShortcut } from '../shortcuts/dolomite/dusdt';
-import { DolomiteDWbtcShortcut } from '../shortcuts/dolomite/dwbtc';
 import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
 import { DolomiteInfraredDethShortcut } from '../shortcuts/dolomite/ir-deth';
 import { DolomiteInfraredDHoneyShortcut } from '../shortcuts/dolomite/ir-dhoney';
@@ -120,16 +116,12 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     weth: new DahliaWethShortcut(),
   },
   dolomite: {
-    deth: new DolomiteDEthShortcut(),
     dberaeth: new DolomiteDberaethShortcut(),
     dnect: new DolomiteDnectShortcut(),
-    dhoney: new DolomiteDHoneyShortcut(),
     dpumpbtc: new DolomiteDPumpBtcShortcut(),
     drseth: new DolomiteDRsEthShortcut(),
     dsbtc: new DolomiteDSbtcShortcut(),
     dusdc: new DolomiteDUsdcShortcut(),
-    dusdt: new DolomiteDUsdtShortcut(),
-    dwbtc: new DolomiteDWbtcShortcut(),
     dylpumpbtc: new DolomiteDYlPumpBtcShortcut(),
     'ir-deth': new DolomiteInfraredDethShortcut(),
     'ir-dusdt': new DolomiteInfraredDUsdtShortcut(),
