@@ -1,43 +1,41 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class BeraborrowSbtcShortcut implements Shortcut {
   name = 'sbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      sBtc: chainIdToDeFiAddresses[ChainIds.Cartio].sbtc,
-      primary: '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265',
+      sbtc: chainIdToDeFiAddresses[ChainIds.Cartio].sbtc,
+      psm: '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265',
+    },
+    [ChainIds.Berachain]: {
+      sbtc: chainIdToDeFiAddresses[ChainIds.Berachain].sbtc,
+      psm: '0x583Cc8a82B55A96a9dED97f5353397c85ee8b60E',
     },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { sBtc, primary } = inputs;
+    const { sbtc, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [sBtc],
-      tokensOut: [primary],
+      tokensIn: [sbtc],
+      tokensOut: [psm],
     });
-    const amountIn = builder.add(balanceOf(sBtc, walletAddress()));
+    const sbtcAmount = getBalance(sbtc, builder);
 
-    const erc4626 = getStandardByProtocol('erc4626', chainId);
-    await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [sBtc],
-      tokenOut: primary,
-      amountIn: [amountIn],
-      primaryAddress: primary,
-    });
+    const vaultAmount = await mintErc4626(sbtc, psm, sbtcAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -54,8 +52,13 @@ export class BeraborrowSbtcShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Beraborrow Boyco sBTC' }],
-          [this.inputs[ChainIds.Cartio].sBtc, { label: 'ERC20:SBTC' }],
+          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco sbtc' }],
+          [this.inputs[ChainIds.Cartio].sbtc, { label: 'ERC20:sbtc' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco sbtc' }],
+          [this.inputs[ChainIds.Berachain].sbtc, { label: 'ERC20:sbtc' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

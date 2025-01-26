@@ -1,46 +1,42 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class DolomiteDUsdtShortcut implements Shortcut {
   name = 'dolomite-dusdt';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      base: chainIdToDeFiAddresses[ChainIds.Cartio].usdt,
+      usdt: chainIdToDeFiAddresses[ChainIds.Cartio].usdt,
+      vault: '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8', //dusdt
+    },
+    [ChainIds.Berachain]: {
+      usdt: chainIdToDeFiAddresses[ChainIds.Berachain].usdt,
       vault: '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8', //dusdt
     },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { base, vault } = inputs;
+    const { usdt, vault } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [base],
+      tokensIn: [usdt],
       tokensOut: [vault],
     });
 
-    // Get the amount of token in wallet
-    const amountIn = builder.add(balanceOf(base, walletAddress()));
+    const usdtAmount = getBalance(usdt, builder);
+    const vaultAmount = await mintErc4626(usdt, vault, usdtAmount, builder);
 
-    //Mint
-    const dolomite = getStandardByProtocol('dolomite-erc4626', chainId);
-    await dolomite.deposit.addToBuilder(builder, {
-      tokenIn: base,
-      tokenOut: vault,
-      amountIn,
-      primaryAddress: vault,
-    });
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -57,8 +53,13 @@ export class DolomiteDUsdtShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].base, { label: 'ERC20:USDT' }],
+          [this.inputs[ChainIds.Cartio].usdt, { label: 'ERC20:USDT' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:dUSDT' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdt, { label: 'ERC20:USDT' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:dUSDT' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

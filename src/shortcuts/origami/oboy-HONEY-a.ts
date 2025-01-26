@@ -1,23 +1,26 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class OrigamiBoycoHoneyShortcut implements Shortcut {
   name = 'origami-oboy-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
       vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      vault: '0x0b53Afe5de9f9df65C3Fe8A9DA81dC410d14d4d4',
+    },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -30,17 +33,12 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
       tokensOut: [vault],
     });
 
-    // Get the amount of token in wallet
-    const amountIn = builder.add(balanceOf(usdc, walletAddress()));
+    console.log(usdc, vault);
 
-    //Mint
-    const origami = getStandardByProtocol('erc4626', chainId);
-    await origami.deposit.addToBuilder(builder, {
-      tokenIn: usdc,
-      tokenOut: vault,
-      amountIn,
-      primaryAddress: vault,
-    });
+    const usdcAmount = getBalance(usdc, builder);
+    const vaultAmount = await mintErc4626(usdc, vault, usdcAmount, builder);
+
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -59,6 +57,11 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'Origami oboy-HONEY-a' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'Origami oboy-HONEY-a' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

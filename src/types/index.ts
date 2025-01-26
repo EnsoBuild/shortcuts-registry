@@ -5,14 +5,15 @@ import {
   WeirollScript,
 } from "@ensofinance/shortcuts-builder/types";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
 
 export interface Shortcut {
   name: string;
   description: string;
   supportedChains: number[];
   inputs: Record<number, Input>;
-  setterInputs?: Record<number, SetterInputToIndex>;
-  build(chainId: number): Promise<Output>;
+  setterInputs?: SetterInputToIndex;
+  build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output>;
   getAddressData?(chainId: number): Map<AddressArg, AddressData>;
   getTokenHolder?(chainId: number): Map<AddressArg, AddressArg>;
 }
@@ -73,7 +74,6 @@ export interface SimulationLogConfig {
 
 export interface SimulationRoles {
   readonly caller: AddressData;
-  readonly defaultWeirollWallet: AddressData;
   readonly recipeMarketHub: AddressData;
   readonly multiCall: AddressData;
   readonly setter: AddressData;

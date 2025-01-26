@@ -2,6 +2,7 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { sub } from '@ensofinance/shortcuts-standards/helpers';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
@@ -10,7 +11,7 @@ import { depositKodiak, getBalance, getSetterValue, mintBeraEth } from '../../ut
 export class KodiakbBraethwethShortcut implements Shortcut {
   name = 'kodiak-beraeth-weth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
@@ -18,12 +19,16 @@ export class KodiakbBraethwethShortcut implements Shortcut {
       island: '0x4b73646408CB26090aBA90DDC29Bbf5fCb97D1A5',
       primary: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter,
     },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      beraEth: chainIdToDeFiAddresses[ChainIds.Berachain].beraEth,
+      island: '0x03bCcF796cDef61064c4a2EffdD21f1AC8C29E92',
+      primary: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter,
+    },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'wethToMintBeraEth']),
-  };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'wethToMintBeraEth']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
@@ -34,12 +39,11 @@ export class KodiakbBraethwethShortcut implements Shortcut {
       tokensOut: [island],
     });
     const amountIn = getBalance(weth, builder);
-    const wethToMintBeraEth = getSetterValue(builder, this.setterInputs[chainId], 'wethToMintBeraEth');
+    const wethToMintBeraEth = getSetterValue(builder, this.setterInputs, 'wethToMintBeraEth');
     const remainingweth = sub(amountIn, wethToMintBeraEth, builder);
-    await mintBeraEth(wethToMintBeraEth, builder);
-    const beraEthAmount = getBalance(beraEth, builder);
+    const beraEthAmount = await mintBeraEth(wethToMintBeraEth, builder);
 
-    await depositKodiak(builder, [weth, beraEth], [remainingweth, beraEthAmount], island, this.setterInputs[chainId]);
+    await depositKodiak(provider, builder, [weth, beraEth], [remainingweth, beraEthAmount], island, this.setterInputs);
 
     const payload = await builder.build({
       requireWeiroll: true,

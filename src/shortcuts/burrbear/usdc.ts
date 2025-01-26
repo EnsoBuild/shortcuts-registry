@@ -11,17 +11,20 @@ import { balanceOf, depositBurrbear } from '../../utils';
 export class BurrbearUsdcShortcut implements Shortcut {
   name = 'usdc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       usdc: TokenAddresses.cartio.usdc,
       vault: chainIdToDeFiAddresses[ChainIds.Cartio].burrbearZap,
       bexLp: '0xFbb99BAD8eca0736A9ab2a7f566dEbC9acb607f0', //Honey-USDC-NECT
     },
+    [ChainIds.Berachain]: {
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      vault: chainIdToDeFiAddresses[ChainIds.Berachain].burrbearZap,
+      bexLp: '0xD10E65A5F8cA6f835F2B1832e37cF150fb955f23', //Honey-USDC-NECT
+    },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -38,7 +41,7 @@ export class BurrbearUsdcShortcut implements Shortcut {
     const amountIn = builder.add(balanceOf(usdc, walletAddress()));
 
     //Mint
-    await depositBurrbear(builder, amountIn, this.setterInputs[chainId]);
+    await depositBurrbear(builder, amountIn, this.setterInputs);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -58,6 +61,12 @@ export class BurrbearUsdcShortcut implements Shortcut {
           [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:Burrbear ZAP' }],
           [this.inputs[ChainIds.Cartio].bexLp, { label: 'ERC20:BEX LP HONEY-USDC-NECT' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:Burrbear ZAP' }],
+          [this.inputs[ChainIds.Berachain].bexLp, { label: 'ERC20:BEX LP HONEY-USDC-NECT' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

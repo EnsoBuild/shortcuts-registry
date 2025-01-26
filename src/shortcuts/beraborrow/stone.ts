@@ -1,41 +1,38 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class KodiakWethWbtcShortcut implements Shortcut {
-  name = 'kodiak-weth-wbtc';
+export class BeraborrowStoneShortcut implements Shortcut {
+  name = 'stone';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
-      wbtc: chainIdToDeFiAddresses[ChainIds.Cartio].wbtc,
-      island: '0x1E5FFDC9B4D69398c782608105d6e2B724063E13',
+    [ChainIds.Berachain]: {
+      stone: chainIdToDeFiAddresses[ChainIds.Berachain].stone,
+      psm: '0xeC5CB1b6849258eEab0613139DFf7698ae256997',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, wbtc, island } = inputs;
+    const { stone, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth, wbtc],
-      tokensOut: [island],
+      tokensIn: [stone],
+      tokensOut: [psm],
     });
-    const amountInWeth = builder.add(balanceOf(weth, walletAddress()));
-    const amountInWbtc = builder.add(balanceOf(wbtc, walletAddress()));
 
-    await depositKodiak(builder, [weth, wbtc], [amountInWeth, amountInWbtc], island, this.setterInputs[chainId]);
+    const stoneAmount = getBalance(stone, builder);
+
+    const vaultAmount = await mintErc4626(stone, psm, stoneAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -50,12 +47,10 @@ export class KodiakWethWbtcShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
+      case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
-          [this.inputs[ChainIds.Cartio].wbtc, { label: 'ERC20:WBTC' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-WBTC-0.3%' }],
-          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco stone' }],
+          [this.inputs[ChainIds.Berachain].stone, { label: 'ERC20:stone' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

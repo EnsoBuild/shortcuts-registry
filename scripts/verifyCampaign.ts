@@ -21,7 +21,9 @@ async function main() {
     if (!chainId) throw 'Error: Unknown chain';
 
     const rpcUrl = getRpcUrlByChainId(chainId);
-    const provider = new StaticJsonRpcProvider(rpcUrl);
+    const provider = new StaticJsonRpcProvider({
+      url: rpcUrl,
+    });
 
     const campaign = await getCampaign(provider, chainId, marketHash);
     const { verified, receiptToken, depositRecipe } = campaign;
@@ -34,7 +36,7 @@ async function main() {
 
     const verificationHash = buildVerificationHash(receiptToken, depositRecipe);
 
-    const shortcutHashMap = await buildShortcutsHashMap(chainId);
+    const shortcutHashMap = await buildShortcutsHashMap(chainId, provider);
     const shortcut = shortcutHashMap[verificationHash];
     if (!shortcut) throw 'Error: Cannot find shortcut using market hash';
     console.log('Shortcut: ', shortcut.name);

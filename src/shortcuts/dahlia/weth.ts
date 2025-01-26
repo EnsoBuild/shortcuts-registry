@@ -1,24 +1,27 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class DahliaWethShortcut implements Shortcut {
   name = 'weth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: TokenAddresses.cartio.weth,
       vault: '0x479Df3548C4261Cb101BE33536B3D90CCA6eb327',
     },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      vault: '0x2416e726F38d2c5299592460e87Af266E3B5b19C',
+    },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -30,15 +33,11 @@ export class DahliaWethShortcut implements Shortcut {
       tokensIn: [weth],
       tokensOut: [vault],
     });
-    const amountIn = builder.add(balanceOf(weth, walletAddress()));
 
-    const erc4626 = getStandardByProtocol('erc4626', chainId);
-    await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [weth],
-      tokenOut: vault,
-      amountIn: [amountIn],
-      primaryAddress: vault,
-    });
+    const wethAmount = getBalance(weth, builder);
+
+    const vaultAmount = await mintErc4626(weth, vault, wethAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -57,6 +56,11 @@ export class DahliaWethShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].vault, { label: 'Dahlia Vault' }],
           [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].vault, { label: 'Dahlia Vault' }],
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

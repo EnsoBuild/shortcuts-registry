@@ -1,14 +1,12 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
 import { getAddress } from '@ethersproject/address';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ConcreteWethShortcut implements Shortcut {
   name = 'weth';
@@ -20,6 +18,7 @@ export class ConcreteWethShortcut implements Shortcut {
       vault: getAddress('0x18AA409860b89353172C5A7fF4f5fd28a19f3c5a') as AddressArg,
     },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -31,15 +30,11 @@ export class ConcreteWethShortcut implements Shortcut {
       tokensIn: [weth],
       tokensOut: [vault],
     });
-    const amountIn = builder.add(balanceOf(weth, walletAddress()));
 
-    const vaultVault = getStandardByProtocol('erc4626', chainId);
-    await vaultVault.deposit.addToBuilder(builder, {
-      tokenIn: [weth],
-      tokenOut: vault,
-      amountIn: [amountIn],
-      primaryAddress: vault,
-    });
+    const wethAmount = getBalance(weth, builder);
+
+    const vaultAmount = await mintErc4626(weth, vault, wethAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

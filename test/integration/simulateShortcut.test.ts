@@ -15,10 +15,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
     console.error = vi.fn();
   });
 
-  describe('abracadabra', () => {
-    it('mim-honey', async () => {
+  describe('beraborrow', () => {
+    it.skip('nect-honey', async () => {});
+
+    it.skip('nect-honey (with slippage)', async () => {});
+
+    it('sbtc', async () => {
       // Arrange
-      const args = ['abracadabra', 'honey-mim', '10000000,100000000', '--mode=forge', '--block=4465664'];
+      const args = ['beraborrow', 'sbtc', '10000000', '--mode=forge', '--block=5107618'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -28,66 +32,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
         minAmountOut: '1',
         minAmountOutHex: '0x01',
-        quote: { '0x150683BF3f0a344e271fc1b7dac3783623e7208A': '271725' },
-        dust: {
-          '0x08B918dD18E087893bb9d711d9E0BBaA7a63Ef63': '16',
-          '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '99600399',
-          '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
-        },
-        gas: '1497635',
-      });
-    });
-
-    it('mim-honey (with slippage)', async () => {
-      // Arrange
-      const args = [
-        'abracadabra',
-        'honey-mim',
-        '10000000,100000000',
-        '--mode=forge',
-        '--slippage=3',
-        '--block=4465664',
-      ];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '271643',
-        minAmountOutHex: '0x04251b',
-        quote: { '0x150683BF3f0a344e271fc1b7dac3783623e7208A': '271725' },
-        dust: {
-          '0x08B918dD18E087893bb9d711d9E0BBaA7a63Ef63': '16',
-          '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '99600399',
-          '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
-        },
-        gas: '1497635',
-      });
-    });
-  });
-
-  describe('beraborrow', () => {
-    it.skip('nect-honey', async () => {});
-
-    it.skip('nect-honey (with slippage)', async () => {});
-
-    it('sbtc', async () => {
-      // Arrange
-      const args = ['beraborrow', 'sbtc', '10000000', '--mode=forge', '--block=3444841'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
         quote: { '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265': '10000000' },
         dust: { '0x5d417e7798208E9285b5157498bBF23A23E421E7': '0' },
-        gas: '268575',
+        gas: '521435',
       });
     });
 
@@ -131,19 +78,19 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
     it('weth', async () => {
       // Arrange
-      const args = ['beraborrow', 'weth', '100000000000', '--mode=forge', '--block=3444966'];
+      const args = ['beraborrow', 'weth', '100000000000', '--mode=forge', '--block=5107618'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0xEdB3CD4f17b20b69Cd7bf8c1126E2759e4A710Be': '100000000000' },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '268242',
+        gas: '486902',
       });
     });
   });
@@ -200,14 +147,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: {
           '0x9c5285F076C6c1D8471E2625aB5c2257547bCe86': '100000000000000000',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '351959',
+        gas: '604819',
       });
     });
 
@@ -220,14 +167,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: {
           '0x18AA409860b89353172C5A7fF4f5fd28a19f3c5a': '100000000000000000',
         },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '348086',
+        gas: '600946',
       });
     });
 
@@ -240,14 +187,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: {
           '0x18AA409860b89353172C5A7fF4f5fd28a19f3c5a': '100000000000000000',
         },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '348086',
+        gas: '600946',
       });
     });
   });
@@ -262,12 +209,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0xa4869CbdC3Bc1B71b7C29e642207bb9439Ac05ba': '100000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '296309',
+        gas: '549169',
       });
     });
   });
@@ -282,12 +229,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0x95B0de63dbbe5D92BD05B7c0C12A32673f490A42': '100000000000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '336553',
+        gas: '589413',
       });
     });
 
@@ -300,14 +247,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: {
           '0x479Df3548C4261Cb101BE33536B3D90CCA6eb327': '100000000000000000000',
         },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '333928',
+        gas: '586788',
       });
     });
   });
@@ -322,12 +269,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF': '100000000000000' },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '561758',
+        gas: '814618',
       });
     });
 
@@ -340,16 +287,16 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: {
           '0x53fACeCc391021a69Ba79351007079536AA64C6d': '9980000000000000000',
         },
         dust: {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0',
         },
-        gas: '1704624',
+        gas: '1954769',
       });
     });
 
@@ -362,12 +309,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0x444868B6e8079ac2c55eea115250f92C2b2c4D14': '100000000000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '554748',
+        gas: '807608',
       });
     });
 
@@ -380,12 +327,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8': '100000000000000' },
         dust: { '0x164A2dE1bc5dc56F329909F7c97Bae929CaE557B': '0' },
-        gas: '593079',
+        gas: '845939',
       });
     });
 
@@ -398,20 +345,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f': '100000000000000' },
         dust: { '0xFa5bf670A92AfF186E5176aA55690E0277010040': '0' },
-        gas: '578873',
+        gas: '831733',
       });
     });
-  });
-
-  describe('fortunafi', () => {
-    it.skip('rusd-honey', async () => {});
-
-    it.skip('rusd-honey (with slippage)', async () => {});
   });
 
   describe('goldilocks', () => {
@@ -423,25 +364,25 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   });
 
   describe('infrared', () => {
-    it('weth-wbtc', async () => {
+    it('wbtc-weth', async () => {
       // Arrange
-      const args = ['infrared', 'weth-wbtc', '1000000000,100000', '--mode=forge', '--block=3491563'];
+      const args = ['infrared', 'wbtc-weth', '1000000000,100000', '--mode=forge', '--block=3491563'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0xe1e4F5b13F6E87140A657222BB9D38B78ad00bf8': '2798' },
         dust: {
           '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '206540',
           '0xFa5bf670A92AfF186E5176aA55690E0277010040': '99999',
           '0x1E5FFDC9B4D69398c782608105d6e2B724063E13': '0',
         },
-        gas: '1107611',
+        gas: '1481118',
       });
     });
   });
@@ -533,9 +474,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('weth-wbtc', async () => {
+    it('wbtc-weth', async () => {
       // Arrange
-      const args = ['kodiak', 'weth-wbtc', '1000000000,100000', '--mode=forge', '--block=4465664'];
+      const args = ['kodiak', 'wbtc-weth', '1000000000,100000', '--mode=forge', '--block=4465664'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -554,9 +495,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('weth-wbtc (with slippage)', async () => {
+    it('wbtc-weth (with slippage)', async () => {
       // Arrange
-      const args = ['kodiak', 'weth-wbtc', '1000000000,100000', '--mode=forge', '--slippage=3', '--block=4465664'];
+      const args = ['kodiak', 'wbtc-weth', '1000000000,100000', '--mode=forge', '--slippage=3', '--block=4465664'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -586,14 +527,14 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: {
           '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714': '1000000000000000000',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '250848',
+        gas: '503708',
       });
     });
   });
@@ -608,12 +549,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0x052335D631356f4b63457c1796f5a3786e8160ad': '10000000' },
         dust: { '0x49a49AB0A048bCADB8b4E51c5c970C46bF889CCD': '0' },
-        gas: '306088',
+        gas: '579890',
       });
     });
   });
@@ -628,12 +569,12 @@ describe('Successfully simulates cArtio shortcuts for', () => {
 
       // Assert
       expect(report).toMatchObject({
-        weirollWallet: '0xBa8F5f80C41BF5e169d9149Cd4977B1990Fc2736',
-        minAmountOut: undefined,
-        minAmountOutHex: undefined,
+        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
+        minAmountOut: '1',
+        minAmountOutHex: '0x01',
         quote: { '0x46BA968312ab17A9cD667771bB2D14D8d3Ce00B9': '10000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '310660',
+        gas: '563520',
       });
     });
   });

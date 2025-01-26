@@ -1,69 +1,56 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, getBalance, getSetterValue, mintBeraEth } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintBeraEth } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
       beraEth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
-      rBeraEth: chainIdToDeFiAddresses[ChainIds.Cartio].rBeraEth,
-      primary: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
+      psm: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
+    },
+    [ChainIds.Berachain]: {
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      beraEth: chainIdToDeFiAddresses[ChainIds.Berachain].beraEth,
+      psm: '0x8dcb18B561CE7E7b309A2d172bdc2633266dfc85',
     },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut']),
-  };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraEth, primary } = inputs;
+    const { weth, beraEth, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth],
-      tokensOut: [primary],
+      tokensOut: [psm],
     });
-    const amountIn = getBalance(weth, builder);
 
-    await mintBeraEth(amountIn, builder);
+    const wethAmount = getBalance(weth, builder);
+    await mintBeraEth(wethAmount, builder);
+
     const beraEthAmount = getBalance(beraEth, builder);
 
     const erc4626 = getStandardByProtocol('erc4626', chainId);
     await erc4626.deposit.addToBuilder(builder, {
       tokenIn: [beraEth],
-      tokenOut: primary,
+      tokenOut: psm,
       amountIn: [beraEthAmount],
-      primaryAddress: primary,
+      primaryAddress: psm,
     });
 
-    const amountVaultToken = builder.add(balanceOf(primary, walletAddress()));
-    const amountSharesMin = getSetterValue(builder, this.setterInputs[chainId], 'minAmountOut');
-
-    const isCorrectAmount = builder.add({
-      address: helperAddresses(builder.chainId).shortcutsHelpers,
-      abi: ['function isEqualOrGreaterThan(uint256, uint256) external view returns (bool)'],
-      functionName: 'isEqualOrGreaterThan',
-      args: [amountVaultToken, amountSharesMin],
-    });
-
-    builder.add({
-      address: helperAddresses(builder.chainId).shortcutsHelpers,
-      abi: ['function check(bool condition) public pure returns (bool)'],
-      functionName: 'check',
-      args: [isCorrectAmount],
-    });
+    const psmAmount = getBalance(psm, builder);
+    ensureMinAmountOut(psmAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -80,8 +67,13 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].primary, { label: 'Beraborrow Boyco beraEth' }],
+          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco beraEth' }],
           [this.inputs[ChainIds.Cartio].beraEth, { label: 'ERC20:beraEth' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco beraEth' }],
+          [this.inputs[ChainIds.Berachain].beraEth, { label: 'ERC20:beraEth' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

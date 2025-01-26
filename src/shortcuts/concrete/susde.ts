@@ -1,12 +1,10 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ConcreteSusdeShortcut implements Shortcut {
   name = 'susde';
@@ -18,6 +16,7 @@ export class ConcreteSusdeShortcut implements Shortcut {
       vault: '0x1168848b115DA87587Be9cb2A962FD4A09D930Ea',
     },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -29,15 +28,11 @@ export class ConcreteSusdeShortcut implements Shortcut {
       tokensIn: [susde],
       tokensOut: [vault],
     });
-    const amountIn = builder.add(balanceOf(susde, walletAddress()));
 
-    const vaultVault = getStandardByProtocol('erc4626', chainId);
-    await vaultVault.deposit.addToBuilder(builder, {
-      tokenIn: [susde],
-      tokenOut: vault,
-      amountIn: [amountIn],
-      primaryAddress: vault,
-    });
+    const susdeAmount = getBalance(susde, builder);
+
+    const vaultAmount = await mintErc4626(susde, vault, susdeAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

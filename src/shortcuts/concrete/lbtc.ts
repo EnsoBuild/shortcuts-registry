@@ -1,12 +1,10 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ConcreteLbtcShortcut implements Shortcut {
   name = 'lbtc';
@@ -18,6 +16,7 @@ export class ConcreteLbtcShortcut implements Shortcut {
       vault: '0xC12823865DAA0579216A464b04aa3ae3faF12B4E',
     },
   };
+  setterInputs = new Set(['minAmountOut']);
 
   async build(chainId: number): Promise<Output> {
     const client = new RoycoClient();
@@ -29,15 +28,11 @@ export class ConcreteLbtcShortcut implements Shortcut {
       tokensIn: [lbtc],
       tokensOut: [vault],
     });
-    const amountIn = builder.add(balanceOf(lbtc, walletAddress()));
 
-    const vaultVault = getStandardByProtocol('erc4626', chainId);
-    await vaultVault.deposit.addToBuilder(builder, {
-      tokenIn: [lbtc],
-      tokenOut: vault,
-      amountIn: [amountIn],
-      primaryAddress: vault,
-    });
+    const lbtcAmount = getBalance(lbtc, builder);
+
+    const vaultAmount = await mintErc4626(lbtc, vault, lbtcAmount, builder);
+    ensureMinAmountOut(vaultAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

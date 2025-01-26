@@ -8,8 +8,8 @@ import {
   Transaction,
   WalletAddressArg,
 } from '@ensofinance/shortcuts-builder/types';
-import { PUBLIC_RPC_URLS, getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { GeneralAddresses, TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
+import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
+import { GeneralAddresses, TokenAddresses, helperAddresses } from '@ensofinance/shortcuts-standards/addresses';
 import {
   addAction,
   addApprovals,
@@ -58,6 +58,18 @@ export async function mintHoney(asset: AddressArg, amount: NumberArg, builder: B
   return amountOut as FromContractCallArg;
 }
 
+export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amountIn: NumberArg, builder: Builder) {
+  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
+  const { amountOut } = await erc4626.deposit.addToBuilder(builder, {
+    tokenIn,
+    tokenOut,
+    amountIn: [amountIn],
+    primaryAddress: tokenOut,
+  });
+
+  return amountOut as FromContractCallArg;
+}
+
 export async function mintNect(amountIn: NumberArg, builder: Builder) {
   const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
   const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
@@ -69,20 +81,67 @@ export async function mintNect(amountIn: NumberArg, builder: Builder) {
   return mintedAmountNect as FromContractCallArg;
 }
 
-export async function mintBeraEth(amountIn: NumberArg, builder: Builder) {
-  const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
+export async function mintSatLayerVault(
+  tokenIn: AddressArg,
+  tokenOut: AddressArg,
+  vault: AddressArg,
+  amountIn: NumberArg,
+  builder: Builder,
+): Promise<NumberArg> {
+  const satlayer = getStandardByProtocol('satlayer-vaults', builder.chainId);
+  const { amountOut } = await satlayer.deposit.addToBuilder(
+    builder,
+    {
+      tokenIn,
+      tokenOut,
+      amountIn,
+      primaryAddress: vault,
+    },
+    ['amountOut'],
+  );
 
-  const dineroBeraeth = getStandardByProtocol('dinero-lst', builder.chainId, true);
-  await dineroBeraeth.deposit.addToBuilder(builder, {
-    tokenIn: [weth],
-    tokenOut: beraEth,
-    amountIn: [amountIn],
-    primaryAddress: rBeraEth,
-  });
+  if (Array.isArray(amountOut)) return amountOut[0] as NumberArg;
+  return amountOut as NumberArg;
 }
 
+export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {
+  const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
+
+  const dineroBeraeth = getStandardByProtocol('dinero-lst', builder.chainId, true); // TODO: return this to 'builder.chainId' after standards get updated to support bera
+  const { amountOut } = await dineroBeraeth.deposit.addToBuilder(
+    builder,
+    {
+      tokenIn: [weth],
+      tokenOut: beraEth,
+      amountIn: [amountIn],
+      primaryAddress: rBeraEth,
+    },
+    ['amountOut'],
+  );
+  if (Array.isArray(amountOut)) return amountOut[0] as NumberArg;
+  return amountOut as NumberArg;
+}
+
+export function ensureMinAmountOut(amount: NumberArg, builder: Builder) {
+  const set = new Set(['minAmountOut']);
+  const amountSharesMin = getSetterValue(builder, set, 'minAmountOut');
+
+  const isCorrectAmount = builder.add({
+    address: helperAddresses(builder.chainId).shortcutsHelpers,
+    abi: ['function isEqualOrGreaterThan(uint256, uint256) external view returns (bool)'],
+    functionName: 'isEqualOrGreaterThan',
+    args: [amount, amountSharesMin],
+  });
+
+  builder.add({
+    address: helperAddresses(builder.chainId).shortcutsHelpers,
+    abi: ['function check(bool condition) public pure returns (bool)'],
+    functionName: 'check',
+    args: [isCorrectAmount],
+  });
+}
 export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder: Builder) {
-  const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId);
+  const berachainHoney = getStandardByProtocol('berachain-honey', builder.chainId); //TODO fix when the standards supports berachain
   const { honey, honeyFactory } = chainIdToDeFiAddresses[builder.chainId];
 
   const { amountOut } = await berachainHoney.redeem.addToBuilder(builder, {
@@ -156,15 +215,14 @@ export async function depositBurrbear(builder: Builder, amountIn: NumberArg, set
 }
 
 export async function depositKodiak(
+  provider: StaticJsonRpcProvider,
   builder: Builder,
   tokensIn: AddressArg[],
   amountsIn: NumberArg[],
   island: AddressArg,
   setterInputs: Set<string>,
 ) {
-  const rpcUrl = PUBLIC_RPC_URLS[builder.chainId].rpcUrls.public;
   const router = chainIdToDeFiAddresses[builder.chainId].kodiakRouter;
-  const provider = new StaticJsonRpcProvider(rpcUrl);
   const islandInterface = new Interface(['function token0() external view returns(address)']);
   const token0Bytes = await provider.call({
     to: island,
@@ -202,8 +260,12 @@ export async function depositKodiak(
   });
 }
 
-export async function buildRoycoMarketShortcut(shortcut: Shortcut, chainId: ChainIds): Promise<RoycoOutput> {
-  const output = await shortcut.build(chainId);
+export async function buildRoycoMarketShortcut(
+  shortcut: Shortcut,
+  chainId: ChainIds,
+  provider: StaticJsonRpcProvider,
+): Promise<RoycoOutput> {
+  const output = await shortcut.build(chainId, provider);
 
   return {
     weirollCommands: output.script.commands,

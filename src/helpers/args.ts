@@ -40,8 +40,8 @@ export function getRpcUrlByChainId(chainId: number): string {
   return rpcUrl;
 }
 
-export function getShortcutExecutionMode(shortcut: Shortcut, chainId: number): ShortcutExecutionMode {
-  if (shortcut.setterInputs?.[chainId]) {
+export function getShortcutExecutionMode(shortcut: Shortcut): ShortcutExecutionMode {
+  if (shortcut.setterInputs) {
     return ShortcutExecutionMode.MULTICALL__AGGREGATE;
   }
 

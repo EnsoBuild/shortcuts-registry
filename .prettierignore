@@ -35,3 +35,5 @@ reports
 scope.txt
 soldeer.lock
 yarn.lock
+.env.example
+

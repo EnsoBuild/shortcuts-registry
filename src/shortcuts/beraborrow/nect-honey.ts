@@ -4,6 +4,7 @@ import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, FromContractCallArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { Standards } from '@ensofinance/shortcuts-standards';
 import { sub } from '@ensofinance/shortcuts-standards/helpers/math';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
@@ -21,12 +22,17 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.nectUsdcIsland, // KODI-HONEY-NECT
       quoterV2: chainIdToDeFiAddresses[ChainIds.Cartio].kodiakQuoterV2,
     },
+    [ChainIds.Berachain]: {
+      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
+      nect: chainIdToDeFiAddresses[ChainIds.Berachain].nect,
+      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
+      island: '0x74E852a4f88bfbEff01275bB95d5ed77f2967d12', // KODI-HONEY-NECT
+      quoterV2: chainIdToDeFiAddresses[ChainIds.Berachain].kodiakQuoterV2,
+    },
   };
-  setterInputs: Record<number, Set<string>> = {
-    [ChainIds.Cartio]: new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']),
-  };
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
@@ -36,20 +42,21 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
       tokensIn: [usdc],
       tokensOut: [island],
     });
-    const amountIn = builder.add(balanceOf(usdc, walletAddress()));
-    const usdcToMintHoney = getSetterValue(builder, this.setterInputs[chainId], 'usdcToMintHoney');
-    const remainingUsdc = sub(amountIn, usdcToMintHoney, builder);
+    const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
+    const usdcToMintHoney = getSetterValue(builder, this.setterInputs, 'usdcToMintHoney');
+    const remainingUsdc = sub(usdcAmount, usdcToMintHoney, builder);
     // Get HONEY
-    const mintedAmountHoney = await mintHoney(usdc, usdcToMintHoney, builder);
+    const honeyMintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
     // Get NECT
-    const mintedAmountNect = await mintNect(remainingUsdc, builder);
+    const nectMintedAmount = await mintNect(remainingUsdc, builder);
 
     await depositKodiak(
+      provider,
       builder,
       [honey, nect],
-      [mintedAmountHoney, mintedAmountNect as FromContractCallArg],
+      [honeyMintedAmount, nectMintedAmount as FromContractCallArg],
       island,
-      this.setterInputs[chainId],
+      this.setterInputs,
     );
 
     const honeyLeftoverAmount = builder.add(balanceOf(honey, walletAddress()));

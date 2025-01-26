@@ -1,4 +1,5 @@
 import type { AddressArg } from '@ensofinance/shortcuts-builder/types';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { spawnSync } from 'node:child_process';
 
 import type { ShortcutExecutionMode } from '../constants';
@@ -6,6 +7,7 @@ import { ForgeTestLogFormat } from '../constants';
 import type { ForgeTestLogJSON, SimulationForgeData, SimulationRoles, SimulationTokensData } from '../types';
 
 export function simulateTransactionOnForge(
+  provider: StaticJsonRpcProvider,
   shortcutExecutionMode: ShortcutExecutionMode,
   roles: SimulationRoles,
   txData: string,
@@ -13,9 +15,10 @@ export function simulateTransactionOnForge(
   addressToLabel: Map<AddressArg, string>,
   forgeData: SimulationForgeData,
   chainId: number,
-  rpcUrl: string,
   blockNumber: number,
 ): ForgeTestLogJSON {
+  // TODO: process auth headers if present
+  const rpcUrl = provider.connection.url;
   if (!roles.callee?.address) {
     throw new Error("missing 'callee' address in 'roles'");
   }

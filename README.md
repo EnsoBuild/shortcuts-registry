@@ -191,11 +191,11 @@ Pass the amount(s) that you want to simulate (e.g., 1000000). If you shortcut th
 amounts as comma separated values (e.g., 100,100).
 
 ```sh
-pnpm simulate cartio abracadabra honey-mim 10000000,100000000
+pnpm simulate cartio kodiak honey-mim 10000000,100000000
 ```
 
 ```sh
-pnpm simulate cartio abracadabra honey-mim 10000000,100000000 --slippage=3 --mode=quoter
+pnpm simulate cartio kodiak honey-mim 10000000,100000000 --slippage=3 --mode=quoter
 ```
 
 Output example:
