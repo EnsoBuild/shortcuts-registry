@@ -261,6 +261,7 @@ const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Berachain].wabtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].stbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].susde, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].rusd, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
 ]);
 
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([
