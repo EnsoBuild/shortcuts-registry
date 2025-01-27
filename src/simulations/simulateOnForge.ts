@@ -54,7 +54,7 @@ export function simulateTransactionOnForge(
           amountsIn: tokensData.amountsIn,
           tokensOut: tokensData.tokensOut,
           tokensDust: tokensData.tokensDust,
-          isIsland: tokensData.isIsland,
+          island: tokensData.island,
           labelKeys: [...addressToLabel.keys()],
           labelValues: [...addressToLabel.values()],
         }),

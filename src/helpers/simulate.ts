@@ -1,3 +1,4 @@
+import { NULL_ADDRESS } from '@ensofinance/shortcuts-builder/constants';
 import { isAddressEqual } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getAddress } from '@ensofinance/shortcuts-standards/helpers';
@@ -384,7 +385,7 @@ export async function simulateShortcutOnForge(
     amountsIn: amountsIn as AddressArg[],
     tokensOut,
     tokensDust: [...tokensDust] as AddressArg[],
-    isIsland: shortcut.inputs[chainId]['island'] !== undefined,
+    island: shortcut.inputs[chainId]['island'] ? shortcut.inputs[chainId]['island'] : NULL_ADDRESS,
   };
 
   const forgeTestLog = simulateTransactionOnForge(
@@ -403,6 +404,7 @@ export async function simulateShortcutOnForge(
   const testResult = testLog.test_results[`${forgeData.test}()`];
 
   if (testResult.status === 'Failure') {
+    console.log('Result: ', testResult);
     throw new Error(
       `Forge simulation test failed. Uncomment '--json' and re-run this script to inspect the forge logs`,
     );

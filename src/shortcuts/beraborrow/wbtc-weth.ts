@@ -36,7 +36,7 @@ export class BeraborrowWbtcWethShortcut implements Shortcut {
     const { weth, wbtc, island, vault } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth, wbtc],
+      tokensIn: [wbtc, weth],
       tokensOut: [vault],
     });
     const amountInWeth = getBalance(weth, builder);
