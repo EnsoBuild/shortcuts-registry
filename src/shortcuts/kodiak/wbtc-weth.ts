@@ -28,7 +28,7 @@ export class KodiakWbtcWethShortcut implements Shortcut {
     const { weth, wbtc, island, infraredVault } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth, wbtc],
+      tokensIn: [wbtc, weth],
       tokensOut: [island, infraredVault],
     });
     const amountInWeth = getBalance(weth, builder);
