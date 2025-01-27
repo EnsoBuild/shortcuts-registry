@@ -285,7 +285,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '1',
           '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
         },
-        gas: '1572777',
+        gas: '1568777',
       });
     });
 
@@ -306,7 +306,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '1',
           '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
         },
-        gas: '1572777',
+        gas: '1568777',
       });
     });
 
@@ -328,7 +328,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '996003',
           '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
         },
-        gas: '1491407',
+        gas: '1487408',
       });
     });
 
@@ -350,7 +350,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '996003',
           '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
         },
-        gas: '1491407',
+        gas: '1487408',
       });
     });
 
@@ -371,7 +371,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '206540',
           '0xFa5bf670A92AfF186E5176aA55690E0277010040': '99999',
         },
-        gas: '1101987',
+        gas: '1097989',
       });
     });
 
@@ -392,7 +392,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '206540',
           '0xFa5bf670A92AfF186E5176aA55690E0277010040': '99999',
         },
-        gas: '1101987',
+        gas: '1097989',
       });
     });
   });
