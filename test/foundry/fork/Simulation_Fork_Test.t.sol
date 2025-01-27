@@ -4,6 +4,14 @@ pragma solidity 0.8.27;
 import { IERC20 } from "@openzeppelin-contracts-5.1.0/interfaces/IERC20.sol";
 import { Test, console2 } from "forge-std-1.9.4//Test.sol";
 
+interface IKodiakIsland {
+    function manager() external view returns (address);
+    function paused() external view returns (bool);
+    function restrictedMint() external view returns (bool);
+    function setRestrictedMint(bool) external;
+    function unpause() external;
+}
+
 contract Simulation_Fork_Test is Test {
     // --- Network environment variables ---
     int256 private constant SIMULATION_BLOCK_NUMBER_LATEST = -1;
@@ -27,6 +35,7 @@ contract Simulation_Fork_Test is Test {
     string private constant JSON_TOKENS_IN_HOLDERS = ".tokensInHolders";
     string private constant JSON_TOKENS_OUT = ".tokensOut";
     string private constant JSON_TOKENS_DUST = ".tokensDust";
+    string private constant JSON_IS_ISLAND = ".isIsland";
     string private constant JSON_LABEL_KEYS = ".labelKeys";
     string private constant JSON_LABEL_VALUES = ".labelValues";
 
@@ -43,6 +52,7 @@ contract Simulation_Fork_Test is Test {
     address[] private s_tokensOut;
     address[] private s_tokensDust;
     address[] private s_tokensInHolders;
+    bool private s_isIsland;
 
     mapping(address address_ => string label) private s_addressToLabel;
 
@@ -84,6 +94,7 @@ contract Simulation_Fork_Test is Test {
         s_txData = vm.parseJsonBytes(jsonStr, JSON_TX_DATA);
         s_tokensIn = vm.parseJsonAddressArray(jsonStr, JSON_TOKENS_IN);
         s_amountsIn = vm.parseJsonUintArray(jsonStr, JSON_AMOUNTS_IN);
+        s_isIsland = vm.parseJsonBool(jsonStr, JSON_IS_ISLAND);
 
         if (s_tokensIn.length != s_amountsIn.length) {
             revert Simulation_Fork_Test__ArrayLengthsAreNotEq(
@@ -140,7 +151,7 @@ contract Simulation_Fork_Test is Test {
             if (holder == address(0)) {
                 revert Simulation_Fork_Test__TokenInHolderNotFound(tokenIn);
             }
-
+            vm.deal(holder, 1 ether);
             uint256 balancePre = IERC20(tokenIn).balanceOf(s_weirollWallet);
 
             vm.prank(holder);
@@ -149,6 +160,18 @@ contract Simulation_Fork_Test is Test {
 
             if (balancePost - balancePre != amountIn) {
                 revert Simulation_Fork_Test__BalancePostIsNotAmountIn(tokenIn, amountIn, balancePre, balancePost);
+            }
+        }
+        if (s_isIsland) {
+            IKodiakIsland island = IKodiakIsland(s_tokensOut[0]); // assuming 1 output token
+            address manager = island.manager();
+            if (island.paused()) {
+                vm.prank(manager);
+                island.unpause();
+            }
+            if (island.restrictedMint()) {
+                vm.prank(manager);
+                island.setRestrictedMint(false);
             }
         }
 

@@ -240,7 +240,7 @@ const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Berachain].usdc, '0xcEE8F35e33C8B4d137eb12DEeB17cEB67B513F2B'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].rseth, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].unibtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
-  [chainIdToDeFiAddresses[ChainIds.Berachain].wbtc, '0x9E175acE5148c5430aA4ce1C0E56856d8df24A89'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].wbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].mim, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].lbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].weeth, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
