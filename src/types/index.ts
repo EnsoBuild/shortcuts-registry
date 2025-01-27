@@ -97,6 +97,7 @@ export interface SimulationTokensData {
   amountsIn: AddressArg[];
   tokensOut: AddressArg[];
   tokensDust: AddressArg[];
+  island: AddressArg;
 }
 
 export interface ForgeTestLogJSONTest {

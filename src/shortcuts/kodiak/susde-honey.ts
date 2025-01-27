@@ -6,24 +6,19 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, mintHoney, redeemHoney } from '../../utils';
+import { balanceOf, depositKodiak, getBalance, mintErc4626, mintHoney, redeemHoney } from '../../utils';
 
-export class KodiakWethHoneyShortcut implements Shortcut {
-  name = 'kodiak-weth-honey';
+export class KodiakSusdeHoneyShortcut implements Shortcut {
+  name = 'kodiak-susde-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
-      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
-      honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
-      island: '0xD4570a738675fB2c31e7b7b88998EE73E9E17d49',
-    },
     [ChainIds.Berachain]: {
-      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      susde: chainIdToDeFiAddresses[ChainIds.Berachain].susde,
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
-      island: '0xf6c6Be0FF6d6F70A04dBE4F1aDE62cB23053Bd95',
+      island: '0xD5B6EA3544a51BfdDa7E6926BdF778339801dFe8',
+      infraredVault: '0x1eCe52A596C2cBEf7b71Fa8FA8FC738aA7Ad441f',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
@@ -32,17 +27,20 @@ export class KodiakWethHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, usdc, honey, island } = inputs;
+    const { susde, usdc, honey, island, infraredVault } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth, usdc],
-      tokensOut: [island],
+      tokensIn: [susde, usdc],
+      tokensOut: [infraredVault],
     });
-    const usdcAmount = builder.add(balanceOf(usdc, walletAddress()));
-    const wethAmount = builder.add(balanceOf(weth, walletAddress()));
+    const usdcAmount = getBalance(usdc, builder);
+    const susdeAmount = getBalance(susde, builder);
     const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
 
-    await depositKodiak(provider, builder, [weth, honey], [wethAmount, mintedAmount], island, this.setterInputs);
+    await depositKodiak(provider, builder, [susde, honey], [susdeAmount, mintedAmount], island, this.setterInputs);
+
+    const islandAmount = getBalance(island, builder);
+    await mintErc4626(island, infraredVault, islandAmount, builder);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);
@@ -60,20 +58,13 @@ export class KodiakWethHoneyShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
-        return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].honey, { label: 'ERC20:HONEY' }],
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
-          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
-        ]);
       case ChainIds.Berachain:
         return new Map([
           [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
           [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
-          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
-          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-WETH-HONEY-0.3%' }],
+          [this.inputs[ChainIds.Berachain].susde, { label: 'ERC20:susde' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-susde-HONEY-0.3%' }],
+          [this.inputs[ChainIds.Berachain].infraredVault, { label: 'Infrared Vault' }],
           [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:

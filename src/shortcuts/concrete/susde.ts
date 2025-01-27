@@ -2,18 +2,22 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ConcreteSusdeShortcut implements Shortcut {
   name = 'susde';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       susde: '0xE0166f6C98aea0fd135D474B69471ca96DC797c4',
       vault: '0x1168848b115DA87587Be9cb2A962FD4A09D930Ea',
+    },
+    [ChainIds.Berachain]: {
+      susde: chainIdToDeFiAddresses[ChainIds.Berachain].susde,
+      vault: '0x9e11b7aDa1680fE9d5d5eD22a9E769351F5B4887',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -51,6 +55,11 @@ export class ConcreteSusdeShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].susde, { label: 'ERC20:susde' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:Concrete Vault' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].susde, { label: 'ERC20:susde' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:Concrete Vault' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

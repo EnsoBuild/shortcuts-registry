@@ -1,24 +1,26 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
+import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintBeraeth } from '../../utils';
 
-export class DahliaUsdcShortcut implements Shortcut {
-  name = 'usdc';
+export class BeraborrowBeraethShortcut implements Shortcut {
+  name = 'beraeth';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
-      usdc: TokenAddresses.cartio.usdc,
-      vault: '0x95B0de63dbbe5D92BD05B7c0C12A32673f490A42',
+      weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
+      beraeth: chainIdToDeFiAddresses[ChainIds.Cartio].beraeth,
+      psm: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
     },
     [ChainIds.Berachain]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
-      vault: '0x769Bf76Fad622E558C5663e24f950dF7E68b829c',
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      beraeth: chainIdToDeFiAddresses[ChainIds.Berachain].beraeth,
+      psm: '0x8dcb18B561CE7E7b309A2d172bdc2633266dfc85',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -27,16 +29,29 @@ export class DahliaUsdcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, vault } = inputs;
+    const { weth, beraeth, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [usdc],
-      tokensOut: [vault],
+      tokensIn: [weth],
+      tokensOut: [psm],
     });
-    const usdcAmount = getBalance(usdc, builder);
 
-    const vaultAmount = await mintErc4626(usdc, vault, usdcAmount, builder);
-    ensureMinAmountOut(vaultAmount, builder);
+    const wethAmount = getBalance(weth, builder);
+
+    await mintBeraeth(wethAmount, builder);
+
+    const beraethAmount = getBalance(beraeth, builder);
+
+    const erc4626 = getStandardByProtocol('erc4626', chainId);
+    await erc4626.deposit.addToBuilder(builder, {
+      tokenIn: [beraeth],
+      tokenOut: psm,
+      amountIn: [beraethAmount],
+      primaryAddress: psm,
+    });
+
+    const psmAmount = getBalance(psm, builder);
+    ensureMinAmountOut(psmAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -53,13 +68,13 @@ export class DahliaUsdcShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:Dahlia Vault' }],
+          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco beraeth' }],
+          [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraeth' }],
         ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:Dahlia Vault' }],
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco beraeth' }],
+          [this.inputs[ChainIds.Berachain].beraeth, { label: 'ERC20:beraeth' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

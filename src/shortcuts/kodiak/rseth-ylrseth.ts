@@ -1,43 +1,46 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { TokenAddresses } from '@ensofinance/shortcuts-standards/addresses';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
+import { depositKodiak, getBalance } from '../../utils';
 
-export class DahliaWethShortcut implements Shortcut {
-  name = 'weth';
+export class KodiaksRsethYlrsethShortcut implements Shortcut {
+  name = 'kodiak-rseth-ylrseth';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      weth: TokenAddresses.cartio.weth,
-      vault: '0x479Df3548C4261Cb101BE33536B3D90CCA6eb327',
-    },
     [ChainIds.Berachain]: {
-      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
-      vault: '0x2416e726F38d2c5299592460e87Af266E3B5b19C',
+      ylrseth: chainIdToDeFiAddresses[ChainIds.Berachain].ylrseth,
+      rseth: chainIdToDeFiAddresses[ChainIds.Berachain].rseth,
+      island: '0xFF619BDaeDF635251c3aF5BFa82bcaf856C95cC3',
     },
   };
-  setterInputs = new Set(['minAmountOut']);
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, vault } = inputs;
+    const { ylrseth, rseth, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth],
-      tokensOut: [vault],
+      tokensIn: [ylrseth, rseth],
+      tokensOut: [island],
     });
+    const amountInYlrseth = getBalance(ylrseth, builder);
+    const amountInRseth = getBalance(rseth, builder);
 
-    const wethAmount = getBalance(weth, builder);
-
-    const vaultAmount = await mintErc4626(weth, vault, wethAmount, builder);
-    ensureMinAmountOut(vaultAmount, builder);
+    await depositKodiak(
+      provider,
+      builder,
+      [rseth, ylrseth],
+      [amountInYlrseth, amountInRseth],
+      island,
+      this.setterInputs,
+    );
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -52,15 +55,12 @@ export class DahliaWethShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
-        return new Map([
-          [this.inputs[ChainIds.Cartio].vault, { label: 'Dahlia Vault' }],
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:WETH' }],
-        ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].vault, { label: 'Dahlia Vault' }],
-          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
+          [this.inputs[ChainIds.Berachain].ylrseth, { label: 'ERC20:ylrseth' }],
+          [this.inputs[ChainIds.Berachain].rseth, { label: 'ERC20:rseth' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-rseth-ylrseth' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

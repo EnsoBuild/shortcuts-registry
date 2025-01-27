@@ -104,17 +104,17 @@ export async function mintSatLayerVault(
   return amountOut as NumberArg;
 }
 
-export async function mintBeraEth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {
-  const { weth, beraEth, rBeraEth } = chainIdToDeFiAddresses[builder.chainId];
+export async function mintBeraeth(amountIn: NumberArg, builder: Builder): Promise<NumberArg> {
+  const { weth, beraeth, rBeraeth } = chainIdToDeFiAddresses[builder.chainId];
 
   const dineroBeraeth = getStandardByProtocol('dinero-lst', builder.chainId, true); // TODO: return this to 'builder.chainId' after standards get updated to support bera
   const { amountOut } = await dineroBeraeth.deposit.addToBuilder(
     builder,
     {
       tokenIn: [weth],
-      tokenOut: beraEth,
+      tokenOut: beraeth,
       amountIn: [amountIn],
-      primaryAddress: rBeraEth,
+      primaryAddress: rBeraeth,
     },
     ['amountOut'],
   );

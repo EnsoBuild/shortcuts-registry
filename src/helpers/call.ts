@@ -79,20 +79,20 @@ export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, ch
   if (!addresses) {
     throw new Error(`No addresses configured for chainId=${chainId}`);
   }
-  const { weth, rBeraEth, beraEth } = addresses;
+  const { weth, rBeraeth, beraeth } = addresses;
 
   /*
   const quoterInterface = new Interface([
     'function getAmountOut(address tokenIn, uint256 amountIn) external view returns (uint256)',
   ]);
 
-  const beraEthInterface = new Interface([
+  const beraethInterface = new Interface([
     'function getLSTAmount(uint256 rBeraETHAmount) external view returns (uint256)',
   ]);
 
   // Convert 1 WETH  → rBeraETH
 
-  const [rBeraEthAmount] = await call(
+  const [rBeraethAmount] = await call(
     provider,
     quoterInterface,
     bridgeQuoter,
@@ -102,7 +102,7 @@ export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, ch
 
   // Convert rBeraETH → beraETH
 
-  const [beraEthAmount] = await call(provider, beraEthInterface, beraEth, 'getLSTAmount', [rBeraEthAmount]);
+  const [beraethAmount] = await call(provider, beraethInterface, beraeth, 'getLSTAmount', [rBeraEthAmount]);
 */
 
   const amountIn = BigNumber.from(10).pow(18).toString();
@@ -111,11 +111,11 @@ export async function getBeraEthExchangeRate(provider: StaticJsonRpcProvider, ch
     new Interface([
       'function depositAndWrap(address tokenIn, uint256 amountIn, uint256 minAmountOut) external returns (uint256)',
     ]),
-    rBeraEth,
+    rBeraeth,
     'depositAndWrap',
     [weth, amountIn, 0],
     weth,
-    beraEth,
+    beraeth,
     amountIn,
   );
 

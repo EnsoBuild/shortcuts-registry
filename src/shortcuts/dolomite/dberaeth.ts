@@ -4,7 +4,7 @@ import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-buil
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance, mintBeraEth, mintErc4626 } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintBeraeth, mintErc4626 } from '../../utils';
 
 export class DolomiteDberaethShortcut implements Shortcut {
   name = 'dolomite-dberaeth';
@@ -32,7 +32,7 @@ export class DolomiteDberaethShortcut implements Shortcut {
 
     const wethAmount = getBalance(weth, builder);
 
-    const beraethMintedAmount = await mintBeraEth(wethAmount, builder);
+    const beraethMintedAmount = await mintBeraeth(wethAmount, builder);
 
     const vaultAmount = await mintErc4626(beraeth, vault, beraethMintedAmount, builder);
 

@@ -29,7 +29,7 @@ export class KodiakUsdaHoneyShortcut implements Shortcut {
     const { usda, usdc, honey, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [usda, usdc],
+      tokensIn: [usdc, usda],
       tokensOut: [island],
     });
 

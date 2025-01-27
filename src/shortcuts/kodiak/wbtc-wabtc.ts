@@ -5,20 +5,18 @@ import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-buil
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
-import { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getBalance, mintErc4626, mintHoney, redeemHoney } from '../../utils';
+import type { AddressData, Input, Output, Shortcut } from '../../types';
+import { balanceOf, depositKodiak } from '../../utils';
 
-export class KodiakwbtcHoneyShortcut implements Shortcut {
-  name = 'kodiak-wbtc-honey';
+export class KodiakWbtcWabtcShortcut implements Shortcut {
+  name = 'kodiak-wbtc-wabtc';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       wbtc: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
-      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
-      honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
-      island: '0xf6b16E73d3b0e2784AAe8C4cd06099BE65d092Bf',
-      infraredVault: '0x7292B549F9F59fC22bABCD7b6706e7D6889C2624',
+      wabtc: chainIdToDeFiAddresses[ChainIds.Berachain].wabtc,
+      island: '0x069759428dBf32DE4cFa2d107F5205D5BbdCd02F',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
@@ -27,23 +25,16 @@ export class KodiakwbtcHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { wbtc, usdc, honey, island, infraredVault } = inputs;
+    const { wbtc, wabtc, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [wbtc, usdc],
-      tokensOut: [infraredVault],
+      tokensIn: [wbtc, wabtc],
+      tokensOut: [island],
     });
-    const usdcAmount = getBalance(usdc, builder);
-    const wbtcAmount = getBalance(wbtc, builder);
-    const mintedAmount = await mintHoney(usdc, usdcAmount, builder);
+    const amountInWbtc = builder.add(balanceOf(wbtc, walletAddress()));
+    const amountInWabtc = builder.add(balanceOf(wabtc, walletAddress()));
 
-    await depositKodiak(provider, builder, [wbtc, honey], [wbtcAmount, mintedAmount], island, this.setterInputs);
-
-    const islandAmount = getBalance(island, builder);
-    await mintErc4626(island, infraredVault, islandAmount, builder);
-
-    const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
-    await redeemHoney(usdc, leftoverAmount, builder);
+    await depositKodiak(provider, builder, [wbtc, wabtc], [amountInWbtc, amountInWabtc], island, this.setterInputs);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -60,11 +51,9 @@ export class KodiakwbtcHoneyShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Berachain].wbtc, { label: 'ERC20:wbtc' }],
-          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-wbtc-HONEY-0.3%' }],
-          [this.inputs[ChainIds.Berachain].infraredVault, { label: 'Infrared Vault' }],
+          [this.inputs[ChainIds.Berachain].wabtc, { label: 'ERC20:wabtc' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-wbtc-wabtc' }],
           [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
