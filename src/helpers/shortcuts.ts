@@ -45,9 +45,6 @@ import { DolomiteInfraredDwbtcShortcut } from '../shortcuts/dolomite/ir-dwbtc';
 import { GoldilocksRsethRsethotShortcut } from '../shortcuts/goldilocks/rseth-rsethot';
 import { GoldilockssolvbtcbnnsolvbtcbnnOtShortcut } from '../shortcuts/goldilocks/solvbtcbnnot-solvbtc';
 import { GoldilocksUniBtcUniBtcOtShortcut } from '../shortcuts/goldilocks/unibtc-unibtcot';
-import { InfraredHoneyUsdcShortcut } from '../shortcuts/infrared/honey-usdc';
-import { InfraredWbtcWethShortcut } from '../shortcuts/infrared/wbtc-weth';
-import { InfraredWethHoneyShortcut } from '../shortcuts/infrared/weth-honey';
 import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
 import { KodiakMimHoneyhShortcut } from '../shortcuts/kodiak/mim-honey';
@@ -169,11 +166,6 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     wabtc: new SatlayerWabtcShortcut(),
     solvbtcbnn: new SatlayerSolvbtcbnnBnnShortcut(),
     unibtc: new SatlayerUnibtcShortcut(),
-  },
-  infrared: {
-    'wbtc-weth': new InfraredWbtcWethShortcut(),
-    'honey-usdc': new InfraredHoneyUsdcShortcut(),
-    'weth-honey': new InfraredWethHoneyShortcut(),
   },
   thj: {
     usdc: new ThjUsdcShortcut(),
