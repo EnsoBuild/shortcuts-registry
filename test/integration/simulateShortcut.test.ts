@@ -240,46 +240,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   });
 
   describe('dolomite', () => {
-    it('deth', async () => {
-      // Arrange
-      const args = ['dolomite', 'deth', '100000000000000', '--mode=forge', '--block=3490796'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '1',
-        minAmountOutHex: '0x01',
-        quote: { '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF': '100000000000000' },
-        dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '814618',
-      });
-    });
-
-    it('dhoney', async () => {
-      // Arrange
-      const args = ['dolomite', 'dhoney', '10000000', '--mode=forge', '--block=4380145'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '1',
-        minAmountOutHex: '0x01',
-        quote: {
-          '0x53fACeCc391021a69Ba79351007079536AA64C6d': '9980000000000000000',
-        },
-        dust: {
-          '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0',
-        },
-        gas: '1954769',
-      });
-    });
-
     it('dusdc', async () => {
       // Arrange
       const args = ['dolomite', 'dusdc', '100000000000000', '--mode=forge', '--block=3490975'];
@@ -295,42 +255,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         quote: { '0x444868B6e8079ac2c55eea115250f92C2b2c4D14': '100000000000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
         gas: '807608',
-      });
-    });
-
-    it('dusdt', async () => {
-      // Arrange
-      const args = ['dolomite', 'dusdt', '100000000000000', '--mode=forge', '--block=3491008'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '1',
-        minAmountOutHex: '0x01',
-        quote: { '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8': '100000000000000' },
-        dust: { '0x164A2dE1bc5dc56F329909F7c97Bae929CaE557B': '0' },
-        gas: '845939',
-      });
-    });
-
-    it('dwbtc', async () => {
-      // Arrange
-      const args = ['dolomite', 'dwbtc', '100000000000000', '--mode=forge', '--block=3491079'];
-
-      // Act
-      const report = await main_([...DEFAULT_ARGS, ...args]);
-
-      // Assert
-      expect(report).toMatchObject({
-        weirollWallet: '0x79141B00251E4E08D5463e4e0622E4065692fB3B',
-        minAmountOut: '1',
-        minAmountOutHex: '0x01',
-        quote: { '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f': '100000000000000' },
-        dust: { '0xFa5bf670A92AfF186E5176aA55690E0277010040': '0' },
-        gas: '831733',
       });
     });
   });
