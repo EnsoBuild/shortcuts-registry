@@ -8,7 +8,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class DahliaStonewethShortcut implements Shortcut {
-  name = 'weth';
+  name = 'dahlia-weth';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
