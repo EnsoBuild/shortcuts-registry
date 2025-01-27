@@ -2,18 +2,22 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 
-import { chainIdToTokenHolder } from '../../constants';
+import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ConcreteLbtcShortcut implements Shortcut {
   name = 'lbtc';
   description = '';
-  supportedChains = [ChainIds.Cartio];
+  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       lbtc: '0x73a58b73018c1a417534232529b57b99132b13D2',
       vault: '0xC12823865DAA0579216A464b04aa3ae3faF12B4E',
+    },
+    [ChainIds.Berachain]: {
+      lbtc: chainIdToDeFiAddresses[ChainIds.Berachain].lbtc,
+      vault: '0xC6949aCE25806CA1694bDc8B35583d6b6992ECDc',
     },
   };
   setterInputs = new Set(['minAmountOut']);
@@ -51,6 +55,11 @@ export class ConcreteLbtcShortcut implements Shortcut {
         return new Map([
           [this.inputs[ChainIds.Cartio].lbtc, { label: 'ERC20:lbtc' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'ERC20:Concrete Vault' }],
+        ]);
+      case ChainIds.Berachain:
+        return new Map([
+          [this.inputs[ChainIds.Berachain].lbtc, { label: 'ERC20:lbtc' }],
+          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:Concrete Vault' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

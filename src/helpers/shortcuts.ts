@@ -21,11 +21,11 @@ import { BeraborrowYlrsethShortcut } from '../shortcuts/beraborrow/ylrseth';
 import { BeraborrowYlstethShortcut } from '../shortcuts/beraborrow/ylsteth';
 import { BerachainHoneyShortcut } from '../shortcuts/berachain/honey';
 import { BurrbearUsdcShortcut } from '../shortcuts/burrbear/usdc';
+import { ConcreteBeraethShortcut } from '../shortcuts/concrete/beraeth';
 import { ConcreteLbtcShortcut } from '../shortcuts/concrete/lbtc';
 import { ConcreteSusdeShortcut } from '../shortcuts/concrete/susde';
-import { ConcreteUsdcShortcut } from '../shortcuts/concrete/usdc';
 import { ConcreteUsdeShortcut } from '../shortcuts/concrete/usde';
-import { ConcreteWethShortcut } from '../shortcuts/concrete/weth';
+import { ConcreteWbtcShortcut } from '../shortcuts/concrete/wbtc';
 import { D2UsdcBeralandShortcut } from '../shortcuts/d2/usdc-beraland';
 import { D2UsdcHyperberaShortcut } from '../shortcuts/d2/usdc-hyperbera';
 import { D2UsdcKodiakplusShortcut } from '../shortcuts/d2/usdc-kodiakplus';
@@ -122,9 +122,8 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     usdc: new BurrbearUsdcShortcut(),
   },
   concrete: {
-    usdc: new ConcreteUsdcShortcut(),
-    weth: new ConcreteWethShortcut(),
-    wbtc: new ConcreteWethShortcut(),
+    beraeth: new ConcreteBeraethShortcut(),
+    wbtc: new ConcreteWbtcShortcut(),
     lbtc: new ConcreteLbtcShortcut(),
     susde: new ConcreteSusdeShortcut(),
     usde: new ConcreteUsdeShortcut(),
