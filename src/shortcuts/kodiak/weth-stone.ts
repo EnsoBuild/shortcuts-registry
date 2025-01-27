@@ -28,7 +28,7 @@ export class KodiaksWethStoneShortcut implements Shortcut {
     const { stone, weth, island, infraredVault } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [stone, weth],
+      tokensIn: [weth, stone],
       tokensOut: [infraredVault],
     });
     const amountInstone = getBalance(stone, builder);

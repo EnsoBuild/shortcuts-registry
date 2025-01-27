@@ -27,7 +27,7 @@ export class KodiakRsethBeraethShortcut implements Shortcut {
     const { rseth, beraeth, weth, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [rseth, weth],
+      tokensIn: [weth, rseth],
       tokensOut: [island],
     });
     const wethAmount = getBalance(weth, builder);
