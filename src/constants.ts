@@ -187,6 +187,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     pumpbtc: '0x1fCca65fb6Ae3b2758b9b2B394CB227eAE404e1E',
     rBeraEth: '0x3B0145f3CFA64BC66F5742F512f871665309075d',
     rseth: '0x4186BFC76E2E237523CBC30FD220FE055156b41F',
+    rswEth: '0x850CDF416668210ED0c36bfFF5d21921C7adA3b8',
     rusd: '0x09D4214C03D01F49544C0448DBE3A27f768F2b34',
     weeth: '0x7DCC39B4d1C53CB31e1aBc0e358b43987FEF80f7',
     sbtc: '0x93F4d0ab6a8B4271f4a28Db399b5E30612D21116',
@@ -248,9 +249,16 @@ const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Berachain].usda, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].susda, '0xd955F0c167adbf7d553fc4D59A964A1b115Cc093'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].sbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
-  [chainIdToDeFiAddresses[ChainIds.Berachain].solvbtc, '0xa77e342fba0a3Bd3C1826a964477e7f5c996CCcC'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].solvbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].solvbtcbnn, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].fbtc, '0xcf49909017285e6D9C65fA7E06bd99a5277d6BB6'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].rswEth, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].beraEth, '0x8E4Ef86AfAf6AFde0D36F794C968C805e2f64bf5'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].pumpbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].ylpumpbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].ylbtclst, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].wabtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].stbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
 ]);
 
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([

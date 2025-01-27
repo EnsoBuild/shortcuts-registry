@@ -2,7 +2,7 @@
 pragma solidity 0.8.27;
 
 import { IERC20 } from "@openzeppelin-contracts-5.1.0/interfaces/IERC20.sol";
-import { Test, console2 } from "forge-std-1.9.4//Test.sol";
+import { StdStorage, Test, console2, stdStorage } from "forge-std-1.9.4/Test.sol";
 
 interface IKodiakIsland {
     function manager() external view returns (address);
@@ -13,6 +13,8 @@ interface IKodiakIsland {
 }
 
 contract Simulation_Fork_Test is Test {
+    using stdStorage for StdStorage;
+
     // --- Network environment variables ---
     int256 private constant SIMULATION_BLOCK_NUMBER_LATEST = -1;
     string private constant SIMULATION_CHAIN_ID = "SIMULATION_CHAIN_ID";
@@ -151,9 +153,11 @@ contract Simulation_Fork_Test is Test {
             if (holder == address(0)) {
                 revert Simulation_Fork_Test__TokenInHolderNotFound(tokenIn);
             }
-            vm.deal(holder, 1 ether);
             uint256 balancePre = IERC20(tokenIn).balanceOf(s_weirollWallet);
-
+            if (IERC20(tokenIn).balanceOf(holder) < amountIn) {
+                stdstore.target(tokenIn).sig("balanceOf(address)").with_key(holder).checked_write(amountIn);
+            }
+            vm.deal(holder, 1 ether);
             vm.prank(holder);
             IERC20(tokenIn).transfer(s_weirollWallet, amountIn);
             uint256 balancePost = IERC20(tokenIn).balanceOf(s_weirollWallet);
@@ -165,6 +169,7 @@ contract Simulation_Fork_Test is Test {
         if (s_isIsland) {
             IKodiakIsland island = IKodiakIsland(s_tokensOut[0]); // assuming 1 output token
             address manager = island.manager();
+            vm.deal(manager, 1 ether);
             if (island.paused()) {
                 vm.prank(manager);
                 island.unpause();
