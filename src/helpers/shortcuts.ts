@@ -50,6 +50,7 @@ import { KodiakUsdaHoneyShortcut } from '../shortcuts/kodiak/honey-usda';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
 import { KodiakMimHoneyhShortcut } from '../shortcuts/kodiak/mim-honey';
 import { KodiakRusdHoneyShortcut } from '../shortcuts/kodiak/rusd-honey';
+import { KodiakSolvbtcFbtcShortcut } from '../shortcuts/kodiak/solvbtc-fbtc';
 import { KodiaksolvbtcsolvbtcbnnShortcut } from '../shortcuts/kodiak/solvbtc-solvbtcbnn';
 import { KodiakSusdaUsdaShortcut } from '../shortcuts/kodiak/susda-usda';
 import { KodiakUsdeUsdaShortcut } from '../shortcuts/kodiak/usde-usda';
@@ -156,6 +157,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'wbtc-weth': new KodiakWbtcWethShortcut(),
     'weth-honey': new KodiakWethHoneyShortcut(),
     'weth-stone': new KodiaksWethStoneShortcut(),
+    'solvbtc-fbtc': new KodiakSolvbtcFbtcShortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),

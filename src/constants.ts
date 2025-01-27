@@ -198,6 +198,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     wabtc: '0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b',
     unibtc: '0xC3827A4BC8224ee2D116637023b124CED6db6e90',
     usda: '0xff12470a969Dd362EB6595FFB44C82c959Fe9ACc',
+    fbtc: '0xbAC93A69c62a1518136FF840B788Ba715cbDfE2B',
     susda: '0x2840F9d9f96321435Ab0f977E7FDBf32EA8b304f',
     usdc: '0x549943e04f40284185054145c6E4e9568C1D3241',
     usdcPsmBond: '0xCaB847887a2d516Dfa690fa346638429415c089b',
@@ -249,6 +250,7 @@ const tokenToHolderBerchain: Map<AddressArg, AddressArg> = new Map([
   [chainIdToDeFiAddresses[ChainIds.Berachain].sbtc, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].solvbtc, '0xa77e342fba0a3Bd3C1826a964477e7f5c996CCcC'],
   [chainIdToDeFiAddresses[ChainIds.Berachain].solvbtcbnn, '0xEC1F64Cd852c65A22bCaA778b2ed76Bc5502645C'],
+  [chainIdToDeFiAddresses[ChainIds.Berachain].fbtc, '0xcf49909017285e6D9C65fA7E06bd99a5277d6BB6'],
 ]);
 
 export const chainIdToTokenHolder: Map<ChainIds, Map<AddressArg, AddressArg>> = new Map([
