@@ -29,8 +29,9 @@ import { ConcreteWbtcShortcut } from '../shortcuts/concrete/wbtc';
 import { D2UsdcBeralandShortcut } from '../shortcuts/d2/usdc-beraland';
 import { D2UsdcHyperberaShortcut } from '../shortcuts/d2/usdc-hyperbera';
 import { D2UsdcKodiakplusShortcut } from '../shortcuts/d2/usdc-kodiakplus';
-import { DahliaUsdcShortcut } from '../shortcuts/dahlia/usdc';
-import { DahliaWethShortcut } from '../shortcuts/dahlia/weth';
+import { DahliaStonewethShortcut } from '../shortcuts/dahlia/stoneweth';
+import { DahliaSusdcusdcShortcut } from '../shortcuts/dahlia/susdcusdc';
+import { DahliaWberausdcShortcut } from '../shortcuts/dahlia/wberausdc';
 import { DolomiteDberaethShortcut } from '../shortcuts/dolomite/dberaeth';
 import { DolomiteDnectShortcut } from '../shortcuts/dolomite/dnect';
 import { DolomiteDPumpBtcShortcut } from '../shortcuts/dolomite/dpumpbtc';
@@ -66,16 +67,13 @@ import { KodiakUsdeHoneyShortcut } from '../shortcuts/kodiak/usde-honey';
 import { KodiakUsdeUsdaShortcut } from '../shortcuts/kodiak/usde-usda';
 import { KodiakUsdtHoneyShortcut } from '../shortcuts/kodiak/usdt-honey';
 import { KodiakWbtcFbtcShortcut } from '../shortcuts/kodiak/wbtc-fbtc';
-import { KodiakwbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcPumpbtcShortcut } from '../shortcuts/kodiak/wbtc-pumpbtc';
 import { KodiakWbtcSbtcShortcut } from '../shortcuts/kodiak/wbtc-sbtc';
 import { KodiakWbtcSolvbtcShortcut } from '../shortcuts/kodiak/wbtc-solvbtc';
 import { KodiakWbtcStbtcShortcut } from '../shortcuts/kodiak/wbtc-stbtc';
 import { KodiakWbtcUnibtcShortcut } from '../shortcuts/kodiak/wbtc-unibtc';
 import { KodiakWbtcWabtcShortcut } from '../shortcuts/kodiak/wbtc-wabtc';
-import { KodiakWbtcWethShortcut } from '../shortcuts/kodiak/wbtc-weth';
 import { KodiakWethBeraethShortcut } from '../shortcuts/kodiak/weth-beraeth';
-import { KodiakWethHoneyShortcut } from '../shortcuts/kodiak/weth-honey';
 import { KodiaksWethStoneShortcut } from '../shortcuts/kodiak/weth-stone';
 import { OrigamiBoycoHoneyShortcut } from '../shortcuts/origami/oboy-HONEY-a';
 import { SatlayerLbtcShortcut } from '../shortcuts/satlayer/lbtc';
@@ -129,8 +127,9 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     usde: new ConcreteUsdeShortcut(),
   },
   dahlia: {
-    usdc: new DahliaUsdcShortcut(),
-    weth: new DahliaWethShortcut(),
+    susdcusdc: new DahliaSusdcusdcShortcut(),
+    stoneweth: new DahliaStonewethShortcut(),
+    wberausdc: new DahliaWberausdcShortcut(),
   },
   dolomite: {
     dberaeth: new DolomiteDberaethShortcut(),
@@ -178,16 +177,13 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'usde-usda': new KodiakUsdeUsdaShortcut(),
     'usdt-honey': new KodiakUsdtHoneyShortcut(),
     'wbtc-fbtc': new KodiakWbtcFbtcShortcut(),
-    'wbtc-honey': new KodiakwbtcHoneyShortcut(),
     'wbtc-pumpbtc': new KodiakWbtcPumpbtcShortcut(),
     'wbtc-sbtc': new KodiakWbtcSbtcShortcut(),
     'wbtc-solvbtc': new KodiakWbtcSolvbtcShortcut(),
     'wbtc-stbtc': new KodiakWbtcStbtcShortcut(),
     'wbtc-unibtc': new KodiakWbtcUnibtcShortcut(),
     'wbtc-wabtc': new KodiakWbtcWabtcShortcut(),
-    'wbtc-weth': new KodiakWbtcWethShortcut(),
     'weth-beraeth': new KodiakWethBeraethShortcut(),
-    'weth-honey': new KodiakWethHoneyShortcut(),
     'weth-stone': new KodiaksWethStoneShortcut(),
   },
   veda: {

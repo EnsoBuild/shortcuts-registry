@@ -138,9 +138,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   });
 
   describe('dahlia', () => {
-    it('usdc', async () => {
+    it('susdcusdc', async () => {
       // Arrange
-      const args = ['dahlia', 'usdc', '100000000', '--mode=forge', '--block=3445762'];
+      const args = ['dahlia', 'susdcusdc', '100000000', '--mode=forge', '--block=3445762'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -156,9 +156,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('weth', async () => {
+    it('stoneweth', async () => {
       // Arrange
-      const args = ['dahlia', 'weth', '100000000000000', '--mode=forge', '--block=3445824'];
+      const args = ['dahlia', 'stoneweth', '100000000000000', '--mode=forge', '--block=3445824'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
