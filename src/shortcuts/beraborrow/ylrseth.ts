@@ -7,7 +7,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class BeraborrowYlrsethShortcut implements Shortcut {
-  name = 'ylrseth';
+  name = 'beraborrow-ylrseth';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {

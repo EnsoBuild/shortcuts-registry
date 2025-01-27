@@ -8,7 +8,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ThjUsdcShortcut implements Shortcut {
-  name = 'usdc';
+  name = 'thj-usdc';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {

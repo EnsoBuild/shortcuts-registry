@@ -8,7 +8,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintBeraeth } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
-  name = 'beraeth';
+  name = 'beraborrow-beraeth';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {

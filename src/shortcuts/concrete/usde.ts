@@ -7,7 +7,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class ConcreteUsdeShortcut implements Shortcut {
-  name = 'usde';
+  name = 'concrete-usde';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {

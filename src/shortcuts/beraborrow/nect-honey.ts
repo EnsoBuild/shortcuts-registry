@@ -11,7 +11,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { balanceOf, depositKodiak, getSetterValue, mintHoney, mintNect, redeemHoney, redeemNect } from '../../utils';
 
 export class BeraborrowNectHoneyShortcut implements Shortcut {
-  name = 'nect-honey';
+  name = 'beraborrow-nect-honey';
   description = '';
   supportedChains = [ChainIds.Cartio];
   inputs: Record<number, Input> = {

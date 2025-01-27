@@ -7,7 +7,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintBeraeth, mintErc4626 } from '../../utils';
 
 export class ConcreteBeraethShortcut implements Shortcut {
-  name = 'weth';
+  name = 'concrete-weth';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {

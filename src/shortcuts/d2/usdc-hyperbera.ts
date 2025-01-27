@@ -7,7 +7,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class D2UsdcHyperberaShortcut implements Shortcut {
-  name = 'usdc-hyperbera';
+  name = 'd2-usdc-hyperbera';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {

@@ -9,7 +9,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { balanceOf, depositBurrbear } from '../../utils';
 
 export class BurrbearUsdcShortcut implements Shortcut {
-  name = 'usdc';
+  name = 'burrbear-usdc';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
