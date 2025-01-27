@@ -7,7 +7,7 @@ import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
 export class D2UsdcBeralandShortcut implements Shortcut {
-  name = 'usdc-beraland';
+  name = 'd2-usdc-beraland';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
