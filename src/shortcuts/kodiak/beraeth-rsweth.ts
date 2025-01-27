@@ -6,7 +6,7 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak } from '../../utils';
+import { balanceOf, depositKodiak, mintBeraeth } from '../../utils';
 
 export class KodiakBeraEthRswEthShortcut implements Shortcut {
   name = 'kodiak-beraeth-rsweth';
@@ -15,7 +15,8 @@ export class KodiakBeraEthRswEthShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       rswEth: chainIdToDeFiAddresses[ChainIds.Berachain].rswEth,
-      beraEth: chainIdToDeFiAddresses[ChainIds.Berachain].beraEth,
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
+      beraeth: chainIdToDeFiAddresses[ChainIds.Berachain].beraeth,
       island: '0xba4d7a7dF1999D6F29DE133872CDDD5Cb46C6694',
     },
   };
@@ -25,23 +26,18 @@ export class KodiakBeraEthRswEthShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { rswEth, beraEth, island } = inputs;
+    const { rswEth, beraeth, island, weth } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [beraEth, rswEth],
+      tokensIn: [weth, rswEth],
       tokensOut: [island],
     });
-    const amountInBeraEth = builder.add(balanceOf(beraEth, walletAddress()));
-    const amountInRswEth = builder.add(balanceOf(rswEth, walletAddress()));
+    const wethAmount = builder.add(balanceOf(beraeth, walletAddress()));
+    const beraethAmount = await mintBeraeth(wethAmount, builder);
 
-    await depositKodiak(
-      provider,
-      builder,
-      [beraEth, rswEth],
-      [amountInBeraEth, amountInRswEth],
-      island,
-      this.setterInputs,
-    );
+    const rswethAmount = builder.add(balanceOf(rswEth, walletAddress()));
+
+    await depositKodiak(provider, builder, [beraeth, rswEth], [beraethAmount, rswethAmount], island, this.setterInputs);
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -58,9 +54,10 @@ export class KodiakBeraEthRswEthShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].beraEth, { label: 'ERC20:beraEth' }],
+          [this.inputs[ChainIds.Berachain].beraeth, { label: 'ERC20:beraeth' }],
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:weth' }],
           [this.inputs[ChainIds.Berachain].rswEth, { label: 'ERC20:rswEth' }],
-          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island beraETH-rswETH-0.05%' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island beraETH-rswETH' }],
           [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:

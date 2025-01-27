@@ -5,7 +5,7 @@ import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance, mintBeraEth } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintBeraeth } from '../../utils';
 
 export class BeraborrowBeraethShortcut implements Shortcut {
   name = 'beraeth';
@@ -14,12 +14,12 @@ export class BeraborrowBeraethShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Cartio]: {
       weth: chainIdToDeFiAddresses[ChainIds.Cartio].weth,
-      beraEth: chainIdToDeFiAddresses[ChainIds.Cartio].beraEth,
+      beraeth: chainIdToDeFiAddresses[ChainIds.Cartio].beraeth,
       psm: '0x25189a55463d2974F6b55268A09ccEe92f8aa043',
     },
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
-      beraEth: chainIdToDeFiAddresses[ChainIds.Berachain].beraEth,
+      beraeth: chainIdToDeFiAddresses[ChainIds.Berachain].beraeth,
       psm: '0x8dcb18B561CE7E7b309A2d172bdc2633266dfc85',
     },
   };
@@ -29,7 +29,7 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { weth, beraEth, psm } = inputs;
+    const { weth, beraeth, psm } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [weth],
@@ -37,15 +37,16 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     });
 
     const wethAmount = getBalance(weth, builder);
-    await mintBeraEth(wethAmount, builder);
 
-    const beraEthAmount = getBalance(beraEth, builder);
+    await mintBeraeth(wethAmount, builder);
+
+    const beraethAmount = getBalance(beraeth, builder);
 
     const erc4626 = getStandardByProtocol('erc4626', chainId);
     await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [beraEth],
+      tokenIn: [beraeth],
       tokenOut: psm,
-      amountIn: [beraEthAmount],
+      amountIn: [beraethAmount],
       primaryAddress: psm,
     });
 
@@ -67,13 +68,13 @@ export class BeraborrowBeraethShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco beraEth' }],
-          [this.inputs[ChainIds.Cartio].beraEth, { label: 'ERC20:beraEth' }],
+          [this.inputs[ChainIds.Cartio].psm, { label: 'Beraborrow Boyco beraeth' }],
+          [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraeth' }],
         ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco beraEth' }],
-          [this.inputs[ChainIds.Berachain].beraEth, { label: 'ERC20:beraEth' }],
+          [this.inputs[ChainIds.Berachain].psm, { label: 'Beraborrow Boyco beraeth' }],
+          [this.inputs[ChainIds.Berachain].beraeth, { label: 'ERC20:beraeth' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

@@ -1,6 +1,6 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
-import { BeraborrowBeraethShortcut } from '../shortcuts/beraborrow/beraEth';
+import { BeraborrowBeraethShortcut } from '../shortcuts/beraborrow/beraeth';
 import { BeraborrowNectHoneyShortcut } from '../shortcuts/beraborrow/nect-honey';
 import { BeraborrowNectUsdeShortcut } from '../shortcuts/beraborrow/nect-usde';
 import { BeraborrowPumpbtcShortcut } from '../shortcuts/beraborrow/pumpbtc';
@@ -50,8 +50,11 @@ import { KodiakbBraethwethShortcut } from '../shortcuts/kodiak/beraeth-weth';
 import { KodiakUsdaHoneyShortcut } from '../shortcuts/kodiak/honey-usda';
 import { KodiakHoneyUsdcShortcut } from '../shortcuts/kodiak/honey-usdc';
 import { KodiakMimHoneyhShortcut } from '../shortcuts/kodiak/mim-honey';
+import { KodiakPumpbtcFbtcShortcut } from '../shortcuts/kodiak/pumpbtc-fbtc';
 import { KodiakPumpbtcYlBtcLstShortcut } from '../shortcuts/kodiak/pumpbtc-ylbtclst';
 import { KodiakPumpbtcYlPumpbtcShortcut } from '../shortcuts/kodiak/pumpbtc-ylpumpbtc';
+import { KodiakRsethBeraethShortcut } from '../shortcuts/kodiak/rseth-beraeth';
+import { KodiaksRsethYlrsethShortcut } from '../shortcuts/kodiak/rseth-ylrseth';
 import { KodiakRusdHoneyShortcut } from '../shortcuts/kodiak/rusd-honey';
 import { KodiakSolvbtcFbtcShortcut } from '../shortcuts/kodiak/solvbtc-fbtc';
 import { KodiaksolvbtcsolvbtcbnnShortcut } from '../shortcuts/kodiak/solvbtc-solvbtcbnn';
@@ -59,6 +62,7 @@ import { KodiakSusdaUsdaShortcut } from '../shortcuts/kodiak/susda-usda';
 import { KodiakUnibtcYlBtcLstShortcut } from '../shortcuts/kodiak/unibtc-ylbtclst';
 import { KodiakUsdeUsdaShortcut } from '../shortcuts/kodiak/usde-usda';
 import { KodiakUsdtHoneyShortcut } from '../shortcuts/kodiak/usdt-honey';
+import { KodiakWbtcFbtcShortcut } from '../shortcuts/kodiak/wbtc-fbtc';
 import { KodiakwbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcPumpbtcShortcut } from '../shortcuts/kodiak/wbtc-pumpbtc';
 import { KodiakWbtcSbtcShortcut } from '../shortcuts/kodiak/wbtc-sbtc';
@@ -92,7 +96,7 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'wbtc-honey': new BeraborrowWbtcHoneyShortcut(),
     'wbtc-weth': new BeraborrowWbtcWethShortcut(),
     'weth-honey': new BeraborrowWethHoneyShortcut(),
-    beraEth: new BeraborrowBeraethShortcut(),
+    beraeth: new BeraborrowBeraethShortcut(),
     pumpbtc: new BeraborrowPumpbtcShortcut(),
     rseth: new BeraborrowRsethShortcut(),
     sbtc: new BeraborrowSbtcShortcut(),
@@ -174,6 +178,10 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'weth-honey': new KodiakWethHoneyShortcut(),
     'weth-stone': new KodiaksWethStoneShortcut(),
     'solvbtc-fbtc': new KodiakSolvbtcFbtcShortcut(),
+    'pumpbtc-fbtc': new KodiakPumpbtcFbtcShortcut(),
+    'wbtc-fbtc': new KodiakWbtcFbtcShortcut(),
+    'rseth-ylrseth': new KodiaksRsethYlrsethShortcut(),
+    'rseth-beraeth': new KodiakRsethBeraethShortcut(),
   },
   veda: {
     usdc: new VedaUsdcShortcut(),

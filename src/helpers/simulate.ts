@@ -144,7 +144,7 @@ export async function getSetters(
 ): Promise<Record<string, BigNumber | undefined>> {
   const setterInputs = shortcut.setterInputs;
 
-  let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethToMintBeraEth;
+  let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth;
   if (setterInputs) {
     if (setterInputs.has('minAmountOut')) {
       minAmountOut = DEFAULT_SETTER_MIN_AMOUNT_OUT;
@@ -210,16 +210,16 @@ export async function getSetters(
       usdcToMintHoney = await getUsdcToMintHoney(provider, chainId, usdcAmountIn, island, setterArgsBps.skewRatio);
     }
 
-    if (setterInputs.has('wethToMintBeraEth')) {
+    if (setterInputs.has('wethTomintBeraeth')) {
       const wethAmountIn = amountsIn[0]; // this assumes a single-sided deposit
       const island = shortcut.inputs[chainId].island; // assumes we are minting honey for a kodiak island
       if (!island) throw 'Error: Shortcut not supported for calculating weth to mint';
 
-      wethToMintBeraEth = await getWethToMintBeraEth(provider, chainId, wethAmountIn, island, setterArgsBps.skewRatio);
+      wethTomintBeraeth = await getWethTomintBeraeth(provider, chainId, wethAmountIn, island, setterArgsBps.skewRatio);
     }
   }
 
-  return { minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethToMintBeraEth };
+  return { minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth };
 }
 
 export async function simulateShortcutOnQuoter(
@@ -502,22 +502,22 @@ async function getUsdcToMintHoney(
   return usdcToMintHoney.mul(skewRatio).div(MAX_BPS);
 }
 
-export async function getWethToMintBeraEth(
+export async function getWethTomintBeraeth(
   provider: StaticJsonRpcProvider,
   chainId: number,
   amountIn: BigNumberish,
   island: AddressArg,
   skewRatio: BigNumber,
 ): Promise<BigNumber> {
-  const beraEth = chainIdToDeFiAddresses[chainId]!.beraEth!;
+  const beraeth = chainIdToDeFiAddresses[chainId]!.beraeth!;
   const wethPrecision = BigNumber.from(10).pow(18);
 
   const { token0, token1 } = await getIslandTokens(provider, island);
-  if (!isAddressEqual(token0, beraEth) && !isAddressEqual(token1, beraEth)) {
-    throw new Error('Error: beraEth is not on this island');
+  if (!isAddressEqual(token0, beraeth) && !isAddressEqual(token1, beraeth)) {
+    throw new Error('Error: beraeth is not on this island');
   }
 
-  const zeroToOne = isAddressEqual(token0, beraEth);
+  const zeroToOne = isAddressEqual(token0, beraeth);
   const pair = zeroToOne ? token1 : token0;
 
   const pairExchangeRate = wethExchangeRates[chainId][pair];
@@ -525,11 +525,11 @@ export async function getWethToMintBeraEth(
     throw new Error('Error: Pair exchange rate cannot be found');
   }
 
-  const beraEthExchangeRate = await getBeraEthExchangeRate(provider, chainId);
+  const beraethExchangeRate = await getBeraEthExchangeRate(provider, chainId);
 
   const halfAmountIn = BigNumber.from(amountIn).div(2);
-  const beraEthMintAmount = halfAmountIn.mul(beraEthExchangeRate).div(wethPrecision);
-  console.log('beraEthMinAmount: ', beraEthMintAmount.toString());
+  const beraethMintAmount = halfAmountIn.mul(beraethExchangeRate).div(wethPrecision);
+  console.log('beraethMinAmount: ', beraethMintAmount.toString());
   const pairAmount = halfAmountIn.mul(pairExchangeRate).div(wethPrecision);
   console.log('pairAmount: ', pairAmount.toString());
 
@@ -537,22 +537,22 @@ export async function getWethToMintBeraEth(
     provider,
     island,
     zeroToOne
-      ? [beraEthMintAmount.toString(), pairAmount.toString()]
-      : [pairAmount.toString(), beraEthMintAmount.toString()],
+      ? [beraethMintAmount.toString(), pairAmount.toString()]
+      : [pairAmount.toString(), beraethMintAmount.toString()],
   );
 
   const { amount0, amount1 } = islandMintAmounts;
-  const beraEthWithPrecision = zeroToOne ? amount0.mul(PRECISION) : amount1.mul(PRECISION);
+  const beraethWithPrecision = zeroToOne ? amount0.mul(PRECISION) : amount1.mul(PRECISION);
   const pairWithPrecision = zeroToOne ? amount1.mul(PRECISION) : amount0.mul(PRECISION);
 
-  const relativeWethInBeraEthWithPrecision = beraEthWithPrecision.mul(wethPrecision).div(beraEthExchangeRate);
+  const relativeWethInBeraEthWithPrecision = beraethWithPrecision.mul(wethPrecision).div(beraethExchangeRate);
   const relativeWethInPairWithPrecision = pairWithPrecision.mul(wethPrecision).div(pairExchangeRate);
 
   const totalWethWithPrecision = relativeWethInPairWithPrecision.add(relativeWethInBeraEthWithPrecision);
   const relativeWeth = BigNumber.from(amountIn).mul(relativeWethInPairWithPrecision).div(totalWethWithPrecision);
-  const wethToMintBeraEth = BigNumber.from(amountIn).sub(relativeWeth);
+  const wethTomintBeraeth = BigNumber.from(amountIn).sub(relativeWeth);
 
-  return wethToMintBeraEth.mul(skewRatio).div(MAX_BPS);
+  return wethTomintBeraeth.mul(skewRatio).div(MAX_BPS);
 }
 
 async function generateTxData(

@@ -38,9 +38,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('beraEth', async () => {
+    it('beraeth', async () => {
       // Arrange
-      const args = ['beraborrow', 'beraEth', '50000000000000', '--mode=forge', '--block=4485170'];
+      const args = ['beraborrow', 'beraeth', '50000000000000', '--mode=forge', '--block=4485170'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);
@@ -56,9 +56,9 @@ describe('Successfully simulates cArtio shortcuts for', () => {
       });
     });
 
-    it('beraEth (with slippage)', async () => {
+    it('beraeth (with slippage)', async () => {
       // Arrange
-      const args = ['beraborrow', 'beraEth', '50000000000000', '--mode=forge', '--slippage=3', '--block=4485170'];
+      const args = ['beraborrow', 'beraeth', '50000000000000', '--mode=forge', '--slippage=3', '--block=4485170'];
 
       // Act
       const report = await main_([...DEFAULT_ARGS, ...args]);

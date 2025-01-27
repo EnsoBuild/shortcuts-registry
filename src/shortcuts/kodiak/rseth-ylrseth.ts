@@ -1,42 +1,46 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
+import { depositKodiak, getBalance } from '../../utils';
 
-export class OrigamiBoycoHoneyShortcut implements Shortcut {
-  name = 'origami-oboy-honey';
+export class KodiaksRsethYlrsethShortcut implements Shortcut {
+  name = 'kodiak-rseth-ylrseth';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
-      vault: '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714', //oboy-HONEY-a
-    },
     [ChainIds.Berachain]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
-      vault: '0x0b53Afe5de9f9df65C3Fe8A9DA81dC410d14d4d4',
+      ylrseth: chainIdToDeFiAddresses[ChainIds.Berachain].ylrseth,
+      rseth: chainIdToDeFiAddresses[ChainIds.Berachain].rseth,
+      island: '0xFF619BDaeDF635251c3aF5BFa82bcaf856C95cC3',
     },
   };
-  setterInputs = new Set(['minAmountOut']);
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
 
-  async build(chainId: number): Promise<Output> {
+  async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, vault } = inputs;
+    const { ylrseth, rseth, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [usdc],
-      tokensOut: [vault],
+      tokensIn: [ylrseth, rseth],
+      tokensOut: [island],
     });
+    const amountInYlrseth = getBalance(ylrseth, builder);
+    const amountInRseth = getBalance(rseth, builder);
 
-    const usdcAmount = getBalance(usdc, builder);
-    const vaultAmount = await mintErc4626(usdc, vault, usdcAmount, builder);
-
-    ensureMinAmountOut(vaultAmount, builder);
+    await depositKodiak(
+      provider,
+      builder,
+      [rseth, ylrseth],
+      [amountInYlrseth, amountInRseth],
+      island,
+      this.setterInputs,
+    );
 
     const payload = await builder.build({
       requireWeiroll: true,
@@ -51,15 +55,12 @@ export class OrigamiBoycoHoneyShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
-        return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].vault, { label: 'Origami oboy-HONEY-a' }],
-        ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Berachain].vault, { label: 'Origami oboy-HONEY-a' }],
+          [this.inputs[ChainIds.Berachain].ylrseth, { label: 'ERC20:ylrseth' }],
+          [this.inputs[ChainIds.Berachain].rseth, { label: 'ERC20:rseth' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-rseth-ylrseth' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
