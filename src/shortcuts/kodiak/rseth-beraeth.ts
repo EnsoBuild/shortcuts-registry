@@ -14,6 +14,7 @@ export class KodiakRsethBeraethShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       rseth: chainIdToDeFiAddresses[ChainIds.Berachain].rseth,
+      weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
       beraeth: chainIdToDeFiAddresses[ChainIds.Berachain].beraeth,
       island: '0xEFb340d54D54E1C4E3566878a5D64A3a591e12A3',
     },
@@ -27,7 +28,7 @@ export class KodiakRsethBeraethShortcut implements Shortcut {
     const { rseth, beraeth, weth, island } = inputs;
 
     const builder = new Builder(chainId, client, {
-      tokensIn: [weth, rseth],
+      tokensIn: [rseth, weth],
       tokensOut: [island],
     });
     const wethAmount = getBalance(weth, builder);

@@ -11,7 +11,7 @@ import { depositKodiak, getBalance, getSetterValue, mintBeraeth, mintErc4626 } f
 export class KodiakWethBeraethShortcut implements Shortcut {
   name = 'kodiak-weth-beraeth';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
@@ -56,11 +56,12 @@ export class KodiakWethBeraethShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
+      case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Cartio].weth, { label: 'ERC20:weth' }],
-          [this.inputs[ChainIds.Cartio].beraeth, { label: 'ERC20:beraeth' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-weth-beraeth-0.5%' }],
+          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:weth' }],
+          [this.inputs[ChainIds.Berachain].beraeth, { label: 'ERC20:beraeth' }],
+          [this.inputs[ChainIds.Berachain].infraredVault, { label: 'ERC20:infraredVault' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-weth-beraeth-0.5%' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);

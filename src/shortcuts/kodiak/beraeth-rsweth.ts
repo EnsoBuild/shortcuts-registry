@@ -32,7 +32,7 @@ export class KodiakBeraEthRswEthShortcut implements Shortcut {
       tokensIn: [weth, rswEth],
       tokensOut: [island],
     });
-    const wethAmount = builder.add(balanceOf(beraeth, walletAddress()));
+    const wethAmount = builder.add(balanceOf(weth, walletAddress()));
     const beraethAmount = await mintBeraeth(wethAmount, builder);
 
     const rswethAmount = builder.add(balanceOf(rswEth, walletAddress()));

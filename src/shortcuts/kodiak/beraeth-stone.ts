@@ -33,7 +33,7 @@ export class KodiakBeraEthStoneShortcut implements Shortcut {
       tokensIn: [weth, stone],
       tokensOut: [infraredVault],
     });
-    const wethAmount = builder.add(balanceOf(beraeth, walletAddress()));
+    const wethAmount = getBalance(weth, builder);
     const beraethAmount = await mintBeraeth(wethAmount, builder);
 
     const stoneAmount = builder.add(balanceOf(stone, walletAddress()));
@@ -62,6 +62,7 @@ export class KodiakBeraEthStoneShortcut implements Shortcut {
           [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:weth' }],
           [this.inputs[ChainIds.Berachain].stone, { label: 'ERC20:stone' }],
           [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island beraETH-stone' }],
+          [this.inputs[ChainIds.Berachain].infraredVault, { label: 'Infrared Vault' }],
           [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:

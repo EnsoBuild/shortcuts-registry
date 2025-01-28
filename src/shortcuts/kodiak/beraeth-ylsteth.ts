@@ -1,12 +1,11 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
-import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, mintBeraeth } from '../../utils';
+import { depositKodiak, getBalance, mintBeraeth } from '../../utils';
 
 export class KodiakBeraEthYlstethShortcut implements Shortcut {
   name = 'kodiak-beraeth-ylsteth';
@@ -32,10 +31,10 @@ export class KodiakBeraEthYlstethShortcut implements Shortcut {
       tokensIn: [weth, ylsteth],
       tokensOut: [island],
     });
-    const wethAmount = builder.add(balanceOf(beraeth, walletAddress()));
+    const wethAmount = getBalance(weth, builder);
     const beraethAmount = await mintBeraeth(wethAmount, builder);
 
-    const ylstethAmount = builder.add(balanceOf(ylsteth, walletAddress()));
+    const ylstethAmount = getBalance(ylsteth, builder);
 
     await depositKodiak(
       provider,
