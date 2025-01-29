@@ -18,7 +18,7 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
       rseth: chainIdToDeFiAddresses[ChainIds.Berachain].rseth,
       ot: '0xB1195a6cdB7ef8fB22671bd8321727dBB6DDDe03',
       yt: '0xfb8283E50c89e367674BC566db3070D9e9Ff2fDd',
-      vault: '0x834Cb23083be1C80F9737468e49555a56B149Af5',
+      vault: '0xE4dC8142CEd52C547384032e43379b0514341c22',
       island: '0xf8163EaC4c0239a81a7d8BD05B8e14498a5fD880',
     },
   };
@@ -82,7 +82,7 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].ebtc, { label: 'ERC20:rseth' }],
+          [this.inputs[ChainIds.Berachain].rseth, { label: 'ERC20:rseth' }],
           [this.inputs[ChainIds.Berachain].ot, { label: 'ERC20:rseth-OT' }],
           [this.inputs[ChainIds.Berachain].yt, { label: 'ERC20:rseth-YT' }],
           [this.inputs[ChainIds.Berachain].vault, { label: 'GoldiVault:rseth' }],
