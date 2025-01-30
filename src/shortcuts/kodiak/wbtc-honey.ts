@@ -59,7 +59,6 @@ export class KodiakWbtcHoneyShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
           [this.inputs[ChainIds.Berachain].wbtc, { label: 'ERC20:WBTC' }],
           [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
           [this.inputs[ChainIds.Berachain].infraredVault, { label: 'ERC20:Infrared Vaut' }],
