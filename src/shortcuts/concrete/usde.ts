@@ -17,7 +17,7 @@ export class ConcreteUsdeShortcut implements Shortcut {
     },
     [ChainIds.Berachain]: {
       usde: chainIdToDeFiAddresses[ChainIds.Berachain].usde,
-      vault: '0xD782e9541a02f226F35732Cd532e2d2054A7418a',
+      vault: '0x59E24F42caE1B82c8b2Dc79Ea898F2F8b4986dfC',
     },
   };
   setterInputs = new Set(['minAmountOut']);

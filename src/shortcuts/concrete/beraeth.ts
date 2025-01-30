@@ -14,7 +14,7 @@ export class ConcreteBeraethShortcut implements Shortcut {
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
       beraeth: chainIdToDeFiAddresses[ChainIds.Berachain].beraeth,
-      vault: '0xB1Bc48201a78703216aC2b2dC5d0e976f0f5C0A9',
+      vault: '0x21259EE984550318CBF28b007a75cFa78DE40397',
     },
   };
   setterInputs = new Set(['minAmountOut']);

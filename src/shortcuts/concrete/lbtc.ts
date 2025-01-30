@@ -17,7 +17,7 @@ export class ConcreteLbtcShortcut implements Shortcut {
     },
     [ChainIds.Berachain]: {
       lbtc: chainIdToDeFiAddresses[ChainIds.Berachain].lbtc,
-      vault: '0xC6949aCE25806CA1694bDc8B35583d6b6992ECDc',
+      vault: '0xf0d94806e6E5cB54336ED0f8De459659718F149C',
     },
   };
   setterInputs = new Set(['minAmountOut']);

@@ -17,7 +17,7 @@ export class ConcreteSusdeShortcut implements Shortcut {
     },
     [ChainIds.Berachain]: {
       susde: chainIdToDeFiAddresses[ChainIds.Berachain].susde,
-      vault: '0x9e11b7aDa1680fE9d5d5eD22a9E769351F5B4887',
+      vault: '0xDa785861aa6fd80D1388F65693Cd62D8a1E2956a',
     },
   };
   setterInputs = new Set(['minAmountOut']);
