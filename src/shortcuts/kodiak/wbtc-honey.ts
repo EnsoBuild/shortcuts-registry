@@ -1,15 +1,14 @@
 import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
-import { depositKodiak, getBalance, mintHoney, redeemHoney } from '../../utils';
+import { depositKodiak, getBalance, mintErc4626, mintHoney, redeemHoney } from '../../utils';
 
-export class BeraborrowWbtcHoneyShortcut implements Shortcut {
-  name = 'beraborrow-wbtc-honey';
+export class KodiakWbtcHoneyShortcut implements Shortcut {
+  name = 'kodiak-wbtc-honey';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
@@ -18,7 +17,7 @@ export class BeraborrowWbtcHoneyShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
       island: '0xf6b16E73d3b0e2784AAe8C4cd06099BE65d092Bf',
-      vault: '0x2B9371E53b5301B517c772E117616a5c165081F2',
+      infraredVault: '0x7292B549F9F59fC22bABCD7b6706e7D6889C2624',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
@@ -27,11 +26,11 @@ export class BeraborrowWbtcHoneyShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { wbtc, usdc, honey, island, vault } = inputs;
+    const { wbtc, usdc, honey, island, infraredVault } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [wbtc, usdc],
-      tokensOut: [vault],
+      tokensOut: [infraredVault],
     });
     const usdcAmount = getBalance(usdc, builder);
     const wbtcAmount = getBalance(wbtc, builder);
@@ -39,15 +38,8 @@ export class BeraborrowWbtcHoneyShortcut implements Shortcut {
 
     await depositKodiak(provider, builder, [wbtc, honey], [wbtcAmount, mintedAmount], island, this.setterInputs);
 
-    const amountIsland = getBalance(island, builder);
-
-    const erc4626 = getStandardByProtocol('erc4626', chainId);
-    await erc4626.deposit.addToBuilder(builder, {
-      tokenIn: [island],
-      tokenOut: vault,
-      amountIn: [amountIsland],
-      primaryAddress: vault,
-    });
+    const islandAmount = getBalance(island, builder);
+    await mintErc4626(island, infraredVault, islandAmount, builder);
 
     const leftoverAmount = getBalance(honey, builder);
     await redeemHoney(usdc, leftoverAmount, builder);
@@ -70,7 +62,7 @@ export class BeraborrowWbtcHoneyShortcut implements Shortcut {
           [this.inputs[ChainIds.Berachain].weth, { label: 'ERC20:WETH' }],
           [this.inputs[ChainIds.Berachain].wbtc, { label: 'ERC20:WBTC' }],
           [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
-          [this.inputs[ChainIds.Berachain].vault, { label: 'ERC20:BB_VAULT' }],
+          [this.inputs[ChainIds.Berachain].infraredVault, { label: 'ERC20:Infrared Vaut' }],
           [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-WBTC-HONEY' }],
           [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);

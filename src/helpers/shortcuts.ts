@@ -67,13 +67,16 @@ import { KodiakUsdeHoneyShortcut } from '../shortcuts/kodiak/usde-honey';
 import { KodiakUsdeUsdaShortcut } from '../shortcuts/kodiak/usde-usda';
 import { KodiakUsdtHoneyShortcut } from '../shortcuts/kodiak/usdt-honey';
 import { KodiakWbtcFbtcShortcut } from '../shortcuts/kodiak/wbtc-fbtc';
+import { KodiakWbtcHoneyShortcut } from '../shortcuts/kodiak/wbtc-honey';
 import { KodiakWbtcPumpbtcShortcut } from '../shortcuts/kodiak/wbtc-pumpbtc';
 import { KodiakWbtcSbtcShortcut } from '../shortcuts/kodiak/wbtc-sbtc';
 import { KodiakWbtcSolvbtcShortcut } from '../shortcuts/kodiak/wbtc-solvbtc';
 import { KodiakWbtcStbtcShortcut } from '../shortcuts/kodiak/wbtc-stbtc';
 import { KodiakWbtcUnibtcShortcut } from '../shortcuts/kodiak/wbtc-unibtc';
 import { KodiakWbtcWabtcShortcut } from '../shortcuts/kodiak/wbtc-wabtc';
+import { KodiakWbtcWethShortcut } from '../shortcuts/kodiak/wbtc-weth';
 import { KodiakWethBeraethShortcut } from '../shortcuts/kodiak/weth-beraeth';
+import { KodiakWethHoneyShortcut } from '../shortcuts/kodiak/weth-honey';
 import { KodiaksWethStoneShortcut } from '../shortcuts/kodiak/weth-stone';
 import { OrigamiBoycoHoneyShortcut } from '../shortcuts/origami/oboy-HONEY-a';
 import { SatlayerLbtcShortcut } from '../shortcuts/satlayer/lbtc';
@@ -177,13 +180,16 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     'usde-usda': new KodiakUsdeUsdaShortcut(),
     'usdt-honey': new KodiakUsdtHoneyShortcut(),
     'wbtc-fbtc': new KodiakWbtcFbtcShortcut(),
+    'wbtc-honey': new KodiakWbtcHoneyShortcut(),
     'wbtc-pumpbtc': new KodiakWbtcPumpbtcShortcut(),
     'wbtc-sbtc': new KodiakWbtcSbtcShortcut(),
     'wbtc-solvbtc': new KodiakWbtcSolvbtcShortcut(),
     'wbtc-stbtc': new KodiakWbtcStbtcShortcut(),
     'wbtc-unibtc': new KodiakWbtcUnibtcShortcut(),
     'wbtc-wabtc': new KodiakWbtcWabtcShortcut(),
+    'wbtc-weth': new KodiakWbtcWethShortcut(),
     'weth-beraeth': new KodiakWethBeraethShortcut(),
+    'weth-honey': new KodiakWethHoneyShortcut(),
     'weth-stone': new KodiaksWethStoneShortcut(),
   },
   veda: {
