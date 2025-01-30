@@ -38,7 +38,12 @@ export async function main_(args: string[]) {
     if ([ShortcutOutputFormat.FULL].includes(outputFmt)) return;
 
     // Save output to file in ROYCO format
-    const outputHash = hashContent(JSON.stringify(output, null, 2));
+    const outputJson = JSON.stringify(
+      [(output as RoycoOutput).weirollCommands, (output as RoycoOutput).weirollState],
+      null,
+      2,
+    );
+    const outputHash = hashContent(outputJson);
     const outputDir = path.join(__dirname, `../outputs/${chain}`, protocol);
     const outputFile = path.join(outputDir, `${market}.json`);
 
@@ -51,7 +56,7 @@ export async function main_(args: string[]) {
       }
     }
     fs.mkdirSync(outputDir, { recursive: true });
-    fs.writeFileSync(outputFile, JSON.stringify(output, null, 2), 'utf-8');
+    fs.writeFileSync(outputFile, outputJson, 'utf-8');
     console.log(`Output saved to '${outputFile}'`);
   } catch (e) {
     console.error(e);

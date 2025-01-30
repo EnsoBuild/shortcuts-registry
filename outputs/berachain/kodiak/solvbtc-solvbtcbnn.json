@@ -1,5 +1,5 @@
-{
-  "weirollCommands": [
+[
+  [
     "0xb65d95ec01ffffffffffff0607899ac8be7462151d6515fcd4773dd9267c9911",
     "0x2e1cc2f601ffffffffffff0707899ac8be7462151d6515fcd4773dd9267c9911",
     "0x095ea7b3010700ffffffffff541fd749419ca806a8bc7da8ac23d346f2df8b77",
@@ -19,7 +19,7 @@
     "0x095ea7b3010403ffffffffff541fd749419ca806a8bc7da8ac23d346f2df8b77",
     "0x095ea7b3010403ffffffffffcc0966d8418d412c599a6421b760a847eb169a8c"
   ],
-  "weirollState": [
+  [
     "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
     "0x0000000000000000000000000000000000000000000000000000000000000001",
     "0x0000000000000000000000000000000000000000000000000000000000000002",
@@ -30,4 +30,4 @@
     "0x",
     "0x"
   ]
-}
+]
