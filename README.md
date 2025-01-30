@@ -104,9 +104,9 @@ represents 1%).
 
 Other supported CCDMSetter variables are:
 
-- `minAmount0`: sets the difference in basis points between the max amount in and min amount in for token0 in kodiak
+- `minAmount0Bps`: sets the difference in basis points between the max amount in and min amount in for token0 in kodiak
   vaults
-- `minAmount1`: sets the difference in basis points between the max amount in and min amount in for token1 in kodiak
+- `minAmount1Bps`: sets the difference in basis points between the max amount in and min amount in for token1 in kodiak
   vaults
 - `skewRatio`: for shortcuts that do an off-chain calculation for the amount of a token that gets exchanged in a
   shortcut, you can pass this value (in basis points) to reduce the amount exchanged relative to the calculated amount
