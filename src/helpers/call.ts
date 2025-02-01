@@ -64,6 +64,29 @@ export function getEncodedData(commands: string[], state: string[]): string {
   return weirollWalletInterface.encodeFunctionData('executeWeiroll', [commands, state]);
 }
 
+export async function getUniswapLiquidity(
+  provider: StaticJsonRpcProvider,
+  chainId: number,
+  lpToken: AddressArg,
+  liquidity: BigNumberish,
+) {
+  const lpInterface = new Interface([
+    'function token0() external view returns (address)',
+    'function token1() external view returns (address)',
+    'function totalSupply() external view returns (uint256)',
+  ]);
+  const [token0Response, token1Response] = await Promise.all([
+    call(provider, lpInterface, lpToken, 'token0', []),
+    call(provider, lpInterface, lpToken, 'token1', []),
+  ]);
+  const [token0, token1] = [token0Response[0], token1Response[0]];
+  const [balance0, balance1] = await getBalances(provider, chainId, lpToken, [token0, token1]);
+  const totalSupply = (await call(provider, lpInterface, lpToken, 'totalSupply', []))[0];
+  const amount0 = BigNumber.from(liquidity).mul(balance0).div(totalSupply).toString();
+  const amount1 = BigNumber.from(liquidity).mul(balance1).div(totalSupply).toString();
+  return { amount0, amount1 };
+}
+
 export async function getHoneyExchangeRate(
   provider: StaticJsonRpcProvider,
   chainId: number,
