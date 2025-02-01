@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 import { execSync } from 'node:child_process';
 
 import {
-  DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
   MAX_BPS,
+  MIN_AMOUNT_OUT_MIN_SLIPPAGE,
   ShortcutExecutionMode,
   ShortcutOutputFormat,
   SimulationMode,
@@ -135,9 +135,9 @@ export function getBasisPointsFromArgs(args: string[], label: string, defaultVal
     throw new Error(`Invalid ${label}: ${raw}. Required a BigNumber type as BIPS. Reason: ${error}`);
   }
 
-  if (value.lt(DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE) || value.gt(MAX_BPS)) {
+  if (value.lt(MIN_AMOUNT_OUT_MIN_SLIPPAGE) || value.gt(MAX_BPS)) {
     throw new Error(
-      `invalid ${label}: ${raw}. BIPS is out of range [${DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE.toString()},${MAX_BPS.toString()}]`,
+      `invalid ${label}: ${raw}. BIPS is out of range [${MIN_AMOUNT_OUT_MIN_SLIPPAGE.toString()},${MAX_BPS.toString()}]`,
     );
   }
 

@@ -1,13 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
-import {
-  DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
-  MAX_BPS,
-  MIN_BPS,
-  ShortcutExecutionMode,
-  SimulationMode,
-} from '../src/constants';
+import { MAX_BPS, MIN_AMOUNT_OUT_MIN_SLIPPAGE, MIN_BPS, ShortcutExecutionMode, SimulationMode } from '../src/constants';
 import {
   getAmountsInFromArgs,
   getBasisPointsFromArgs,
@@ -53,7 +47,7 @@ export async function main_(args: string[]): Promise<Report> {
   // NB: currently only a single slippage is supported due Royco campaign shortcuts expecting a single receipt token
   const shortcutExecutionMode = getShortcutExecutionMode(shortcut);
   const setterArgsBps: Record<string, BigNumber> = {
-    slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
+    slippage: MIN_AMOUNT_OUT_MIN_SLIPPAGE,
     skewRatio: MAX_BPS,
     minAmount0Bps: MIN_BPS,
     minAmount1Bps: MIN_BPS,
