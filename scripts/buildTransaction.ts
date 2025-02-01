@@ -5,7 +5,7 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import fs from 'fs';
 import path from 'path';
 
-import { DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE, MAX_BPS, MIN_BPS, SimulationMode } from '../src/constants';
+import { DEFAULT_MIN_AMOUNT_BPS, DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE, MAX_BPS, SimulationMode } from '../src/constants';
 import {
   buildShortcutsHashMap,
   buildVerificationHash,
@@ -37,8 +37,8 @@ async function main() {
     const setterArgsBps: Record<string, BigNumber> = {
       slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
       skewRatio: MAX_BPS,
-      minAmount0Bps: MIN_BPS,
-      minAmount1Bps: MIN_BPS,
+      minAmount0Bps: DEFAULT_MIN_AMOUNT_BPS,
+      minAmount1Bps: DEFAULT_MIN_AMOUNT_BPS,
     };
     // adjust default values with user inputted values
     Object.keys(setterArgsBps).forEach((key) => {
