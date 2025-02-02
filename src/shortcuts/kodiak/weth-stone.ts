@@ -16,7 +16,7 @@ export class KodiaksWethStoneShortcut implements Shortcut {
       stone: chainIdToDeFiAddresses[ChainIds.Berachain].stone,
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
       island: '0x97431F104be73FC0e6fc731cE84486DA05C48871',
-      infraredVault: '0xD452dD6424d78a0A12BD0462Ae6868E7da28e5Cb',
+      infraredVault: '0xb38b0D08965654f11377c0C90F2338D63926C9B9',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);

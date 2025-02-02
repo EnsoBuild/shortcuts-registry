@@ -17,7 +17,7 @@ export class KodiakWethHoneyShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
       island: '0xf6c6Be0FF6d6F70A04dBE4F1aDE62cB23053Bd95',
-      infraredVault: '0x8151f25dC7954cE13187b255F3AA83d5cE01B464',
+      infraredVault: '0x57684b647D4Cc6b151E7476355fcFdc174da7ECE',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);

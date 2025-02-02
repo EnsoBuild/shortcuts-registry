@@ -31,7 +31,7 @@ export class KodiakMimHoneyhShortcut implements Shortcut {
 
     const builder = new Builder(chainId, client, {
       tokensIn: [mim, usdc],
-      tokensOut: [island, infraredVault],
+      tokensOut: [infraredVault],
     });
 
     const mimAmount = builder.add(balanceOf(mim, walletAddress()));

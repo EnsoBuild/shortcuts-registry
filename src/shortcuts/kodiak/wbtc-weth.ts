@@ -16,7 +16,7 @@ export class KodiakWbtcWethShortcut implements Shortcut {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
       wbtc: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
       island: '0x58FDB6EEbf7df7Ce4137994436fb0e629Bb84b84',
-      infraredVault: '0x2Bdf0C4960f6B2fC8b2094956d3bCd848F60b931',
+      infraredVault: '0x7e312939980B2842B524D3418Aa9b7498054e39a',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
