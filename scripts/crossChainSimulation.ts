@@ -13,6 +13,7 @@ const uniV2ZeroToOne = [
   '0x289dc2a22ebb4ef7404de9293b6718d9f81f0843e1af4cf9a9c51d2e757348d6',
   '0x17ffd16948c053cc184c005477548e559566879a0e2847e87ebd1111c602535c',
   '0x7ecf55915abe3c24dc5d8365a8edabc8833f4efb8e7c027429c9528aed91ecb7',
+  '0x49104b3cadbb31470e5b949c6892a33954ee9ce35041df4a04a88eb694b645c0',
 ];
 
 const marketHashes: Record<string, Record<string, string>> = {
@@ -78,10 +79,9 @@ const marketHashes: Record<string, Record<string, string>> = {
   },
   d2: {
     'usdc-kodiakplus': '0x027987432679079fbbc990691d14dabe7f7780f51df6a1a53e7bd875b1f9581a',
-    'usdc-beraland': '0x0964848864e96952ee2454ce58fc93b867f9b2d9a6b44216eec8b08726813d1b',
+    //'usdc-beraland': '0x0964848864e96952ee2454ce58fc93b867f9b2d9a6b44216eec8b08726813d1b',
     'usdc-hyperbera': '0xb7b78119806fcb9bbc499131da16b52ce52cf4a1ceabfc59e4f2f6e6ef7046c0',
   },
-
   goldilocks: {
     'unibtc-unibtcot': '0x72679855f582a6d908bf39d40cb5a299b6a98a82bf1bfd9055f1853fc5160f54',
     'rseth-rsethot': '0xab32e1695b84b148140cb78c044d247e307b26cb043dc5538657f3a5634dee6e',
@@ -95,16 +95,16 @@ const marketHashes: Record<string, Record<string, string>> = {
     'honey-usdc': '0x72bec627884d7bdf538f174bedd551e9eccf3995adc880f40972e2bab87df3b9',
     'mim-honey': '0x9a117f13c7d5d2b4b18e444f72e6e77c010a1fd90cf21135be75669d66ad9428',
     'pumpbtc-fbtc': '0xab27dc8061f66791bb94a536546b08ba15e06344dabad2cc6267cf44f0070574',
-    'pumpbtc-ylbtclst': '0x2fa37184f43783f5d6b23548c4a7a21bb86cd2f314bba9d5bb7d2415d61d11c8',
-    'pumpbtc-ylpumpbtc': '0xaa636d73f39ea0de0e04ed9270eac5d943707e7f8fb9c3480c0d80eb015ccfc8',
+    //'pumpbtc-ylbtclst': '0x2fa37184f43783f5d6b23548c4a7a21bb86cd2f314bba9d5bb7d2415d61d11c8',
+    //'pumpbtc-ylpumpbtc': '0xaa636d73f39ea0de0e04ed9270eac5d943707e7f8fb9c3480c0d80eb015ccfc8',
     'rseth-beraeth': '0x25f7a422282a1f26d9d96b5d1c43fa5c6f8c355b0ed7a4755ac8d04a504817f5',
-    'rseth-ylrseth': '0x460ec133419318efe4e05b4c3b6db421503fd6fcefbb20a43f50e3fc50f2ee39',
+    //'rseth-ylrseth': '0x460ec133419318efe4e05b4c3b6db421503fd6fcefbb20a43f50e3fc50f2ee39',
     'rusd-honey': '0xcdb30c06ea11f3f5408bce5eefdb392dfe0008ef81af3a486bcfed891f9cc112',
     'solvbtc-fbtc': '0xc5165360e2e8b195cb55e21cf259ce6a5ee996b055057d8705851d9b01fc8620',
     'solvbtc-solvbtcbnn': '0x378d4d32d89450978d01cfdf1ff1907d4419aa186c48abb94e612b76d75f3fae',
     'susda-usda': '0xd70673b98af7096f575717d70fbf2fa935dd719926b55c0e011480678cdac563',
     'susde-honey': '0xad9ee12ea8b3dccf85934c2918bd4ad38ccf7bc8b43d5fcb6f298858aa4c9ca4',
-    'unibtc-ylbtclst': '0x21c6a0baa6f41b060937be5a4f1be096b63f426c50f763b4dabd1af46803fa2f',
+    //'unibtc-ylbtclst': '0x21c6a0baa6f41b060937be5a4f1be096b63f426c50f763b4dabd1af46803fa2f',
     'usde-honey': '0x5f7935e257b94aee6caf9bbe917d4cfad75e8bc3b231806769ca0935af8371e8',
     'usde-usda': '0xab689b5eac7541b8cc774f0ca3705a91b21660e8221fc7bd8e93c391fb5d690d',
     'usdt-honey': '0xf8f745f188ddb10c16724faee95583521191c3c69e15490fa53c1136b73c17d7',
@@ -164,20 +164,21 @@ async function main() {
           console.log('Locked amount: ', lockedAmount.toString());
           console.log('Token: ', token);
 
+          let amountString: string;
           try {
             const { amount0, amount1 } = await getUniswapLiquidity(provider, token, lockedAmount);
-            const amountsString = uniV2ZeroToOne.includes(marketHash)
+            console.log('LP Token');
+            amountString = uniV2ZeroToOne.includes(marketHash)
               ? [amount1.toString(), amount0.toString()].join(',')
               : [amount0.toString(), amount1.toString()].join(',');
-
-            console.log('LP Token');
-            await simulateShortcut(['berachain', protocol, name, amountsString]);
             //eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (e) {
             // single token
             console.log('Single Token');
-            await simulateShortcut(['berachain', protocol, name, lockedAmount.toString()]);
+            amountString = lockedAmount.toString();
           }
+          console.log('Simulate amount: ', amountString);
+          await simulateShortcut(['berachain', protocol, name, amountString]);
         }
       }
     }
