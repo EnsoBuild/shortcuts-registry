@@ -246,7 +246,7 @@ async function main() {
       };
       safeTransactions.push(safeTransaction);
 
-      const outputFile = path.join(__dirname, '../transaction-builder.json');
+      const outputFile = path.join(__dirname, `../tx-builder-${marketHash}.json`);
 
       fs.writeFileSync(outputFile, JSON.stringify(createBatchFile(chainId, owner, safeTransactions), null, 2), 'utf-8');
       console.log(`Safe Transaction Builder output saved to '${outputFile}'`);
