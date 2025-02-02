@@ -9,10 +9,10 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import {
   CONTRCT_SIMULATION_FORK_TEST_EVENTS_ABI,
-  DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE,
   DEFAULT_SETTER_MIN_AMOUNT_OUT,
   FUNCTION_ID_ERC20_APPROVE,
   MAX_BPS,
+  MIN_AMOUNT_OUT_MIN_SLIPPAGE,
   PRECISION,
   ShortcutExecutionMode,
   SimulationMode,
@@ -149,7 +149,7 @@ export async function getSetters(
   if (setterInputs) {
     if (setterInputs.has('minAmountOut')) {
       minAmountOut = DEFAULT_SETTER_MIN_AMOUNT_OUT;
-      if (!setterArgsBps.slippage.eq(DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE)) {
+      if (!setterArgsBps.slippage.eq(MIN_AMOUNT_OUT_MIN_SLIPPAGE)) {
         // NB: simulate first with `minAmountOut` set to '1' wei and get the actual `amountOut` from quoter.
         // Then, calculate the expected `minAmountOut` after applying maximum slippage, and finally simulate again.
         let report: Report;
@@ -164,7 +164,7 @@ export async function getSetters(
               amountsIn,
               tokensIn,
               tokensOut,
-              { ...setterArgsBps, slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE },
+              { ...setterArgsBps, slippage: MIN_AMOUNT_OUT_MIN_SLIPPAGE },
               forgePath,
               blockNumber || -1,
               roles,
@@ -182,7 +182,7 @@ export async function getSetters(
               amountsIn,
               tokensIn,
               tokensOut,
-              { ...setterArgsBps, slippage: DEFAULT_MIN_AMOUNT_OUT_MIN_SLIPPAGE },
+              { ...setterArgsBps, slippage: MIN_AMOUNT_OUT_MIN_SLIPPAGE },
               roles,
               ShortcutExecutionMode.MULTICALL__AGGREGATE,
               { isReportLogged: false, isCalldataLogged: false },
