@@ -36,9 +36,19 @@ import { DolomiteDberaethShortcut } from '../shortcuts/dolomite/dberaeth';
 import { DolomiteDnectShortcut } from '../shortcuts/dolomite/dnect';
 import { DolomiteDPumpBtcShortcut } from '../shortcuts/dolomite/dpumpbtc';
 import { DolomiteDRsEthShortcut } from '../shortcuts/dolomite/drseth';
+import { DolomiteDrswethShortcut } from '../shortcuts/dolomite/drsweth';
 import { DolomiteDSbtcShortcut } from '../shortcuts/dolomite/dsbtc';
+import { DolomiteDsolvbtcShortcut } from '../shortcuts/dolomite/dsolvbtc';
+import { DolomiteDsolvbtcbnnShortcut } from '../shortcuts/dolomite/dsolvbtcbnn';
+import { DolomiteDstoneShortcut } from '../shortcuts/dolomite/dstone';
+import { DolomiteDsusdeShortcut } from '../shortcuts/dolomite/dsusde';
+import { DolomiteDunibtcShortcut } from '../shortcuts/dolomite/dunibtc';
+import { DolomiteDusdaShortcut } from '../shortcuts/dolomite/dusda';
 import { DolomiteDUsdcShortcut } from '../shortcuts/dolomite/dusdc';
+import { DolomiteDusdeShortcut } from '../shortcuts/dolomite/dusde';
+import { DolomiteDylbtclstShortcut } from '../shortcuts/dolomite/dylbtclst';
 import { DolomiteDYlPumpBtcShortcut } from '../shortcuts/dolomite/dylpumpbtc';
+import { DolomiteDylstethShortcut } from '../shortcuts/dolomite/dylsteth';
 import { DolomiteInfraredDethShortcut } from '../shortcuts/dolomite/ir-deth';
 import { DolomiteInfraredDHoneyShortcut } from '../shortcuts/dolomite/ir-dhoney';
 import { DolomiteInfraredDUsdtShortcut } from '../shortcuts/dolomite/ir-dusdt';
@@ -135,17 +145,29 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     wberausdc: new DahliaWberausdcShortcut(),
   },
   dolomite: {
+    'ir-deth': new DolomiteInfraredDethShortcut(),
+    'ir-dhoney': new DolomiteInfraredDHoneyShortcut(),
+    'ir-dusdt': new DolomiteInfraredDUsdtShortcut(),
+    'ir-dwbtc': new DolomiteInfraredDwbtcShortcut(),
     dberaeth: new DolomiteDberaethShortcut(),
     dnect: new DolomiteDnectShortcut(),
     dpumpbtc: new DolomiteDPumpBtcShortcut(),
     drseth: new DolomiteDRsEthShortcut(),
+    drsweth: new DolomiteDrswethShortcut(),
     dsbtc: new DolomiteDSbtcShortcut(),
+    dsolvbtc: new DolomiteDsolvbtcShortcut(),
+    dsolvbtcbnn: new DolomiteDsolvbtcbnnShortcut(),
+    dstbtc: new DolomiteDSbtcShortcut(),
+    dstone: new DolomiteDstoneShortcut(),
+    dsusda: new DolomiteDusdaShortcut(),
+    dsusde: new DolomiteDsusdeShortcut(),
+    dunibtc: new DolomiteDunibtcShortcut(),
+    dusda: new DolomiteDusdaShortcut(),
     dusdc: new DolomiteDUsdcShortcut(),
+    dusde: new DolomiteDusdeShortcut(),
+    dylbtclst: new DolomiteDylbtclstShortcut(),
     dylpumpbtc: new DolomiteDYlPumpBtcShortcut(),
-    'ir-deth': new DolomiteInfraredDethShortcut(),
-    'ir-dusdt': new DolomiteInfraredDUsdtShortcut(),
-    'ir-dhoney': new DolomiteInfraredDHoneyShortcut(),
-    'ir-dwbtc': new DolomiteInfraredDwbtcShortcut(),
+    dylsteth: new DolomiteDylstethShortcut(),
   },
   d2: {
     'usdc-kodiakplus': new D2UsdcKodiakplusShortcut(),
