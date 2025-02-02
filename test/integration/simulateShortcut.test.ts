@@ -2,11 +2,8 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import { main_ } from '../../scripts/simulateShortcut';
 
-const MOCKED_PATH_TO_NODE = '/path/to/node';
-const MOCKED_PATH_TO_SCRIPT = '/path/to/script';
-
 describe('Successfully simulates cArtio shortcuts for', () => {
-  const DEFAULT_ARGS = [MOCKED_PATH_TO_NODE, MOCKED_PATH_TO_SCRIPT, 'cartio'];
+  const DEFAULT_ARGS = ['cartio'];
 
   beforeAll(() => {
     // Disable console methods during tests
