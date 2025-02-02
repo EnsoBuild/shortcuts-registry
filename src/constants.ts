@@ -205,6 +205,7 @@ export const chainIdToDeFiAddresses: Record<number, Record<string, AddressArg>> 
     usda: '0xff12470a969Dd362EB6595FFB44C82c959Fe9ACc',
     usdc: '0x549943e04f40284185054145c6E4e9568C1D3241',
     usdcPsmBond: '0xCaB847887a2d516Dfa690fa346638429415c089b',
+    usdePsmBond: '0x5623554eCe4E1fd78e8a4ce13D588A8e0053825D',
     usde: '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34',
     usdt: '0x779Ded0c9e1022225f8E0630b35a9b54bE713736',
     wabtc: '0x09DEF5aBc67e967d54E8233A4b5EBBc1B3fbE34b',

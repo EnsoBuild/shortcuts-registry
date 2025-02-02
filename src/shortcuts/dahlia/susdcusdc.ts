@@ -18,7 +18,7 @@ export class DahliaSusdcusdcShortcut implements Shortcut {
     },
     [ChainIds.Berachain]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
-      vault: '0x769Bf76Fad622E558C5663e24f950dF7E68b829c',
+      vault: '0x50e394b94d7d40edff1481506542e5d4931c7a05',
     },
   };
   setterInputs = new Set(['minAmountOut']);

@@ -8,7 +8,15 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getSetterValue, mintHoney, mintNect, redeemHoney, redeemNect } from '../../utils';
+import {
+  balanceOf,
+  depositKodiak,
+  getSetterValue,
+  mintHoney,
+  mintNectWithUsdc,
+  redeemHoney,
+  redeemNect,
+} from '../../utils';
 
 export class BeraborrowNectHoneyShortcut implements Shortcut {
   name = 'beraborrow-nect-honey';
@@ -46,7 +54,7 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     // Get HONEY
     const honeyMintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
     // Get NECT
-    const nectMintedAmount = await mintNect(remainingUsdc, builder);
+    const nectMintedAmount = await mintNectWithUsdc(remainingUsdc, builder);
 
     await depositKodiak(
       provider,

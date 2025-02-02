@@ -18,7 +18,7 @@ import { simulateShortcutOnForge, simulateShortcutOnQuoter } from '../src/helper
 import type { Report } from '../src/types';
 
 export async function main_(args: string[]): Promise<Report> {
-  const { shortcut, chainId } = await getShortcut(args.slice(2));
+  const { shortcut, chainId } = await getShortcut(args);
 
   const simulatonMode = getSimulationModeFromArgs(args);
   const blockNumber = getBlockNumberFromArgs(args);
@@ -106,7 +106,7 @@ export async function main_(args: string[]): Promise<Report> {
 
 async function main() {
   try {
-    await main_(process.argv);
+    await main_(process.argv.slice(2));
   } catch (error) {
     console.error(error);
   }

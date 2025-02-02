@@ -4,7 +4,7 @@ import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-buil
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { ensureMinAmountOut, getBalance, mintErc4626, mintNect } from '../../utils';
+import { ensureMinAmountOut, getBalance, mintErc4626, mintNectWithUsdc } from '../../utils';
 
 export class DolomiteDnectShortcut implements Shortcut {
   name = 'dolomite-dnect';
@@ -32,7 +32,7 @@ export class DolomiteDnectShortcut implements Shortcut {
 
     const usdcAmount = getBalance(usdc, builder);
 
-    const nectMintedAmount = await mintNect(usdcAmount, builder);
+    const nectMintedAmount = await mintNectWithUsdc(usdcAmount, builder);
 
     const vaultAmount = await mintErc4626(nect, vault, nectMintedAmount, builder);
 

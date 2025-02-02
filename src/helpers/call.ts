@@ -66,7 +66,6 @@ export function getEncodedData(commands: string[], state: string[]): string {
 
 export async function getUniswapLiquidity(
   provider: StaticJsonRpcProvider,
-  chainId: number,
   lpToken: AddressArg,
   liquidity: BigNumberish,
 ) {
@@ -80,11 +79,11 @@ export async function getUniswapLiquidity(
     call(provider, lpInterface, lpToken, 'token1', []),
   ]);
   const [token0, token1] = [token0Response[0], token1Response[0]];
-  const [balance0, balance1] = await getBalances(provider, chainId, lpToken, [token0, token1]);
+  const [balance0, balance1] = await getBalances(provider, lpToken, [token0, token1]);
   const totalSupply = (await call(provider, lpInterface, lpToken, 'totalSupply', []))[0];
   const amount0 = BigNumber.from(liquidity).mul(balance0).div(totalSupply).toString();
   const amount1 = BigNumber.from(liquidity).mul(balance1).div(totalSupply).toString();
-  return { amount0, amount1 };
+  return { amount0, amount1, token0, token1 };
 }
 
 export async function getHoneyExchangeRate(
@@ -245,7 +244,6 @@ export async function getTotalTokenAmountDeposited(
 
 export async function getBalances(
   provider: StaticJsonRpcProvider,
-  chainId: number,
   wallet: string,
   tokens: string[],
 ): Promise<BigNumber[]> {
@@ -256,6 +254,34 @@ export async function getBalances(
         (await call(provider, tokenInterface, token, 'balanceOf', [wallet])).amount as unknown as BigNumber,
     ),
   );
+}
+
+export async function getDepositLockerAmount(provider: StaticJsonRpcProvider, marketHash: string): Promise<BigNumber> {
+  const depositLockerInterface = new Interface([
+    'function marketHashToMerkleDepositsInfo(bytes32 marketHash) external view returns ((uint256 _nextLeafIndex, bytes32[] _sides, bytes32[] _zeros) merkleTree, bytes32 merkleRoot, uint256 totalAmountDeposited, uint256 lastCcdmNonceBridged)',
+  ]);
+  const depositInfo = await call(
+    provider,
+    depositLockerInterface,
+    '0x63E8209CAa13bbA1838E3946a50d717071A28CFB',
+    'marketHashToMerkleDepositsInfo',
+    [marketHash],
+  );
+  return depositInfo.totalAmountDeposited as BigNumber;
+}
+
+export async function getMarketInputToken(provider: StaticJsonRpcProvider, marketHash: string): Promise<AddressArg> {
+  const recipeHubInterface = new Interface([
+    'function marketHashToWeirollMarket(bytes32 marketHash) external view returns (uint256 marketID, address inputToken, uint256 lockupTime, uint256 frontendFee, (bytes32[] commands, bytes[] state) depositRecipe, (bytes32[] commands, bytes[] state) withdrawRecipe, uint256 rewardStyle)',
+  ]);
+  const marketInfo = await call(
+    provider,
+    recipeHubInterface,
+    '0x783251f103555068c1E9D755f69458f39eD937c0',
+    'marketHashToWeirollMarket',
+    [marketHash],
+  );
+  return marketInfo.inputToken as AddressArg;
 }
 
 export async function getWeirollWallets(
