@@ -112,7 +112,7 @@ export function getShortcutOutputFormatFromArgs(args: string[]): string {
 }
 
 export function getAmountsInFromArgs(args: string[]): string[] {
-  const filteredArg = args[5];
+  const filteredArg = args[3];
   if (!filteredArg || !filteredArg.length) throw 'Error: Please pass amounts (use commas for multiple values)';
 
   return filteredArg.split(',');

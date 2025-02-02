@@ -70,13 +70,24 @@ export async function mintErc4626(tokenIn: AddressArg, tokenOut: AddressArg, amo
   return amountOut as FromContractCallArg;
 }
 
-export async function mintNect(amountIn: NumberArg, builder: Builder) {
+export async function mintNectWithUsdc(amountIn: NumberArg, builder: Builder) {
   const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
   const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
     tokenIn: [chainIdToDeFiAddresses[builder.chainId].usdc],
     tokenOut: chainIdToDeFiAddresses[builder.chainId].nect,
     amountIn: [amountIn],
     primaryAddress: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
+  });
+  return mintedAmountNect as FromContractCallArg;
+}
+
+export async function mintNectWithUsde(amountIn: NumberArg, builder: Builder) {
+  const erc4626 = getStandardByProtocol('erc4626', builder.chainId);
+  const { amountOut: mintedAmountNect } = await erc4626.deposit.addToBuilder(builder, {
+    tokenIn: [chainIdToDeFiAddresses[builder.chainId].usde],
+    tokenOut: chainIdToDeFiAddresses[builder.chainId].nect,
+    amountIn: [amountIn],
+    primaryAddress: chainIdToDeFiAddresses[builder.chainId].usdePsmBond,
   });
   return mintedAmountNect as FromContractCallArg;
 }

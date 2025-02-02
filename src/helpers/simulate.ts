@@ -65,6 +65,17 @@ const usdcExchangeRates: Record<number, Record<AddressArg, BigNumber>> = {
   },
 };
 
+const usdeExchangeRates: Record<number, Record<AddressArg, BigNumber>> = {
+  [ChainIds.Cartio]: {
+    [chainIdToDeFiAddresses[ChainIds.Cartio]!.usde]: BigNumber.from(10).pow(18),
+    [chainIdToDeFiAddresses[ChainIds.Cartio]!.nect]: BigNumber.from(10).pow(18),
+  },
+  [ChainIds.Berachain]: {
+    [chainIdToDeFiAddresses[ChainIds.Berachain]!.usde]: BigNumber.from(10).pow(18),
+    [chainIdToDeFiAddresses[ChainIds.Berachain]!.nect]: BigNumber.from(10).pow(18),
+  },
+};
+
 const wethExchangeRates: Record<number, Record<AddressArg, BigNumber>> = {
   [ChainIds.Cartio]: {
     [chainIdToDeFiAddresses[ChainIds.Cartio]!.weth]: BigNumber.from(10).pow(18),
@@ -145,7 +156,7 @@ export async function getSetters(
 ): Promise<Record<string, BigNumber | undefined>> {
   const setterInputs = shortcut.setterInputs;
 
-  let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth;
+  let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth, usdeToMintNect;
   if (setterInputs) {
     if (setterInputs.has('minAmountOut')) {
       minAmountOut = DEFAULT_SETTER_MIN_AMOUNT_OUT;
@@ -218,9 +229,17 @@ export async function getSetters(
 
       wethTomintBeraeth = await getWethTomintBeraeth(provider, chainId, wethAmountIn, island, setterArgsBps.skewRatio);
     }
+
+    if (setterInputs.has('usdeToMintNect')) {
+      const usdeAmountIn = amountsIn[0]; // this assumes a single-sided deposit
+      const island = shortcut.inputs[chainId].island; // assumes we are minting nect for a kodiak island
+      if (!island) throw 'Error: Shortcut not supported for calculating usde to mint';
+
+      usdeToMintNect = await getUsdeToMintNect(provider, chainId, usdeAmountIn, island, setterArgsBps.skewRatio);
+    }
   }
 
-  return { minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth };
+  return { minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth, usdeToMintNect };
 }
 
 export async function simulateShortcutOnQuoter(
@@ -502,6 +521,48 @@ async function getUsdcToMintHoney(
   const relativeUsdc = BigNumber.from(amountIn).mul(relativeUsdcInPairWithPrecision).div(totalUsdcWithPrecision);
   const usdcToMintHoney = BigNumber.from(amountIn).sub(relativeUsdc);
   return usdcToMintHoney.mul(skewRatio).div(MAX_BPS);
+}
+
+async function getUsdeToMintNect(
+  provider: StaticJsonRpcProvider,
+  chainId: number,
+  amountIn: BigNumberish,
+  island: AddressArg,
+  skewRatio: BigNumber,
+): Promise<BigNumber> {
+  const usdePrecision = BigNumber.from('1000000000000000000');
+  const nect = chainIdToDeFiAddresses[chainId]!.nect!;
+  const { token0, token1 } = await getIslandTokens(provider, island);
+  if (!isAddressEqual(token0, nect) && !isAddressEqual(token1, nect)) throw 'Error: Nect is not on this island';
+  const zeroToOne = isAddressEqual(token0, nect);
+  const pair = zeroToOne ? token1 : token0;
+  const pairExchangeRate = usdeExchangeRates[chainId][pair];
+  if (!pairExchangeRate) throw 'Error: Pair exchange rate cannot be found';
+
+  const nectExchangeRate = usdeExchangeRates[chainId][nect];
+  // test 50/50 split
+  const halfAmountIn = BigNumber.from(amountIn).div(2);
+  const nectMintAmount = halfAmountIn.mul(nectExchangeRate).div(usdePrecision); // div by usde decimals precision
+  const pairAmount = halfAmountIn.mul(pairExchangeRate).div(usdePrecision); // div by usde decimals precision
+  // calculate min
+  const islandMintAmounts = await getIslandMintAmounts(
+    provider,
+    island,
+    zeroToOne ? [nectMintAmount.toString(), pairAmount.toString()] : [pairAmount.toString(), nectMintAmount.toString()],
+  );
+  const { amount0, amount1 } = islandMintAmounts;
+  // recalculate using the known ratio between amount0 and amount1
+  const nectWithPrecision = zeroToOne ? amount0.mul(PRECISION) : amount1.mul(PRECISION);
+  const pairWithPrecision = zeroToOne ? amount1.mul(PRECISION) : amount0.mul(PRECISION);
+
+  const relativeUsdeInNectWithPrecision = nectWithPrecision.mul(usdePrecision).div(nectExchangeRate);
+  const relativeUsdeInPairWithPrecision = pairWithPrecision.mul(usdePrecision).div(pairExchangeRate);
+  const totalUsdeWithPrecision = relativeUsdeInPairWithPrecision.add(relativeUsdeInNectWithPrecision);
+
+  // Calculate the relative pair usdc amount and the subtract is from the amountIn to get honey. With this approach any rounding favours honey
+  const relativeUsde = BigNumber.from(amountIn).mul(relativeUsdeInPairWithPrecision).div(totalUsdeWithPrecision);
+  const usdeToMintNect = BigNumber.from(amountIn).sub(relativeUsde);
+  return usdeToMintNect.mul(skewRatio).div(MAX_BPS);
 }
 
 export async function getWethTomintBeraeth(

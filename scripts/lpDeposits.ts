@@ -20,7 +20,7 @@ async function main() {
       url: rpcUrl,
     });
 
-    const response = await getUniswapLiquidity(provider, chainId, lpToken as AddressArg, liquidity);
+    const response = await getUniswapLiquidity(provider, lpToken as AddressArg, liquidity);
     console.log(response);
   } catch (e) {
     console.error(e);
