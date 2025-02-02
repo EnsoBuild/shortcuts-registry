@@ -13,7 +13,7 @@ export class DahliaWberausdcShortcut implements Shortcut {
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
-      vault: '0x26A45A028Ff9772E3D1f10dD16D17909dbd7b876',
+      vault: '0x09eBBb385487Dc297dBDC5C1cc7bEfD40a3e3E89',
     },
   };
   setterInputs = new Set(['minAmountOut']);

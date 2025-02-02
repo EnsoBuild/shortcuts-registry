@@ -18,7 +18,7 @@ export class DahliaStonewethShortcut implements Shortcut {
     },
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
-      vault: '0x2416e726F38d2c5299592460e87Af266E3B5b19C',
+      vault: '0x67457E78BA3A8fcDC9070ED36e4c29D89C0e8914',
     },
   };
   setterInputs = new Set(['minAmountOut']);
