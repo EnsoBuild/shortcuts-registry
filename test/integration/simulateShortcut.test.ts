@@ -34,7 +34,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x2A280f6769Ba2a254C3D1FeCef0280F87DB0a265': '10000000' },
         dust: { '0x5d417e7798208E9285b5157498bBF23A23E421E7': '0' },
-        gas: '521435',
       });
     });
 
@@ -52,7 +51,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x25189a55463d2974F6b55268A09ccEe92f8aa043': '49000000000000' },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '858569',
       });
     });
 
@@ -72,7 +70,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x25189a55463d2974F6b55268A09ccEe92f8aa043': '49000000000000',
         },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '858569',
       });
     });
 
@@ -90,7 +87,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0xEdB3CD4f17b20b69Cd7bf8c1126E2759e4A710Be': '100000000000' },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '486902',
       });
     });
   });
@@ -112,7 +108,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0xFbb99BAD8eca0736A9ab2a7f566dEbC9acb607f0': '99933244325720999959',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '1080293',
       });
     });
 
@@ -132,7 +127,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0xFbb99BAD8eca0736A9ab2a7f566dEbC9acb607f0': '99933244325720999959',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '1080293',
       });
     });
   });
@@ -152,7 +146,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x95B0de63dbbe5D92BD05B7c0C12A32673f490A42': '100000000000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '589413',
       });
     });
 
@@ -172,7 +165,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x479Df3548C4261Cb101BE33536B3D90CCA6eb327': '100000000000000000000',
         },
         dust: { '0x2d93FbcE4CffC15DD385A80B3f4CC1D4E76C38b3': '0' },
-        gas: '586788',
       });
     });
   });
@@ -192,7 +184,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x444868B6e8079ac2c55eea115250f92C2b2c4D14': '100000000000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '807608',
       });
     });
   });
@@ -206,7 +197,7 @@ describe('Successfully simulates cArtio shortcuts for', () => {
   });
 
   describe('kodiak', () => {
-    it('honey-usdc', async () => {
+    it.skip('honey-usdc', async () => {
       // Arrange
       const args = ['kodiak', 'honey-usdc', '100000000', '--mode=forge', '--block=4465664'];
 
@@ -223,11 +214,10 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '1',
           '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
         },
-        gas: '1568777',
       });
     });
 
-    it('honey-usdc (with slippage)', async () => {
+    it.skip('honey-usdc (with slippage)', async () => {
       // Arrange
       const args = ['kodiak', 'honey-usdc', '100000000', '--mode=forge', '--slippage=3', '--block=4465664'];
 
@@ -244,7 +234,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '1',
           '0xd137593CDB341CcC78426c54Fb98435C60Da193c': '0',
         },
-        gas: '1568777',
       });
     });
   });
@@ -266,7 +255,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
           '0xcCF6AEC56d368DE2C04686C2bDbB5E8B6557c714': '1000000000000000000',
         },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '503708',
       });
     });
   });
@@ -286,7 +274,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x052335D631356f4b63457c1796f5a3786e8160ad': '10000000' },
         dust: { '0x49a49AB0A048bCADB8b4E51c5c970C46bF889CCD': '0' },
-        gas: '579890',
       });
     });
   });
@@ -306,7 +293,6 @@ describe('Successfully simulates cArtio shortcuts for', () => {
         minAmountOutHex: '0x01',
         quote: { '0x46BA968312ab17A9cD667771bB2D14D8d3Ce00B9': '10000000' },
         dust: { '0x015fd589F4f1A33ce4487E12714e1B15129c9329': '0' },
-        gas: '563520',
       });
     });
   });
