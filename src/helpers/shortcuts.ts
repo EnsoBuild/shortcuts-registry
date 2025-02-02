@@ -40,7 +40,9 @@ import { DolomiteDrswethShortcut } from '../shortcuts/dolomite/drsweth';
 import { DolomiteDSbtcShortcut } from '../shortcuts/dolomite/dsbtc';
 import { DolomiteDsolvbtcShortcut } from '../shortcuts/dolomite/dsolvbtc';
 import { DolomiteDsolvbtcbnnShortcut } from '../shortcuts/dolomite/dsolvbtcbnn';
+import { DolomiteDstbtcShortcut } from '../shortcuts/dolomite/dstbtc';
 import { DolomiteDstoneShortcut } from '../shortcuts/dolomite/dstone';
+import { DolomiteDsusdaShortcut } from '../shortcuts/dolomite/dsusda';
 import { DolomiteDsusdeShortcut } from '../shortcuts/dolomite/dsusde';
 import { DolomiteDunibtcShortcut } from '../shortcuts/dolomite/dunibtc';
 import { DolomiteDusdaShortcut } from '../shortcuts/dolomite/dusda';
@@ -157,9 +159,9 @@ export const shortcuts: Record<string, Record<string, Shortcut>> = {
     dsbtc: new DolomiteDSbtcShortcut(),
     dsolvbtc: new DolomiteDsolvbtcShortcut(),
     dsolvbtcbnn: new DolomiteDsolvbtcbnnShortcut(),
-    dstbtc: new DolomiteDSbtcShortcut(),
+    dstbtc: new DolomiteDstbtcShortcut(),
     dstone: new DolomiteDstoneShortcut(),
-    dsusda: new DolomiteDusdaShortcut(),
+    dsusda: new DolomiteDsusdaShortcut(),
     dsusde: new DolomiteDsusdeShortcut(),
     dunibtc: new DolomiteDunibtcShortcut(),
     dusda: new DolomiteDusdaShortcut(),

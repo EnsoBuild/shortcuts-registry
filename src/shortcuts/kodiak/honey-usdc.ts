@@ -2,28 +2,23 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { walletAddress } from '@ensofinance/shortcuts-builder/helpers';
 import { AddressArg, ChainIds, WeirollScript } from '@ensofinance/shortcuts-builder/types';
-import { Standards } from '@ensofinance/shortcuts-standards';
 import { sub } from '@ensofinance/shortcuts-standards/helpers';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getSetterValue, mintHoney, redeemHoney } from '../../utils';
+import { balanceOf, depositKodiak, getBalance, getSetterValue, mintErc4626, mintHoney, redeemHoney } from '../../utils';
 
 export class KodiakHoneyUsdcShortcut implements Shortcut {
   name = 'kodiak-honey-usdc';
   description = '';
   supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
   inputs: Record<number, Input> = {
-    [ChainIds.Cartio]: {
-      usdc: chainIdToDeFiAddresses[ChainIds.Cartio].usdc,
-      honey: chainIdToDeFiAddresses[ChainIds.Cartio].honey,
-      island: Standards.Kodiak_Islands.protocol.addresses!.cartio!.honeyUsdcIsland,
-    },
     [ChainIds.Berachain]: {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
       island: '0xb73deE52F38539bA854979eab6342A60dD4C8c03',
+      infraredVault: '0xA3a376E370666d0C3e10A5b1067095F2F080f26f',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'usdcToMintHoney']);
@@ -32,11 +27,11 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
     const client = new RoycoClient();
 
     const inputs = this.inputs[chainId];
-    const { usdc, honey, island } = inputs;
+    const { usdc, honey, island, infraredVault } = inputs;
 
     const builder = new Builder(chainId, client, {
       tokensIn: [usdc],
-      tokensOut: [island],
+      tokensOut: [infraredVault],
     });
     const amountIn = builder.add(balanceOf(usdc, walletAddress()));
     const usdcToMintHoney = getSetterValue(builder, this.setterInputs, 'usdcToMintHoney');
@@ -44,6 +39,9 @@ export class KodiakHoneyUsdcShortcut implements Shortcut {
     const mintedAmount = await mintHoney(usdc, usdcToMintHoney, builder);
 
     await depositKodiak(provider, builder, [usdc, honey], [remainingUsdc, mintedAmount], island, this.setterInputs);
+
+    const islandAmount = getBalance(island, builder);
+    await mintErc4626(island, infraredVault, islandAmount, builder);
 
     const leftoverAmount = builder.add(balanceOf(honey, walletAddress()));
     await redeemHoney(usdc, leftoverAmount, builder);

@@ -6,14 +6,14 @@ import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
 import { ensureMinAmountOut, getBalance, mintErc4626 } from '../../utils';
 
-export class DolomiteDdsusdaShortcut implements Shortcut {
-  name = 'dolomite-ddsusda';
+export class DolomiteDsusdaShortcut implements Shortcut {
+  name = 'dolomite-dsusda';
   description = '';
   supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
-      dsusda: chainIdToDeFiAddresses[ChainIds.Berachain].dsusda,
-      vault: '0x5185D57c303f5cB2CF1cFC1F251264f65BA7D534', //ddsusda
+      dsusda: chainIdToDeFiAddresses[ChainIds.Berachain].susda,
+      vault: '0x5185D57c303f5cB2CF1cFC1F251264f65BA7D534', //dsusda
     },
   };
   setterInputs = new Set(['minAmountOut']);
