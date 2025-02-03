@@ -90,7 +90,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].ebtc, { label: 'ERC20:solvbtcbnn' }],
+          [this.inputs[ChainIds.Cartio].solvbtcbnn, { label: 'ERC20:solvbtcbnn' }],
           [this.inputs[ChainIds.Cartio].ot, { label: 'ERC20:solvbtcbnn-OT' }],
           [this.inputs[ChainIds.Cartio].yt, { label: 'ERC20:solvbtcbnn-YT' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'GoldiVault:solvbtcbnn' }],
@@ -99,7 +99,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
         ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].ebtc, { label: 'ERC20:solvbtcbnn' }],
+          [this.inputs[ChainIds.Berachain].solvbtcbnn, { label: 'ERC20:solvbtcbnn' }],
           [this.inputs[ChainIds.Berachain].ot, { label: 'ERC20:solvbtcbnn-OT' }],
           [this.inputs[ChainIds.Berachain].yt, { label: 'ERC20:solvbtcbnn-YT' }],
           [this.inputs[ChainIds.Berachain].vault, { label: 'GoldiVault:solvbtcbnn' }],

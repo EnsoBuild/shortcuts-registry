@@ -90,7 +90,7 @@ export class GoldilocksUniBtcUniBtcOtShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].ebtc, { label: 'ERC20:UniBtc' }],
+          [this.inputs[ChainIds.Cartio].unibtc, { label: 'ERC20:UniBtc' }],
           [this.inputs[ChainIds.Cartio].ot, { label: 'ERC20:UniBtc-OT' }],
           [this.inputs[ChainIds.Cartio].yt, { label: 'ERC20:UniBtc-YT' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'GoldiVault:uniBtc' }],
@@ -99,7 +99,7 @@ export class GoldilocksUniBtcUniBtcOtShortcut implements Shortcut {
         ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].ebtc, { label: 'ERC20:UniBtc' }],
+          [this.inputs[ChainIds.Berachain].unibtc, { label: 'ERC20:UniBtc' }],
           [this.inputs[ChainIds.Berachain].ot, { label: 'ERC20:UniBtc-OT' }],
           [this.inputs[ChainIds.Berachain].yt, { label: 'ERC20:UniBtc-YT' }],
           [this.inputs[ChainIds.Berachain].vault, { label: 'GoldiVault:uniBtc' }],
