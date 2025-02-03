@@ -2,12 +2,12 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, NumberArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { div } from '@ensofinance/shortcuts-standards/helpers/math';
+import { sub } from '@ensofinance/shortcuts-standards/helpers/math';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { burnTokens, depositKodiak, getBalance } from '../../utils';
+import { burnTokens, depositKodiak, getBalance, getSetterValue } from '../../utils';
 
 export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
   name = 'goldilocks-solvbtcbnn-solvbtcbnnot';
@@ -29,7 +29,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
       island: '0xadD169f7E0905fb2e78cDFBee155c975Db0F2cbe',
     },
   };
-  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'amountToMintGoldilocks']);
 
   async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
@@ -43,7 +43,8 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
     });
 
     const amountIn = getBalance(solvbtcbnn, builder);
-    const halfAmount = div(amountIn, 2, builder);
+    const amountToMintGoldilocks = getSetterValue(builder, this.setterInputs, 'amountToMintGoldilocks');
+    const remainingAmount = sub(amountIn, amountToMintGoldilocks, builder);
 
     const goldilocks = getStandardByProtocol('goldilocks', chainId);
     const { amountOut } = await goldilocks.deposit.addToBuilder(
@@ -51,7 +52,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
       {
         tokenIn: solvbtcbnn,
         tokenOut: [ot, yt],
-        amountIn: halfAmount,
+        amountIn: amountToMintGoldilocks,
         primaryAddress: vault,
       },
       ['amountOut'],
@@ -60,7 +61,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
     if (!Array.isArray(amountOut)) throw 'Error: Invalid amountOut'; // should never throw
     const [otAmount] = amountOut as NumberArg[];
 
-    await depositKodiak(provider, builder, [ot, solvbtcbnn], [otAmount, halfAmount], island, this.setterInputs);
+    await depositKodiak(provider, builder, [ot, solvbtcbnn], [otAmount, remainingAmount], island, this.setterInputs);
 
     const otLeftOvers = getBalance(ot, builder);
 
@@ -89,7 +90,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
     switch (chainId) {
       case ChainIds.Cartio:
         return new Map([
-          [this.inputs[ChainIds.Cartio].ebtc, { label: 'ERC20:solvbtcbnn' }],
+          [this.inputs[ChainIds.Cartio].solvbtcbnn, { label: 'ERC20:solvbtcbnn' }],
           [this.inputs[ChainIds.Cartio].ot, { label: 'ERC20:solvbtcbnn-OT' }],
           [this.inputs[ChainIds.Cartio].yt, { label: 'ERC20:solvbtcbnn-YT' }],
           [this.inputs[ChainIds.Cartio].vault, { label: 'GoldiVault:solvbtcbnn' }],
@@ -98,7 +99,7 @@ export class GoldilockssolvbtcbnnsolvbtcbnnOtShortcut implements Shortcut {
         ]);
       case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Berachain].ebtc, { label: 'ERC20:solvbtcbnn' }],
+          [this.inputs[ChainIds.Berachain].solvbtcbnn, { label: 'ERC20:solvbtcbnn' }],
           [this.inputs[ChainIds.Berachain].ot, { label: 'ERC20:solvbtcbnn-OT' }],
           [this.inputs[ChainIds.Berachain].yt, { label: 'ERC20:solvbtcbnn-YT' }],
           [this.inputs[ChainIds.Berachain].vault, { label: 'GoldiVault:solvbtcbnn' }],
