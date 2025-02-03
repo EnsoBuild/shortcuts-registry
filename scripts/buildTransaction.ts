@@ -59,7 +59,7 @@ async function main() {
 
     const campaign = await getCampaign(provider, chainId, marketHash);
     const { owner, verified, receiptToken, depositRecipe } = campaign;
-    if (!verified) throw 'Error: Market is not verified';
+    if (!verified) console.log('Market is not verified'); //throw 'Error: Market is not verified';
     const preVerificationHash = buildVerificationHash(receiptToken, depositRecipe);
 
     const shortcutHashMap = await buildShortcutsHashMap(chainId, provider);
@@ -111,7 +111,7 @@ async function main() {
     console.log('Weiroll Wallet Token Balances: ', tokenBalances, '\n');
 
     const roles = getSimulationRolesByChainId(chainId);
-    if (useMockWalletAmounts) {
+    if (!verified || useMockWalletAmounts) {
       await simulateShortcutOnQuoter(
         provider,
         shortcut,
