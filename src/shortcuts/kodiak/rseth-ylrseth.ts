@@ -37,7 +37,7 @@ export class KodiaksRsethYlrsethShortcut implements Shortcut {
       provider,
       builder,
       [rseth, ylrseth],
-      [amountInYlrseth, amountInRseth],
+      [amountInRseth, amountInYlrseth],
       island,
       this.setterInputs,
     );

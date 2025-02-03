@@ -97,7 +97,7 @@ const marketHashes: Record<string, Record<string, string>> = {
     'pumpbtc-ylbtclst': '0x2fa37184f43783f5d6b23548c4a7a21bb86cd2f314bba9d5bb7d2415d61d11c8',
     'pumpbtc-ylpumpbtc': '0xaa636d73f39ea0de0e04ed9270eac5d943707e7f8fb9c3480c0d80eb015ccfc8',
     'rseth-beraeth': '0x25f7a422282a1f26d9d96b5d1c43fa5c6f8c355b0ed7a4755ac8d04a504817f5',
-    //'rseth-ylrseth': '0x460ec133419318efe4e05b4c3b6db421503fd6fcefbb20a43f50e3fc50f2ee39',
+    'rseth-ylrseth': '0x460ec133419318efe4e05b4c3b6db421503fd6fcefbb20a43f50e3fc50f2ee39',
     'rusd-honey': '0xcdb30c06ea11f3f5408bce5eefdb392dfe0008ef81af3a486bcfed891f9cc112',
     'solvbtc-fbtc': '0xc5165360e2e8b195cb55e21cf259ce6a5ee996b055057d8705851d9b01fc8620',
     'solvbtc-solvbtcbnn': '0x378d4d32d89450978d01cfdf1ff1907d4419aa186c48abb94e612b76d75f3fae',
