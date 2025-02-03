@@ -10,14 +10,14 @@ import { depositKodiak, getBalance, mintErc4626, mintHoney, redeemHoney } from '
 export class KodiakUsdtHoneyShortcut implements Shortcut {
   name = 'kodiak-usdt-honey';
   description = '';
-  supportedChains = [ChainIds.Cartio, ChainIds.Berachain];
+  supportedChains = [ChainIds.Berachain];
   inputs: Record<number, Input> = {
     [ChainIds.Berachain]: {
       usdt: chainIdToDeFiAddresses[ChainIds.Berachain].usdt,
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
       island: '0x12C195768f65F282EA5F1B5C42755FBc910B0D8F',
-      infraredVault: '0xD76707FFB9FEb81eDA0D6d0EA56d4Eb0325d5673',
+      infraredVault: '0xde747203c338993fBea53C61e5B2F558c4687958',
     },
   };
   setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
@@ -57,13 +57,14 @@ export class KodiakUsdtHoneyShortcut implements Shortcut {
 
   getAddressData(chainId: number): Map<AddressArg, AddressData> {
     switch (chainId) {
-      case ChainIds.Cartio:
+      case ChainIds.Berachain:
         return new Map([
-          [this.inputs[ChainIds.Cartio].usdc, { label: 'ERC20:USDC' }],
-          [this.inputs[ChainIds.Cartio].honey, { label: 'ERC20:HONEY' }],
-          [this.inputs[ChainIds.Cartio].usdt, { label: 'ERC20:usdt' }],
-          [this.inputs[ChainIds.Cartio].island, { label: 'Kodiak Island-usdt-HONEY-0.3%' }],
-          [chainIdToDeFiAddresses[ChainIds.Cartio].kodiakRouter, { label: 'Kodiak Island Router' }],
+          [this.inputs[ChainIds.Berachain].usdc, { label: 'ERC20:USDC' }],
+          [this.inputs[ChainIds.Berachain].honey, { label: 'ERC20:HONEY' }],
+          [this.inputs[ChainIds.Berachain].usdt, { label: 'ERC20:usdt' }],
+          [this.inputs[ChainIds.Berachain].infraredVault, { label: 'Infrared Vault' }],
+          [this.inputs[ChainIds.Berachain].island, { label: 'Kodiak Island-usdt-HONEY-0.3%' }],
+          [chainIdToDeFiAddresses[ChainIds.Berachain].kodiakRouter, { label: 'Kodiak Island Router' }],
         ]);
       default:
         throw new Error(`Unsupported chainId: ${chainId}`);
