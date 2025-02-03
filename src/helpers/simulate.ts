@@ -156,7 +156,13 @@ export async function getSetters(
 ): Promise<Record<string, BigNumber | undefined>> {
   const setterInputs = shortcut.setterInputs;
 
-  let minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth, usdeToMintNect;
+  let minAmountOut,
+    minAmount0Bps,
+    minAmount1Bps,
+    usdcToMintHoney,
+    wethTomintBeraeth,
+    usdeToMintNect,
+    amountToMintGoldilocks;
   if (setterInputs) {
     if (setterInputs.has('minAmountOut')) {
       minAmountOut = DEFAULT_SETTER_MIN_AMOUNT_OUT;
@@ -237,9 +243,33 @@ export async function getSetters(
 
       usdeToMintNect = await getUsdeToMintNect(provider, chainId, usdeAmountIn, island, setterArgsBps.skewRatio);
     }
+
+    if (setterInputs.has('amountToMintGoldilocks')) {
+      const underlyingAmountIn = amountsIn[0]; // this assumes a single-sided deposit
+      const island = shortcut.inputs[chainId].island; // assumes we are minting goldilocks for a kodiak island
+      if (!island) throw 'Error: Shortcut not supported for calculating underlying to mint';
+      const ot = shortcut.inputs[chainId].ot;
+      if (!ot) throw 'Error: Shortcut not supported for calculating ot to mint';
+
+      amountToMintGoldilocks = await getAmountToMintGoldilocks(
+        provider,
+        underlyingAmountIn,
+        ot,
+        island,
+        setterArgsBps.skewRatio,
+      );
+    }
   }
 
-  return { minAmountOut, minAmount0Bps, minAmount1Bps, usdcToMintHoney, wethTomintBeraeth, usdeToMintNect };
+  return {
+    minAmountOut,
+    minAmount0Bps,
+    minAmount1Bps,
+    usdcToMintHoney,
+    wethTomintBeraeth,
+    usdeToMintNect,
+    amountToMintGoldilocks,
+  };
 }
 
 export async function simulateShortcutOnQuoter(
@@ -616,6 +646,39 @@ export async function getWethTomintBeraeth(
   const wethTomintBeraeth = BigNumber.from(amountIn).sub(relativeWeth);
 
   return wethTomintBeraeth.mul(skewRatio).div(MAX_BPS);
+}
+
+async function getAmountToMintGoldilocks(
+  provider: StaticJsonRpcProvider,
+  amountIn: BigNumberish,
+  ot: AddressArg,
+  island: AddressArg,
+  skewRatio: BigNumber,
+): Promise<BigNumber> {
+  // Assumes OT is minted 1:1 with ratio!
+  const { token0, token1 } = await getIslandTokens(provider, island);
+  if (!isAddressEqual(token0, ot) && !isAddressEqual(token1, ot)) throw 'Error: OT is not on this island';
+  const zeroToOne = isAddressEqual(token0, ot);
+
+  // test 50/50 split
+  const halfAmountIn = BigNumber.from(amountIn).div(2);
+  // calculate min
+  const islandMintAmounts = await getIslandMintAmounts(provider, island, [
+    halfAmountIn.toString(),
+    halfAmountIn.toString(),
+  ]);
+  const { amount0, amount1 } = islandMintAmounts;
+  // recalculate using the known ratio between amount0 and amount1
+  const otWithPrecision = zeroToOne ? amount0.mul(PRECISION) : amount1.mul(PRECISION);
+  const underlyingWithPrecision = zeroToOne ? amount1.mul(PRECISION) : amount0.mul(PRECISION);
+
+  // Don't need to adjust for exchange rates as we're assuming 1:1
+  const totalUnderlyingWithPrecision = otWithPrecision.add(underlyingWithPrecision);
+
+  // Calculate the relative pair usdc amount and the subtract is from the amountIn to get honey. With this approach any rounding favours honey
+  const relativeUnderlying = BigNumber.from(amountIn).mul(underlyingWithPrecision).div(totalUnderlyingWithPrecision);
+  const underlyingToMintOT = BigNumber.from(amountIn).sub(relativeUnderlying);
+  return underlyingToMintOT.mul(skewRatio).div(MAX_BPS);
 }
 
 async function generateTxData(

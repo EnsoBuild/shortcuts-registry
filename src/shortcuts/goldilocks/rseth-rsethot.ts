@@ -2,12 +2,12 @@ import { Builder } from '@ensofinance/shortcuts-builder';
 import { RoycoClient } from '@ensofinance/shortcuts-builder/client/implementations/roycoClient';
 import { AddressArg, ChainIds, NumberArg, WeirollScript } from '@ensofinance/shortcuts-builder/types';
 import { getStandardByProtocol } from '@ensofinance/shortcuts-standards';
-import { div } from '@ensofinance/shortcuts-standards/helpers/math';
+import { sub } from '@ensofinance/shortcuts-standards/helpers/math';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import type { AddressData, Input, Output, Shortcut } from '../../types';
-import { burnTokens, depositKodiak, getBalance } from '../../utils';
+import { burnTokens, depositKodiak, getBalance, getSetterValue } from '../../utils';
 
 export class GoldilocksRsethRsethotShortcut implements Shortcut {
   name = 'goldilocks-rseth-rsethot';
@@ -22,7 +22,7 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
       island: '0xf8163EaC4c0239a81a7d8BD05B8e14498a5fD880',
     },
   };
-  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps']);
+  setterInputs = new Set(['minAmountOut', 'minAmount0Bps', 'minAmount1Bps', 'amountToMintGoldilocks']);
 
   async build(chainId: number, provider: StaticJsonRpcProvider): Promise<Output> {
     const client = new RoycoClient();
@@ -36,7 +36,8 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
     });
 
     const amountIn = getBalance(rseth, builder);
-    const halfAmount = div(amountIn, 2, builder);
+    const amountToMintGoldilocks = getSetterValue(builder, this.setterInputs, 'amountToMintGoldilocks');
+    const remainingAmount = sub(amountIn, amountToMintGoldilocks, builder);
 
     const goldilocks = getStandardByProtocol('goldilocks', chainId);
     const { amountOut } = await goldilocks.deposit.addToBuilder(
@@ -44,7 +45,7 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
       {
         tokenIn: rseth,
         tokenOut: [ot, yt],
-        amountIn: halfAmount,
+        amountIn: amountToMintGoldilocks,
         primaryAddress: vault,
       },
       ['amountOut'],
@@ -53,7 +54,7 @@ export class GoldilocksRsethRsethotShortcut implements Shortcut {
     if (!Array.isArray(amountOut)) throw 'Error: Invalid amountOut'; // should never throw
     const [otAmount] = amountOut as NumberArg[];
 
-    await depositKodiak(provider, builder, [rseth, ot], [halfAmount, otAmount], island, this.setterInputs);
+    await depositKodiak(provider, builder, [rseth, ot], [remainingAmount, otAmount], island, this.setterInputs);
 
     const otLeftOvers = getBalance(ot, builder);
 
