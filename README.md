@@ -223,3 +223,9 @@ Where the address passed is the wallet that will be executing the call. You must
 the .env file or pass it directly via `--privateKey=`
 
 The script will only work if the wallet is already deployed and funded.
+
+
+
+# Legal Disclaimer
+
+The Association Enso provides certain quality assurance services in relation to the Enso Protocol until the Boyco and Royco front-end is closed (hereinafter the “Services”). To the fullest extent permitted by applicable law: In no event will the Association Enso be liable for any direct, indirect, special, incidental, consequential, punitive, enhanced or exemplary damages of any kind (including, but not limited to, where related to loss of revenue, income or profits, loss of use or data, or damages for business interruption) arising out of or in any way related to the Services, regardless of the form of action, whether based in contract, tort (including, but not limited to simple negligence) or any other legal theory (even if the Association Enso has been advised of the possibility of such damages and regardless of whether such damages were foreseeable).  
