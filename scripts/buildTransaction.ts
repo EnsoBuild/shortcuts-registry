@@ -97,7 +97,7 @@ async function main() {
 
     const [deposits, balances] = await Promise.all([
       getTotalTokenAmountDeposited(provider, chainId, marketHash, wallet, tokensIn),
-      getBalances(provider, chainId, wallet, tokensIn),
+      getBalances(provider, wallet, tokensIn),
     ]);
 
     const amountsIn = useMockWalletAmounts
