@@ -9,7 +9,6 @@ const uniV2ZeroToOne = [
   '0x1997c604de34a71974228bca4a66f601427c48960b6e59ff7ebc8e34f43f3ecf',
   '0x219169d9e78064768cddd0397c2202dc9e5c2bc0e1dbc13465363b0458d33c34',
   '0xfa4917a871f9cf06d3d00be6678993888b3aac41c3da21edf32c3c9cf3978d70',
-  '0x6262ac035c2284f5b5249a690a6fd81c35f1ecef501da089f25741a4492cf5f3',
   '0x289dc2a22ebb4ef7404de9293b6718d9f81f0843e1af4cf9a9c51d2e757348d6',
   '0x17ffd16948c053cc184c005477548e559566879a0e2847e87ebd1111c602535c',
   '0x7ecf55915abe3c24dc5d8365a8edabc8833f4efb8e7c027429c9528aed91ecb7',
@@ -160,6 +159,7 @@ async function main() {
           // Check if underlying is uniswap
           const token = await getMarketInputToken(provider, marketHash);
 
+          console.log('Market: ', protocol, name);
           console.log('Market Hash: ', marketHash);
           console.log('Locked amount: ', lockedAmount.toString());
           console.log('Token: ', token);
