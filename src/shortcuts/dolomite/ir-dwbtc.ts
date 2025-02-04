@@ -14,7 +14,7 @@ export class DolomiteInfraredDwbtcShortcut implements Shortcut {
     [ChainIds.Berachain]: {
       wbtc: chainIdToDeFiAddresses[ChainIds.Berachain].wbtc,
       vault: '0x29cF6e8eCeFb8d3c9dd2b727C1b7d1df1a754F6f', //dwbtc
-      infraredVault: '0x7de65E4fcc6a0b411B90a24CC33741AB3CD00262',
+      infraredVault: '0x104E92e8F7aA38A6e2f5f52ADFf357Ab05738D71',
     },
   };
   setterInputs = new Set(['minAmountOut']);

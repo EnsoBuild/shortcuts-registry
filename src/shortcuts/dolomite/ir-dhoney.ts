@@ -15,7 +15,7 @@ export class DolomiteInfraredDHoneyShortcut implements Shortcut {
       usdc: chainIdToDeFiAddresses[ChainIds.Berachain].usdc,
       honey: chainIdToDeFiAddresses[ChainIds.Berachain].honey,
       dhoney: '0x7f2B60fDff1494A0E3e060532c9980d7fad0404B',
-      infraredVault: '0xb13A7D1361bd6f6734078654047daAE210f2d4D4',
+      infraredVault: '0x920598318D0C48a19a9cBd26D86Aa0D8079b139A',
     },
   };
   setterInputs = new Set(['minAmountOut']);
