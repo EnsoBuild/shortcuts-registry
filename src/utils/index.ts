@@ -165,7 +165,7 @@ export async function redeemHoney(asset: AddressArg, amount: NumberArg, builder:
   return amountOut as FromContractCallArg;
 }
 
-export async function redeemNect(amount: NumberArg, builder: Builder) {
+export async function redeemNectForUsc(amount: NumberArg, builder: Builder) {
   const approvals = {
     tokens: [chainIdToDeFiAddresses[builder.chainId].nect],
     amounts: [amount],
@@ -175,6 +175,24 @@ export async function redeemNect(amount: NumberArg, builder: Builder) {
   addApprovals(builder, approvals);
   const redeem = contractCall({
     address: chainIdToDeFiAddresses[builder.chainId].usdcPsmBond,
+    functionName: 'withdraw',
+    abi: ['function withdraw(uint shares, address receiver, address owner) '],
+    args: [amount, walletAddress(), walletAddress()],
+  });
+
+  builder.add(redeem);
+}
+
+export async function redeemNectForUsde(amount: NumberArg, builder: Builder) {
+  const approvals = {
+    tokens: [chainIdToDeFiAddresses[builder.chainId].nect],
+    amounts: [amount],
+    spender: chainIdToDeFiAddresses[builder.chainId].usdePsmBond,
+  };
+
+  addApprovals(builder, approvals);
+  const redeem = contractCall({
+    address: chainIdToDeFiAddresses[builder.chainId].usdePsmBond,
     functionName: 'withdraw',
     abi: ['function withdraw(uint shares, address receiver, address owner) '],
     args: [amount, walletAddress(), walletAddress()],

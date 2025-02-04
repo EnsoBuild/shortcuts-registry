@@ -15,7 +15,7 @@ import {
   mintHoney,
   mintNectWithUsdc,
   redeemHoney,
-  redeemNect,
+  redeemNectForUsc,
 } from '../../utils';
 
 export class BeraborrowNectHoneyShortcut implements Shortcut {
@@ -69,7 +69,7 @@ export class BeraborrowNectHoneyShortcut implements Shortcut {
     const nectLeftoversAmount = builder.add(balanceOf(nect, walletAddress()));
 
     await redeemHoney(usdc, honeyLeftoverAmount, builder);
-    await redeemNect(nectLeftoversAmount, builder);
+    await redeemNectForUsc(nectLeftoversAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,

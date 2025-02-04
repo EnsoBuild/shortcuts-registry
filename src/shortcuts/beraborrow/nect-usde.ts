@@ -7,7 +7,7 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 import { chainIdToDeFiAddresses, chainIdToTokenHolder } from '../../constants';
 import { AddressData, Input, Output, Shortcut } from '../../types';
-import { balanceOf, depositKodiak, getSetterValue, mintNectWithUsde, redeemNect } from '../../utils';
+import { balanceOf, depositKodiak, getSetterValue, mintNectWithUsde, redeemNectForUsde } from '../../utils';
 
 export class BeraborrowNectUsdeShortcut implements Shortcut {
   name = 'beraborrow-nect-usde';
@@ -47,7 +47,7 @@ export class BeraborrowNectUsdeShortcut implements Shortcut {
     await depositKodiak(provider, builder, [nect, usde], [mintedAmount, remainingUsde], island, this.setterInputs);
 
     const nectLeftoversAmount = builder.add(balanceOf(nect, walletAddress()));
-    await redeemNect(nectLeftoversAmount, builder);
+    await redeemNectForUsde(nectLeftoversAmount, builder);
 
     const payload = await builder.build({
       requireWeiroll: true,
