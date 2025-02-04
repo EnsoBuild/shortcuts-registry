@@ -3,13 +3,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import dotenv from 'dotenv';
 import { execSync } from 'node:child_process';
 
-import {
-  MAX_BPS,
-  MIN_AMOUNT_OUT_MIN_SLIPPAGE,
-  ShortcutExecutionMode,
-  ShortcutOutputFormat,
-  SimulationMode,
-} from '../constants';
+import { MAX_BPS, ShortcutExecutionMode, ShortcutOutputFormat, SimulationMode } from '../constants';
 import { Shortcut } from '../types';
 import { shortcuts } from './shortcuts';
 import { getChainId } from './utils';
@@ -135,10 +129,8 @@ export function getBasisPointsFromArgs(args: string[], label: string, defaultVal
     throw new Error(`Invalid ${label}: ${raw}. Required a BigNumber type as BIPS. Reason: ${error}`);
   }
 
-  if (value.lt(MIN_AMOUNT_OUT_MIN_SLIPPAGE) || value.gt(MAX_BPS)) {
-    throw new Error(
-      `invalid ${label}: ${raw}. BIPS is out of range [${MIN_AMOUNT_OUT_MIN_SLIPPAGE.toString()},${MAX_BPS.toString()}]`,
-    );
+  if (value.lt(0) || value.gt(MAX_BPS)) {
+    throw new Error(`invalid ${label}: ${raw}. BIPS is out of range [0,${MAX_BPS.toString()}]`);
   }
 
   return value;
