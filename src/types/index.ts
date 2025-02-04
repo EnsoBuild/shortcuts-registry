@@ -60,6 +60,7 @@ export type Report = {
   quote: Record<string, string>;
   dust: Record<string, string>;
   gas: string;
+  tokensIn?: AddressArg[]; // TODO: remove
 };
 
 export interface AddressData {

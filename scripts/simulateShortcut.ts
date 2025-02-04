@@ -17,6 +17,22 @@ import {
 import { simulateShortcutOnForge, simulateShortcutOnQuoter } from '../src/helpers/simulate';
 import type { Report } from '../src/types';
 
+export async function main2_(args: string[]): Promise<string[]> {
+  const { shortcut, chainId } = await getShortcut(args);
+
+  const rpcUrl = getRpcUrlByChainId(chainId);
+  const provider = new StaticJsonRpcProvider({
+    url: rpcUrl,
+  });
+
+  const { metadata } = await shortcut.build(chainId, provider);
+
+  // Validate tokens
+  const { tokensIn } = metadata;
+
+  return tokensIn as string[];
+}
+
 export async function main_(args: string[]): Promise<Report> {
   const { shortcut, chainId } = await getShortcut(args);
 
@@ -38,6 +54,7 @@ export async function main_(args: string[]): Promise<Report> {
 
   // Validate tokens
   const { tokensIn, tokensOut } = metadata;
+  console.log('Tokens (Berachain): ', tokensIn);
   if (!tokensIn || !tokensOut) throw 'Error: Invalid builder metadata. Missing eiter "tokensIn" or "tokensOut"';
   if (amountsIn.length != tokensIn.length) {
     throw `Error: Incorrect number of amounts for shortcut. Expected ${tokensIn.length} CSVs`;
@@ -100,6 +117,8 @@ export async function main_(args: string[]): Promise<Report> {
     default:
       throw new Error(`Unsupported simulaton 'mode': ${simulatonMode}. `);
   }
+
+  report.tokensIn = tokensIn; // TODO: remove
 
   return report;
 }

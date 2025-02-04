@@ -1,19 +1,21 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import fs from 'fs';
+import path from 'path';
 
-import { getDepositLockerAmount, getMarketInputToken, getRpcUrlByChainId, getUniswapLiquidity } from '../src/helpers';
-import { main_ as simulateShortcut } from './simulateShortcut';
+import { getMarketInputToken, getRpcUrlByChainId } from '../src/helpers';
+import { main2_ as simulateShortcut2 } from './simulateShortcut';
 
 // these are just guesses based on simulation outcomes
-const uniV2ZeroToOne = [
-  '0xf8663b3c0f78b4efae0422b163e86e79afa1ce90778885d93d53c9d4f6d5c3d8',
-  '0x1997c604de34a71974228bca4a66f601427c48960b6e59ff7ebc8e34f43f3ecf',
-  '0x219169d9e78064768cddd0397c2202dc9e5c2bc0e1dbc13465363b0458d33c34',
-  '0xfa4917a871f9cf06d3d00be6678993888b3aac41c3da21edf32c3c9cf3978d70',
-  '0x289dc2a22ebb4ef7404de9293b6718d9f81f0843e1af4cf9a9c51d2e757348d6',
-  '0x17ffd16948c053cc184c005477548e559566879a0e2847e87ebd1111c602535c',
-  '0x7ecf55915abe3c24dc5d8365a8edabc8833f4efb8e7c027429c9528aed91ecb7',
-  '0x49104b3cadbb31470e5b949c6892a33954ee9ce35041df4a04a88eb694b645c0',
-];
+// const uniV2ZeroToOne = [
+//   '0xf8663b3c0f78b4efae0422b163e86e79afa1ce90778885d93d53c9d4f6d5c3d8',
+//   '0x1997c604de34a71974228bca4a66f601427c48960b6e59ff7ebc8e34f43f3ecf',
+//   '0x219169d9e78064768cddd0397c2202dc9e5c2bc0e1dbc13465363b0458d33c34',
+//   '0xfa4917a871f9cf06d3d00be6678993888b3aac41c3da21edf32c3c9cf3978d70',
+//   '0x289dc2a22ebb4ef7404de9293b6718d9f81f0843e1af4cf9a9c51d2e757348d6',
+//   '0x17ffd16948c053cc184c005477548e559566879a0e2847e87ebd1111c602535c',
+//   '0x7ecf55915abe3c24dc5d8365a8edabc8833f4efb8e7c027429c9528aed91ecb7',
+//   '0x49104b3cadbb31470e5b949c6892a33954ee9ce35041df4a04a88eb694b645c0',
+// ];
 
 const marketHashes: Record<string, Record<string, string>> = {
   beraborrow: {
@@ -143,6 +145,8 @@ const marketHashes: Record<string, Record<string, string>> = {
 };
 
 async function main() {
+  const ethAddrToBerachainAddrs: Map<string, string[]> = new Map([]);
+
   try {
     const args: string[] = process.argv.slice(2);
     const expectedMarketHash = args[0];
@@ -155,36 +159,26 @@ async function main() {
       for (const name of Object.keys(marketHashes[protocol])) {
         const marketHash = marketHashes[protocol][name];
         if (!expectedMarketHash || expectedMarketHash === marketHash) {
-          const lockedAmount = await getDepositLockerAmount(provider, marketHash);
           // Check if underlying is uniswap
           const token = await getMarketInputToken(provider, marketHash);
 
-          console.log('Market: ', protocol, name);
-          console.log('Market Hash: ', marketHash);
-          console.log('Locked amount: ', lockedAmount.toString());
-          console.log('Token: ', token);
+          const tokensIn = await simulateShortcut2(['berachain', protocol, name, '1000']);
 
-          let amountString: string;
-          try {
-            const { amount0, amount1 } = await getUniswapLiquidity(provider, token, lockedAmount);
-            console.log('LP Token');
-            amountString = uniV2ZeroToOne.includes(marketHash)
-              ? [amount1.toString(), amount0.toString()].join(',')
-              : [amount0.toString(), amount1.toString()].join(',');
-            //eslint-disable-next-line @typescript-eslint/no-unused-vars
-          } catch (e) {
-            // single token
-            console.log('Single Token');
-            amountString = lockedAmount.toString();
-          }
-          console.log('Simulate amount: ', amountString);
-          await simulateShortcut(['berachain', protocol, name, amountString]);
+          ethAddrToBerachainAddrs.set(
+            token.toLowerCase(),
+            tokensIn.map((addr) => addr.toLowerCase()),
+          );
         }
       }
     }
   } catch (e) {
     console.error(e);
   }
+  console.log(ethAddrToBerachainAddrs.keys());
+  const outputFile = path.join(__dirname, `../tokens-map-${new Date().toISOString()}.json`);
+
+  fs.writeFileSync(outputFile, JSON.stringify(Object.fromEntries(ethAddrToBerachainAddrs.entries()), null, 2), 'utf-8');
+  console.log(`Tokens map file stored in '${outputFile}'`);
 }
 
 main();
