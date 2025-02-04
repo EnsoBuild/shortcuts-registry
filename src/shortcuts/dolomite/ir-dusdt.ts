@@ -14,7 +14,7 @@ export class DolomiteInfraredDUsdtShortcut implements Shortcut {
     [ChainIds.Berachain]: {
       usdt: chainIdToDeFiAddresses[ChainIds.Berachain].usdt,
       vault: '0xF2d2d55Daf93b0660297eaA10969eBe90ead5CE8', //dusdt
-      infraredVault: '0x01b775b353176bb1b9075C5d344c2B689285282a',
+      infraredVault: '0xcc824B6b022e53c564c60d16B1a4e4bb93851A75',
     },
   };
   setterInputs = new Set(['minAmountOut']);

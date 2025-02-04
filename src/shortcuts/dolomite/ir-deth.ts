@@ -14,7 +14,7 @@ export class DolomiteInfraredDethShortcut implements Shortcut {
     [ChainIds.Berachain]: {
       weth: chainIdToDeFiAddresses[ChainIds.Berachain].weth,
       vault: '0xf7b5127B510E568fdC39e6Bb54e2081BFaD489AF', // deth
-      infraredVault: '0x778e9294Af38DFc8B92e8969953eB559b47e896E',
+      infraredVault: '0x1109bF8125a52fb8a92f1eE5CD3d9F988a80F954',
     },
   };
   setterInputs = new Set(['minAmountOut']);
